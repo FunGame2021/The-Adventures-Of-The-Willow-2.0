@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e151d3590936e4abd9d279cf365c5b, type: 3}
+  m_Name: Decor2Data
+  m_EditorClassIdentifier: 
+  categories:
+  - categoryName: Forest
+    decorations:
+    - decor2Name: DayTree_01
+      prefab: {fileID: 7063769381029522982, guid: 2fbad0cf609abbc49a682aaeb98f4cbe, type: 3}
+    - decor2Name: DayTree_02
+      prefab: {fileID: 6991940714008082870, guid: 774cc15dde747434d8cc322941daa361, type: 3}
+    - decor2Name: DayTree_03
+      prefab: {fileID: 5924656498196256725, guid: 4f783436878f1a74f9ab5ba7e556336a, type: 3}
+    - decor2Name: DayTree_04
+      prefab: {fileID: 5924656498196256725, guid: 767d4df13c773ed44a3801c13a7b3c32, type: 3}

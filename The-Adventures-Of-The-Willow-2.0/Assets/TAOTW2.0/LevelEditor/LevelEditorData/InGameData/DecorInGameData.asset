@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c590d02e0be7e8e44bd639ae0ba2afb4, type: 3}
+  m_Name: DecorInGameData
+  m_EditorClassIdentifier: 
+  categories:
+  - categoryName: Forest
+    decorations:
+    - decorName: Flower_01
+      prefab: {fileID: 9166690511490000936, guid: ddeaf4c31dca4804ba7b0dadec8a3bf6, type: 3}
+    - decorName: Flower_02
+      prefab: {fileID: 2321937086714238280, guid: 94fa3351142d3e04491053912ca67e41, type: 3}
+    - decorName: Flower_03
+      prefab: {fileID: 1691095902143919276, guid: c187fa01bbfa05e40a355914a56c98db, type: 3}
+    - decorName: Rocks_Forest_0
+      prefab: {fileID: 764290338389272123, guid: 935abea7c3b5feb41a46ce18dab372d4, type: 3}
+    - decorName: Rocks_Forest_1
+      prefab: {fileID: 5551307493963771338, guid: 4ef6c1ae4e6c854449b491dcb6f3af5c, type: 3}
+    - decorName: Rocks_Forest_2
+      prefab: {fileID: 8725469416236291085, guid: eca304640ea972a47aa5cf4cdf01b66d, type: 3}
+    - decorName: Rocks_Forest_3
+      prefab: {fileID: 6945379069482469387, guid: 095019ddf052906478156145b7b9e793, type: 3}
+    - decorName: Rocks_Forest_4
+      prefab: {fileID: 796997948421452112, guid: 66eaef6bf0704ed45b5c2e373b3d0d20, type: 3}
+    - decorName: Rocks_Forest_5
+      prefab: {fileID: 4665654648365840729, guid: 69a24beff60b2904ab5e5a03d1a96a57, type: 3}
+    - decorName: Rocks_Forest_6
+      prefab: {fileID: 7183092625240076715, guid: 9b7cc82cc459aaf41bd2fba5ad28c1cb, type: 3}
+    - decorName: Rocks_Forest_7
+      prefab: {fileID: 9051879272066955922, guid: 768a0b6c3ddb2b542a974052f292171c, type: 3}
+  - categoryName: SnowForest
+    decorations: []

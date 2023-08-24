@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b55d9a118fc36d4796336ab207d022f, type: 3}
+  m_Name: GameObjectsData
+  m_EditorClassIdentifier: 
+  categories:
+  - GameObjectsCategoryName: ObjectsManager
+    GameObjects:
+    - GameObjectName: PlayerPos
+      prefab: {fileID: 1845644384022529618, guid: c8fff7da48e8d8643af74ac0e82a4e2b, type: 3}
+    - GameObjectName: PlayParticlesTrigger
+      prefab: {fileID: 0}
+    - GameObjectName: Checkpoint
+      prefab: {fileID: 7617463625491203095, guid: c6cac15fc6952fb4ea61e6ce7a83ffdb, type: 3}
+    - GameObjectName: FinishPole01
+      prefab: {fileID: 6336052689785982531, guid: 02f564810b2856246a9333ee4b6fa149, type: 3}
+  - GameObjectsCategoryName: WorldGameObjects
+    GameObjects:
+    - GameObjectName: LevelDot
+      prefab: {fileID: 7109911152652461386, guid: d3873de5d571d6042ab46528b29aa663, type: 3}

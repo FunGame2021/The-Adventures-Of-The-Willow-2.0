@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6cae0263f7f4ce4098f9f991642470f, type: 3}
+  m_Name: ObjectsData
+  m_EditorClassIdentifier: 
+  categories:
+  - categoryName: Moving Platforms
+    Objects:
+    - ObjectName: Platform
+      objectType: 1
+      prefab: {fileID: 1053994767529580254, guid: 0b3c86d3d18a934458e1b38fc67a3844, type: 3}
+  - categoryName: Powerups
+    Objects:
+    - ObjectName: GoldCoin
+      objectType: 0
+      prefab: {fileID: 4646918555343122615, guid: be408ff9779e21943aec88958db91334, type: 3}
+    - ObjectName: RedCoin
+      objectType: 0
+      prefab: {fileID: 4890996856548056059, guid: e52fd2eb3826152428c3c259464dbeb4, type: 3}
+    - ObjectName: BlueCoin
+      objectType: 0
+      prefab: {fileID: 7990939372211423580, guid: aba0223acb95c9b44a628cacf45807f2, type: 3}
+    - ObjectName: Star
+      objectType: 0
+      prefab: {fileID: 7018894234077071326, guid: 04938d08c0df2534eb7c94a727beaf1b, type: 3}
+  - categoryName: Objects
+    Objects:
+    - ObjectName: SmallBox
+      objectType: 0
+      prefab: {fileID: 1980615804739368377, guid: 68f2aabc088ee3e4c9714512ed702ac2, type: 3}
+    - ObjectName: BigBox
+      objectType: 0
+      prefab: {fileID: 1484930356803454236, guid: 9c8c1e5a14250f441b897ffb0046e37d, type: 3}
