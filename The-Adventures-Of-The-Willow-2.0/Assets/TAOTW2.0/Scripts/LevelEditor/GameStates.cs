@@ -6,6 +6,8 @@ public class GameStates : MonoBehaviour
 {
     public static GameStates Instance;
     public bool isLevelEditor;
+    public bool isNormalGame;
+
     void Start()
     {
         if(Instance == null)

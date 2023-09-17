@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,17 +16,25 @@ public class WorldSelect : MonoBehaviour
     [HideInInspector] public string levelEditorPath; // Caminho para a pasta "LevelEditor"
 
     private List<string> availableWorlds; // Lista de mundos disponíveis
-    public string currentWorldName; // Nome do mundo atual
-
-    public TextMeshProUGUI currentWorldText; // Referência para o texto do nível atual
-
+    private string currentWorldName; // Nome do mundo atual
 
     public GameObject currentPanel; // Referência para o painel atual que está sendo exibido
     public GameObject worldListPanel; // Referência para o painel com a lista de mundos
+    public GameObject LevelListPanel;
+
+    private bool listUpdated;
 
 
-    public GameObject currentWorldListPanel; // Referência para o painel atual que está sendo exibido
-    public GameObject closeAllPanel;
+    //Levels
+    public GameObject buttonBackWorldList;
+    public Transform levelButtonContainer; // Container para os botões dos níveis
+    public RectTransform levelContent;
+    public Button levelButtonPrefab; // Prefab do botão do nível
+    public string currentLevelName;
+
+    //Game and extra levels game
+    public bool isExtraLevels;
+    public bool isGameLevels;
 
     private void Start()
     {
@@ -36,16 +43,23 @@ public class WorldSelect : MonoBehaviour
             instance = this;
         }
 
-        // Obtém o caminho completo para a pasta "LevelEditor"
-        levelEditorPath = Path.Combine(Application.persistentDataPath, "LevelEditor");
 
-        // Carrega os mundos disponíveis
-        LoadAvailableWorlds();
-
-        if (!string.IsNullOrEmpty(LevelEditorController.instance.AtualWorld))
+        if (!isExtraLevels && !isGameLevels)
         {
-            currentWorldName = LevelEditorController.instance.AtualWorld;
-            closeAllPanel.SetActive(false);
+            // Obtém o caminho completo para a pasta "LevelEditor"
+            levelEditorPath = Path.Combine(Application.persistentDataPath, "LevelEditor");
+            // Carrega os mundos disponíveis
+            LoadAvailableWorlds();
+        }
+        if(isExtraLevels)
+        {
+            levelEditorPath = Path.Combine(Application.streamingAssetsPath, "Worlds/ExtraWorlds");
+            LoadAvailableWorlds();
+        }
+        if(isGameLevels)
+        {
+            levelEditorPath = Path.Combine(Application.streamingAssetsPath, "Worlds/GameWorlds");
+            LoadAvailableWorlds();
         }
     }
 
@@ -122,6 +136,11 @@ public class WorldSelect : MonoBehaviour
 
                     // Adiciona o nome do mundo à lista de mundos disponíveis
                     availableWorlds.Add(worldName);
+                    if (!listUpdated)
+                    {
+                        listUpdated = true;
+                        ShowWorldList();
+                    }
                 }
             }
         }
@@ -130,62 +149,118 @@ public class WorldSelect : MonoBehaviour
             UnityEngine.Debug.LogWarning("A pasta 'LevelEditor' não existe!");
         }
     }
+
     public void SelectWorld(string worldName)
     {
         // Define o nome do mundo selecionado
         currentWorldName = worldName;
 
-        // Atualiza o TextMeshProUGUI com o nome do mundo e autor
-        string authorName = GetAuthorName(worldName);
-        currentWorldText.text = "Mundo: " + worldName + " | Autor: " + authorName;
+        // Obtém o caminho completo para o arquivo de informações do mundo
+        string worldInfoFilePath = Path.Combine(levelEditorPath, currentWorldName, "World.Info");
 
-
-        // Fecha o painel atual
-        if (currentWorldListPanel != null)
+        // Verifica se o arquivo de informações do mundo existe
+        if (File.Exists(worldInfoFilePath))
         {
-            currentWorldListPanel.SetActive(false);
-        }
+            // Lê o conteúdo do arquivo de informações do mundo
+            string worldInfo = File.ReadAllText(worldInfoFilePath);
 
+            // Verifica se a linha "WithWorldmap" está presente e seu valor
+            if (worldInfo.Contains("WithWorldmap: True"))
+            {
+                PlayWorld.instance.isWorldmap = true;
+                // Define o nome do mundo selecionado na variável selectedWorldName
+                PlayWorld.instance.selectedWorldName = currentWorldName;
+
+                // Abra a cena do mundo em uma nova cena
+                UnityEngine.SceneManagement.SceneManager.LoadScene("PlayWorld");
+            }
+            else if (worldInfo.Contains("WithWorldmap: False"))
+            {
+                buttonBackWorldList.SetActive(true);
+                PlayWorld.instance.isWorldmap = false;
+                // Define o nome do mundo selecionado na variável selectedWorldName
+                PlayWorld.instance.selectedWorldName = currentWorldName;
+                InstantiateLevelButtons(currentWorldName);
+                // Mostre a lista de níveis contidos no mundo (você pode implementar isso)
+                // Por exemplo, ative um painel que exibe a lista de níveis.
+                currentPanel.SetActive(false);
+                LevelListPanel.SetActive(true);
+            }
+        }
 
     }
 
-    private string GetAuthorName(string worldName)
+
+    //levels
+
+    public void InstantiateLevelButtons(string worldName)
     {
+        // Verifica se o container dos botões de nível está definido
+        if (levelButtonContainer == null)
+        {
+            UnityEngine.Debug.LogWarning("O container de botões de nível não está definido.");
+            return;
+        }
+
+        // Remove os botões de nível existentes
+        foreach (Transform child in levelButtonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(levelEditorPath, worldName);
 
         // Verifica se a pasta do mundo existe
         if (Directory.Exists(worldFolderPath))
         {
-            // Obtém o caminho completo para o arquivo de informações do mundo
-            string worldInfoFilePath = Path.Combine(worldFolderPath, "World.Info");
+            // Obtém todos os arquivos com a extensão ".TAOWLE" dentro da pasta do mundo
+            string[] levelFiles = Directory.GetFiles(worldFolderPath, "*.TAOWLE");
 
-            // Verifica se o arquivo de informações do mundo existe
-            if (File.Exists(worldInfoFilePath))
+            // Instancia um botão para cada nível disponível
+            foreach (string levelFile in levelFiles)
             {
-                // Lê as informações do mundo do arquivo de informações
-                string worldInfo = File.ReadAllText(worldInfoFilePath);
+                // Obtém o nome do nível
+                string levelName = Path.GetFileNameWithoutExtension(levelFile);
 
-                // Exibe o conteúdo do arquivo para depuração
-                UnityEngine.Debug.Log("Conteúdo do arquivo de informações do mundo (" + worldName + "):\n" + worldInfo);
+                // Cria um novo botão de nível
+                Button levelButton = Instantiate(levelButtonPrefab, levelButtonContainer);
+                levelButton.GetComponentInChildren<TextMeshProUGUI>().text = levelName;
 
-                // Extrai o autor do mundo do conteúdo do arquivo
-                string[] lines = worldInfo.Split('\n');
-                string authorName = lines[1].Substring(7);
+                // Configura o callback de clique para abrir o nível correspondente
+                string level = levelName; // Variável temporária para evitar closure
+                levelButton.onClick.AddListener(() =>
+                {
+                    // Define o nome do nível selecionado
+                    currentLevelName = level;
 
-                return authorName;
+                    // Chame a função que carrega o nível ou execute qualquer outra ação desejada com o nível selecionado
+                    PlayWorld.instance.selectedLevelName = currentLevelName;
+
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("PlayLevel");
+                    // Fecha o painel atual
+                    if (LevelListPanel != null)
+                    {
+                        LevelListPanel.SetActive(false);
+                        worldListPanel.SetActive(false);
+                    }
+
+                });
+
+                // Ativa o botão
+                levelButton.gameObject.SetActive(true);
             }
-            else
-            {
-                UnityEngine.Debug.LogWarning("O arquivo de informações do mundo não existe: " + worldInfoFilePath);
-            }
+
+            // Atualiza o tamanho vertical do Content do ScrollView de acordo com o número de botões
+            float buttonHeight = levelButtonPrefab.GetComponent<RectTransform>().rect.height;
+            float totalHeight = levelFiles.Length * buttonHeight;
+            levelContent.sizeDelta = new Vector2(levelContent.sizeDelta.x, totalHeight);
         }
         else
         {
             UnityEngine.Debug.LogWarning("A pasta do mundo não existe: " + worldFolderPath);
         }
-
-        return "";
     }
+
 
 }

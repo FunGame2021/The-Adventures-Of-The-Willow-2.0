@@ -11,6 +11,7 @@ public class PlayerHealth : MonoBehaviour
     private Vector3 startPlayerPos;
     [SerializeField] private PlayerAnimatorController playerAnimatiorController;
     private bool isDeadNow;
+    public bool isDead;
 
     void Start()
     {
@@ -20,14 +21,35 @@ public class PlayerHealth : MonoBehaviour
         }
         startPlayerPos = this.transform.position;
     }
-
+    private void Update()
+    {
+        if(GameStates.Instance.isNormalGame)
+        {
+            if (LevelTimeManager.instance.remainingDuration <= 0 && playLevel.instance.StartedLevel)
+            {
+                TakeDamage();
+            }
+        }
+        else
+        {
+            if (LevelTimeManager.instance.remainingDuration <= 0 && LoadPlayLevel.instance.StartedLevel)
+            {
+                TakeDamage();
+            }
+        }
+    }
 
     public void TakeDamage()
     {
         if (!isDeadNow)
         {
-            if (CoinCollect.instance.coin >= 25)
+            if (PlayerManager.instance != null)
             {
+                PlayerManager.instance.IncrementDeaths();
+            }
+            if (CoinCollect.instance.coin >= 25 && playerPosCheck != null)
+            {
+                isDead = true;
                 isDeadNow = true;
                 CoinCollect.instance.ChangeMinusCoin(25);
                 PlayerController.instance.stopPlayer = true;
@@ -35,6 +57,7 @@ public class PlayerHealth : MonoBehaviour
             }
             else
             {
+                isDead = true;
                 isDeadNow = true;
                 PlayerController.instance.stopPlayer = true;
                 Die();
@@ -47,26 +70,34 @@ public class PlayerHealth : MonoBehaviour
     void CheckDie()
     {
         playerAnimatiorController.PlayerDie();
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
         StartCoroutine(RestartCheckpointDie());
     }
     IEnumerator RestartCheckpointDie()
     {
-        yield return new WaitForSeconds(toDie);
-        this.transform.position = playerPosCheck;
-        isDeadNow = false;
-        PlayerController.instance.stopPlayer = false;
+        if (playerPosCheck != null)
+        {
+            yield return new WaitForSeconds(toDie);
+            this.transform.position = playerPosCheck;
+            isDeadNow = false;
+            PlayerController.instance.stopPlayer = false;
+            LevelTimeManager.instance.RestartTimer();
+            isDead = false;
+        }
+        else
+        {
+            Debug.LogWarning("Checkpoint position is not set!");
+        }
     }
+
 
     //Die and restart to initial pos
     void Die()
     {
-        if (CoinCollect.instance.coin <= 0)
-        {
-            //AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
-            playerAnimatiorController.PlayerDie();
-            //PlayerController.instance.isDead = true;
-            StartCoroutine(RestartDie());
-        }
+        playerAnimatiorController.PlayerDie();
+        //PlayerController.instance.isDead = true;
+        AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+        StartCoroutine(RestartDie());
     }
     void Restart()
     {
@@ -75,8 +106,9 @@ public class PlayerHealth : MonoBehaviour
         this.transform.position = startPlayerPos;
         isDeadNow = false;
         PlayerController.instance.stopPlayer = false;
+        LevelTimeManager.instance.RestartTimer();
+        isDead = false;
     }
-
 
     IEnumerator RestartDie()
     {

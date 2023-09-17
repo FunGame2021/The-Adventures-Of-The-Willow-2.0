@@ -5,6 +5,8 @@ using UnityEngine.Tilemaps;
 using TMPro;
 using FMODUnity;
 using FMOD.Studio;
+using System.Collections;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class LoadPlayLevel : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class LoadPlayLevel : MonoBehaviour
     public int MusicID;
     private FMOD.Studio.EventInstance musicEventInstance;
     #region Manager
-    private int gameLevelTime;
+    public int gameLevelTime;
     #endregion
     #region Decor
     public DecorData ScriptableDecorData;
@@ -62,8 +64,13 @@ public class LoadPlayLevel : MonoBehaviour
     [SerializeField] private List<TileCategoryData> tileCategories; // Lista de categorias de telhas
 
     #endregion
-    private bool StartedLevel;
+    [SerializeField]public bool StartedLevel;
+    private bool canStart;
     [SerializeField] private GameObject LevelInfoPanel;
+    [SerializeField] private GameObject PressStartInfo;
+
+    [SerializeField] private GameObject DeathZone;
+    public bool isPlayingLevel;
 
     private void Awake()
     {
@@ -71,6 +78,9 @@ public class LoadPlayLevel : MonoBehaviour
         {
             instance = this;
         }
+        PressStartInfo.SetActive(false);
+        canStart = false;
+        isPlayingLevel = false;
     }
     void Start()
     {
@@ -114,12 +124,12 @@ public class LoadPlayLevel : MonoBehaviour
     {
         if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
         {
-            if (!StartedLevel)
+            if (!StartedLevel && canStart)
             {
+                isPlayingLevel = true;
                 StartedLevel = true;
-                CameraZoom.instance.Initialize();
                 PlayMusic();
-                LevelTimeManager.instance.Being(gameLevelTime);
+                LevelTimeManager.instance.Begin(gameLevelTime);
             }
         }
 
@@ -186,214 +196,10 @@ public class LoadPlayLevel : MonoBehaviour
 
             GridWidth = gridSizeData.currentGridWidth;
             GridHeight = gridSizeData.currentGridHeight;
-
+            AdjustDeathZoneColliderSize();
 
             MusicID = tilemapDataWrapper.levelPreferences.MusicID;
             gameLevelTime = tilemapDataWrapper.levelPreferences.levelTime;
-
-            // Carrega os inimigos salvos
-            foreach (EnemySaveData enemyData in enemyList)
-            {
-                // Encontre o prefab do inimigo com base no nome do inimigo
-                GameObject enemyPrefab = null;
-                foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
-                {
-                    foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
-                    {
-                        if (enemyInfo.enemyName == enemyData.name)
-                        {
-                            enemyPrefab = enemyInfo.prefab;
-                            break;
-                        }
-                    }
-                    if (enemyPrefab != null)
-                        break;
-                }
-
-                if (enemyPrefab != null)
-                {
-                    // Crie um objeto do inimigo e defina o nome e a posição
-                    GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
-                    enemyObject.transform.SetParent(enemyContainer.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
-                }
-            }
-            //Carrega os GameObjects, mas se for PlayerPos carrega só a posição salva, para depois o player a obter e começar de lá.
-            //Também pode ser útil se usar particulas para facilitar no level editor os seus prefabs devem ter imagem então isto poderá carregar só
-            //particlas em vez com a imagem.
-            foreach (GameObjectSaveData gameObjectData in gameObjectList)
-            {
-                if (gameObjectData.name == "PlayerPos")
-                {
-                    // Se o GameObject salvo for o "PlayerPos", ajuste apenas a posição do objeto PlayerPrefab.
-                    // Ao invés de ajustar a posição diretamente, vamos instanciar o PlayerPrefab na posição correta.
-                    PlayerPrefab = Instantiate(PlayerPrefab, gameObjectData.position, Quaternion.identity);
-                    if (CameraZoom.instance != null)
-                    {
-                        CameraZoom.instance.Initialize();
-                    }
-                }
-                else
-                {
-                    GameObject gameObjectPrefab = null;
-
-                    foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
-                    {
-                        foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
-                        {
-                            if (gameObjectInfo.GameObjectName == gameObjectData.name)
-                            {
-                                gameObjectPrefab = gameObjectInfo.prefab;
-                                break;
-                            }
-                        }
-                        if (gameObjectPrefab != null)
-                            break;
-                    }
-
-                    if (gameObjectPrefab != null)
-                    {
-                        GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
-                        gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Prefab not found for object: " + gameObjectData.name);
-                    }
-                }
-            }
-            // Carrega os objetos salvos
-            foreach (ObjectSaveData objectData in objectList)
-            {
-                GameObject objectPrefab = null;
-                foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
-                {
-                    foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
-                    {
-                        if (objectInfo.ObjectName == objectData.name)
-                        {
-                            objectPrefab = objectInfo.prefab;
-                            break;
-                        }
-                    }
-                    if (objectPrefab != null)
-                        break;
-                }
-
-                if (objectPrefab != null)
-                {
-                    // Crie um novo objeto com base no prefab e defina o nome e a posição
-                    GameObject objectObject = Instantiate(objectPrefab, objectData.position, Quaternion.identity);
-                    objectObject.transform.SetParent(objectsContainer.transform);
-
-                    ObjectType objectType = objectData.objectType;
-
-                    // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
-                    if (objectType == ObjectType.Moving)
-                    {
-                        PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                        if (movementComponent != null)
-                        {
-                            movementComponent.isCircular = objectData.isCircular;
-                            movementComponent.isPingPong = objectData.isPingPong;
-                            movementComponent.id = objectData.id;
-
-                            movementComponent.nodes = new Transform[objectData.node.Count];
-                            movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
-
-                            for (int i = 0; i < objectData.node.Count; i++)
-                            {
-                                Transform nodeTransform = new GameObject("Node " + i).transform;
-                                nodeTransform.position = objectData.node[i].position;
-                                movementComponent.nodes[i] = nodeTransform;
-                                movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for object: " + objectData.name);
-                }
-            }
-            // Carrega os decorativos salvos
-            foreach (DecorSaveData decorData in decorList)
-            {
-                GameObject decorPrefab = null;
-
-                foreach (DecorData.DecorCategory category in ScriptableDecorData.categories)
-                {
-                    foreach (DecorData.DecorInfo decorInfo in category.decorations)
-                    {
-                        if (decorInfo.decorName == decorData.name)
-                        {
-                            decorPrefab = decorInfo.prefab;
-                            break;
-                        }
-                    }
-                    if (decorPrefab != null)
-                        break;
-                }
-
-                if (decorPrefab != null)
-                {
-                    GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
-                    decorObject.transform.SetParent(decorContainer.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for decor: " + decorData.name);
-                }
-            }
-
-            // Carrega os decorativos salvos
-            foreach (Decor2SaveData decor2Data in decor2List)
-            {
-                GameObject decor2Prefab = null;
-
-                foreach (Decor2Data.Decor2Category category in ScriptableDecor2Data.categories)
-                {
-                    foreach (Decor2Data.Decor2Info decor2Info in category.decorations)
-                    {
-                        if (decor2Info.decor2Name == decor2Data.name)
-                        {
-                            decor2Prefab = decor2Info.prefab;
-                            break;
-                        }
-                    }
-                    if (decor2Prefab != null)
-                        break;
-                }
-
-                if (decor2Prefab != null)
-                {
-                    GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
-                    decor2Object.transform.SetParent(decor2Container.transform);
-
-                    // Encontra o primeiro SpriteRenderer em um ancestral
-                    SpriteRenderer[] spriteRenderers = decor2Object.GetComponentsInChildren<SpriteRenderer>();
-                    if (spriteRenderers != null)
-                    {
-                        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-                        {
-                            // Define o shortLayer a partir dos dados salvos
-                            spriteRenderer.sortingLayerName = decor2Data.shortLayerName;
-                        }
-
-                    }
-                    else
-                    {
-                        Debug.LogWarning("SpriteRenderer component not found on Decor2Object: " + decor2Data.name);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
-                }
-            }
 
             // Percorre os TilemapData da lista
             foreach (TilemapData tilemapData in tilemapDataList)
@@ -492,11 +298,262 @@ public class LoadPlayLevel : MonoBehaviour
                     }
                 }
             }
+            // Carrega os decorativos salvos
+            foreach (DecorSaveData decorData in decorList)
+            {
+                GameObject decorPrefab = null;
+
+                foreach (DecorData.DecorCategory category in ScriptableDecorData.categories)
+                {
+                    foreach (DecorData.DecorInfo decorInfo in category.decorations)
+                    {
+                        if (decorInfo.decorName == decorData.name)
+                        {
+                            decorPrefab = decorInfo.prefab;
+                            break;
+                        }
+                    }
+                    if (decorPrefab != null)
+                        break;
+                }
+
+                if (decorPrefab != null)
+                {
+                    GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
+                    decorObject.transform.SetParent(decorContainer.transform);
+                }
+                else
+                {
+                    Debug.LogWarning("Prefab not found for decor: " + decorData.name);
+                }
+            }
+
+            // Carrega os decorativos salvos
+            foreach (Decor2SaveData decor2Data in decor2List)
+            {
+                GameObject decor2Prefab = null;
+
+                foreach (Decor2Data.Decor2Category category in ScriptableDecor2Data.categories)
+                {
+                    foreach (Decor2Data.Decor2Info decor2Info in category.decorations)
+                    {
+                        if (decor2Info.decor2Name == decor2Data.name)
+                        {
+                            decor2Prefab = decor2Info.prefab;
+                            break;
+                        }
+                    }
+                    if (decor2Prefab != null)
+                        break;
+                }
+
+                if (decor2Prefab != null)
+                {
+                    GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
+                    decor2Object.transform.SetParent(decor2Container.transform);
+
+                    // Encontra o primeiro SpriteRenderer em um ancestral
+                    SpriteRenderer[] spriteRenderers = decor2Object.GetComponentsInChildren<SpriteRenderer>();
+                    if (spriteRenderers != null)
+                    {
+                        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+                        {
+                            // Define o shortLayer a partir dos dados salvos
+                            spriteRenderer.sortingLayerName = decor2Data.shortLayerName;
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("SpriteRenderer component not found on Decor2Object: " + decor2Data.name);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
+                }
+            }
+            // Carrega os inimigos salvos
+            foreach (EnemySaveData enemyData in enemyList)
+            {
+                // Encontre o prefab do inimigo com base no nome do inimigo
+                GameObject enemyPrefab = null;
+                foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
+                {
+                    foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
+                    {
+                        if (enemyInfo.enemyName == enemyData.name)
+                        {
+                            enemyPrefab = enemyInfo.prefab;
+                            break;
+                        }
+                    }
+                    if (enemyPrefab != null)
+                        break;
+                }
+
+                if (enemyPrefab != null)
+                {
+                    // Crie um objeto do inimigo e defina o nome e a posição
+                    GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
+                    enemyObject.transform.SetParent(enemyContainer.transform);
+                }
+                else
+                {
+                    Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
+                }
+            }
+            
+            // Carrega os objetos salvos
+            foreach (ObjectSaveData objectData in objectList)
+            {
+                GameObject objectPrefab = null;
+                foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                {
+                    foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                    {
+                        if (objectInfo.ObjectName == objectData.name)
+                        {
+                            objectPrefab = objectInfo.prefab;
+                            break;
+                        }
+                    }
+                    if (objectPrefab != null)
+                        break;
+                }
+
+                if (objectPrefab != null)
+                {
+                    // Crie um novo objeto com base no prefab e defina o nome e a posição
+                    GameObject objectObject = Instantiate(objectPrefab, objectData.position, Quaternion.identity);
+                    objectObject.transform.SetParent(objectsContainer.transform);
+
+                    ObjectType objectType = objectData.objectType;
+
+                    // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
+                    if (objectType == ObjectType.Moving)
+                    {
+                        PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
+                        if (movementComponent != null)
+                        {
+                            movementComponent.isCircular = objectData.isCircular;
+                            movementComponent.isPingPong = objectData.isPingPong;
+                            movementComponent.id = objectData.id;
+
+                            movementComponent.nodes = new Transform[objectData.node.Count];
+                            movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
+
+                            for (int i = 0; i < objectData.node.Count; i++)
+                            {
+                                Transform nodeTransform = new GameObject("Node " + i).transform;
+                                nodeTransform.position = objectData.node[i].position;
+                                movementComponent.nodes[i] = nodeTransform;
+                                movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Prefab not found for object: " + objectData.name);
+                }
+            }
+
+            //Carrega os GameObjects, mas se for PlayerPos carrega só a posição salva, para depois o player a obter e começar de lá.
+            //Também pode ser útil se usar particulas para facilitar no level editor os seus prefabs devem ter imagem então isto poderá carregar só
+            //particlas em vez com a imagem.
+            foreach (GameObjectSaveData gameObjectData in gameObjectList)
+            {
+                if (gameObjectData.name == "PlayerPos")
+                {
+                    // Inicie uma Coroutine para esperar um tempo antes de instanciar o jogador.
+                    StartCoroutine(ToLoadPlayer(gameObjectData.position));
+                    // Se o GameObject salvo for o "PlayerPos", ajuste apenas a posição do objeto PlayerPrefab.
+                    //// Ao invés de ajustar a posição diretamente, vamos instanciar o PlayerPrefab na posição correta.
+                    //PlayerPrefab = Instantiate(PlayerPrefab, gameObjectData.position, Quaternion.identity);
+                    //if (CameraZoom.instance != null)
+                    //{
+                    //    CameraZoom.instance.Initialize();
+                    //}
+                }
+                else
+                {
+                    GameObject gameObjectPrefab = null;
+
+                    foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                    {
+                        foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                        {
+                            if (gameObjectInfo.GameObjectName == gameObjectData.name)
+                            {
+                                gameObjectPrefab = gameObjectInfo.prefab;
+                                break;
+                            }
+                        }
+                        if (gameObjectPrefab != null)
+                            break;
+                    }
+
+                    if (gameObjectPrefab != null)
+                    {
+                        GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
+                        gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Prefab not found for object: " + gameObjectData.name);
+                    }
+                }
+            }
+
         }
         else
         {
             Debug.LogWarning("Save file not found: " + loadPath);
         }
+    }
+
+    private IEnumerator ToLoadPlayer(Vector3 playerPosition)
+    {
+        // Espere por um determinado período de tempo antes de instanciar o jogador.
+        yield return new WaitForSeconds(5f); // Exemplo: espera por 2 segundos.
+
+        PressStartInfo.SetActive(true);
+        canStart = true;
+        // Após o tempo de espera, instancie o jogador na posição especificada.
+        PlayerPrefab = Instantiate(PlayerPrefab, playerPosition, Quaternion.identity);
+
+    }
+
+    public void AdjustDeathZoneColliderSize()
+    {
+        // Obtém a escala atual do GameObject
+        Vector3 currentScale = DeathZone.transform.localScale;
+
+        // Define a nova escala usando a largura do grid
+        float newScaleX = GridWidth;
+
+        // Mantém a escala no eixo Y e Z inalterada
+        float newScaleY = currentScale.y;
+        float newScaleZ = currentScale.z;
+
+        // Cria um novo vetor de escala
+        Vector3 newScale = new Vector3(newScaleX + 30f, newScaleY, newScaleZ);
+
+        // Define a escala do GameObject
+        DeathZone.transform.localScale = newScale;
+
+        // Calcula a nova posição para centrar no eixo X
+        float centerX = newScaleX / 2;
+
+        // Obtém a posição atual do GameObject
+        Vector3 currentPosition = DeathZone.transform.position;
+
+        // Define a nova posição centrada no eixo X
+        Vector3 newPosition = new Vector3(centerX, currentPosition.y, currentPosition.z);
+
+        // Atribui a nova posição ao GameObject
+        DeathZone.transform.position = newPosition;
     }
 
 
@@ -522,11 +579,29 @@ public class LoadPlayLevel : MonoBehaviour
     }
     public void SpeedMusic()
     {
-
         musicEventInstance.setParameterByName("MusicVelocity", 1);
-       
     }
-   
+    public void SpeedMusicNormal()
+    {
+        musicEventInstance.setParameterByName("MusicVelocity", 0);
+    }
+    public void StopMusic()
+    {
+        // Verificar se a instância do evento FMOD é válida e está tocando
+        if (musicEventInstance.isValid())
+        {
+            PLAYBACK_STATE playbackState;
+            musicEventInstance.getPlaybackState(out playbackState);
+
+            // Verificar se a música está tocando antes de pará-la
+            if (playbackState == PLAYBACK_STATE.PLAYING)
+            {
+                // Parar a instância do evento FMOD
+                musicEventInstance.setParameterByName("MusicVelocity", 0);
+                musicEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            }
+        }
+    }
     private void OnDestroy()
     {
         // Verificar se a instância do evento FMOD é válida e está tocando

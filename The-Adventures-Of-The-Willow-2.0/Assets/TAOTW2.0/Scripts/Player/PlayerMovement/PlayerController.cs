@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
+using FMOD.Studio;
 
 public class PlayerController : MonoBehaviour
 {
@@ -103,12 +104,25 @@ public class PlayerController : MonoBehaviour
     private Vector3 originalRotation;
     #endregion
 
+    //stomp
+    #region enemies
+    public float stompForce = 10f; // Ajuste a força do salto conforme necessário.
+    #endregion
 
     void Start()
     {
         if (instance == null)
         { 
             instance = this;
+        }
+        // Inicialize a câmera ou realize outras ações, se necessário.
+        if (CameraZoom.instance != null)
+        {
+            CameraZoom.instance.playerRb = RB;
+            CameraZoom.instance.playerObject = RB.gameObject;
+            // Configura o follow do CinemachineVirtualCamera para seguir o jogador
+            CameraZoom.instance._vCam.Follow = CameraZoom.instance.playerObject.transform;
+            CameraZoom.instance.AdjustGridColliderSize();
         }
         vecGravity = new Vector2(0, -Physics2D.gravity.y);
         currentMoveSpeed = moveSpeed;
@@ -150,6 +164,10 @@ public class PlayerController : MonoBehaviour
         //Button was just pushed
         if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
         {
+            if(!Swimming && isGrounded)
+            {
+                AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
+            }
             if (isGrounded || coyoteTimeCounter > 0 && !Swimming)
             {
                 jump = true;
@@ -311,7 +329,14 @@ public class PlayerController : MonoBehaviour
         }
         if(FinishPoint.instance.isFinished && stopPlayer)
         {
-            RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
+            if(FinishPole.instance.enterRight)
+            {
+                RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
+            }
+            else
+            {
+                RB.velocity = new Vector2(-autoMoveSpeed, RB.velocity.y);
+            }
         }
 
         if (jumpBoost && !stopPlayer)
@@ -496,6 +521,11 @@ public class PlayerController : MonoBehaviour
                 RB.gravityScale = SwimGravity;
             }
            // Bubble.Play();
+        }
+
+        if(collision.CompareTag("WeakPoint"))
+        {
+            RB.velocity = new Vector2(RB.velocity.x, stompForce);
         }
     }
     private void OnTriggerStay2D(Collider2D collision)

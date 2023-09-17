@@ -41,7 +41,14 @@ public class ProfileManager : MonoBehaviour
 
     public void SelectProfile(int profileNumber)
     {
-        selectedProfile = GetProfilePath(profileNumber);
+        string profilePath = GetProfilePath(profileNumber);
+
+        if (!Directory.Exists(profilePath))
+        {
+            CreateProfile(profileNumber);
+        }
+
+        selectedProfile = profilePath;
         //SaveSelectedProfile();
         Debug.Log("Profile " + profileNumber + " selected.");
     }
@@ -76,4 +83,5 @@ public class ProfileManager : MonoBehaviour
         return Path.Combine(Application.persistentDataPath, ProfileFolderName, "profile" + profileNumber);
     }
 }
+
 

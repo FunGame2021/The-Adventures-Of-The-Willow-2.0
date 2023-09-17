@@ -37,10 +37,14 @@ public class FinishPoint : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (elapsedTime < toStopWalking)
+        if (isFinished)
         {
-            isFinished = true;
-            elapsedTime += Time.fixedDeltaTime;
+            if (elapsedTime < toStopWalking)
+            {
+                CameraZoom.instance.ZoomOutFinish();
+                isFinished = true;
+                elapsedTime += Time.fixedDeltaTime;
+            }
         }
         if (elapsedTime >= toStopWalking)
         {
@@ -54,6 +58,8 @@ public class FinishPoint : MonoBehaviour
     IEnumerator ToStopFireworks()
     {
         yield return new WaitForSeconds(toStop);
+
+        CameraZoom.instance.zoomfinish = false;
         FinishPole.instance.StopFireworksEffect();
         isStarted = false;
     }

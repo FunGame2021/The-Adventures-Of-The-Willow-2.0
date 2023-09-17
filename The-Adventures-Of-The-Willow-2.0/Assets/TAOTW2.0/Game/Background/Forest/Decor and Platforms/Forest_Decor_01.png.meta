@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -111,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -123,6 +129,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -133,9 +140,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1518
-        width: 611
-        height: 1466
+        y: 1842
+        width: 492
+        height: 1142
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,10 +160,10 @@ TextureImporter:
       name: Forest_Decor_01_1
       rect:
         serializedVersion: 2
-        x: 629
-        y: 1614
-        width: 1330
-        height: 1377
+        x: 494
+        y: 1910
+        width: 1049
+        height: 1063
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,10 +181,10 @@ TextureImporter:
       name: Forest_Decor_01_2
       rect:
         serializedVersion: 2
-        x: 2048
-        y: 1554
-        width: 952
-        height: 1386
+        x: 1589
+        y: 1885
+        width: 759
+        height: 1083
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,10 +202,10 @@ TextureImporter:
       name: Forest_Decor_01_3
       rect:
         serializedVersion: 2
-        x: 35
-        y: 1233
-        width: 877
-        height: 249
+        x: 39
+        y: 1614
+        width: 688
+        height: 199
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,10 +223,10 @@ TextureImporter:
       name: Forest_Decor_01_4
       rect:
         serializedVersion: 2
-        x: 14
-        y: 836
-        width: 1196
-        height: 351
+        x: 0
+        y: 1318
+        width: 959
+        height: 279
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,10 +244,10 @@ TextureImporter:
       name: Forest_Decor_01_5
       rect:
         serializedVersion: 2
-        x: 19
-        y: 588
-        width: 1064
-        height: 237
+        x: 23
+        y: 1112
+        width: 861
+        height: 187
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,10 +265,10 @@ TextureImporter:
       name: Forest_Decor_01_6
       rect:
         serializedVersion: 2
-        x: 21
-        y: 317
-        width: 1064
-        height: 237
+        x: 28
+        y: 912
+        width: 827
+        height: 166
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,10 +286,10 @@ TextureImporter:
       name: Forest_Decor_01_7
       rect:
         serializedVersion: 2
-        x: 81
-        y: 0
-        width: 1000
-        height: 310
+        x: 63
+        y: 670
+        width: 782
+        height: 242
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -300,10 +307,10 @@ TextureImporter:
       name: Forest_Decor_01_8
       rect:
         serializedVersion: 2
-        x: 1314
-        y: 0
-        width: 734
-        height: 1575
+        x: 1015
+        y: 684
+        width: 592
+        height: 1204
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -321,10 +328,10 @@ TextureImporter:
       name: Forest_Decor_01_9
       rect:
         serializedVersion: 2
-        x: 2181
-        y: 1192
-        width: 738
-        height: 297
+        x: 1693
+        y: 1600
+        width: 576
+        height: 221
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -342,10 +349,10 @@ TextureImporter:
       name: Forest_Decor_01_10
       rect:
         serializedVersion: 2
-        x: 2185
-        y: 901
-        width: 308
-        height: 248
+        x: 1697
+        y: 1372
+        width: 241
+        height: 158
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -369,23 +376,22 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures:
-    - texture: {fileID: 2800000, guid: ac9648fba9d523f40ac3fb1613e1dbd2, type: 3}
+    - texture: {instanceID: 0}
       name: _NormalMap
     nameFileIdTable:
-      Forest_Decor_01_4: -651763346
-      Forest_Decor_01_8: 753995885
-      Forest_Decor_01_5: -1040418134
-      Forest_Decor_01_9: -1398564146
-      Forest_Decor_01_2: -1043183387
-      Forest_Decor_01_7: 1401334406
-      Forest_Decor_01_6: 1435863116
-      Forest_Decor_01_3: -1280730043
-      Forest_Decor_01_1: -1943455278
       Forest_Decor_01_0: 536072075
+      Forest_Decor_01_1: -1943455278
       Forest_Decor_01_10: -1450099933
-  spritePackingTag: 
+      Forest_Decor_01_2: -1043183387
+      Forest_Decor_01_3: -1280730043
+      Forest_Decor_01_4: -651763346
+      Forest_Decor_01_5: -1040418134
+      Forest_Decor_01_6: 1435863116
+      Forest_Decor_01_7: 1401334406
+      Forest_Decor_01_8: 753995885
+      Forest_Decor_01_9: -1398564146
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

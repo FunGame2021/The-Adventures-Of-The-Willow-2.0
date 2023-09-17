@@ -28,8 +28,6 @@ public class CoinCollect : MonoBehaviour
     {
         coin += coinValue;
         TXTCoins.text = coin.ToString();
-
-        Debug.Log("coin collected");
     }
 
     public void ChangeMinusCoin(int coinValue)

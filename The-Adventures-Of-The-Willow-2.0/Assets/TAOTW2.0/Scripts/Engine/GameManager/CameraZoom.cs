@@ -7,7 +7,7 @@ public class CameraZoom : MonoBehaviour
 {
     public static CameraZoom instance;
 
-    private CinemachineVirtualCamera _vCam;
+    [SerializeField] public CinemachineVirtualCamera _vCam;
     [SerializeField] private PolygonCollider2D polygonCollider;
     [SerializeField] private PolygonCollider2D ignoreCollider;
     private CinemachineConfiner2D _confiner;
@@ -20,13 +20,14 @@ public class CameraZoom : MonoBehaviour
 
     bool zoomIn;
     bool zoomOutJump;
-    public bool zoomfinish;
+    public bool zoomfinish = false;
 
     public float zoomSpeed;
     public float zoomSpeedFinish;
     public float smoothTime = 0.2f; // Controle a suavidade do zoom aqui
 
     private float _currentZoomVelocity;
+    [SerializeField] public GameObject playerObject;
 
     private void Start()
     {
@@ -40,28 +41,29 @@ public class CameraZoom : MonoBehaviour
 
         // Atribua o novo CinemachineFreeLook ao m_BoundingShape2D do confiner
         _confiner.m_BoundingShape2D = ignoreCollider;
+
+        float targetZoom = 55;
+        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, 1);
     }
 
-    public void Initialize()
-    {
-        playerRb = PlayerController.instance.GetComponent<Rigidbody2D>();
-        // Obtém o GameObject do jogador (PlayerPrefab) associado ao Rigidbody2D
-        GameObject playerObject = playerRb.gameObject;
 
-        // Configura o follow do CinemachineVirtualCamera para seguir o jogador
-        _vCam.Follow = playerObject.transform;
-
-        AdjustGridColliderSize();
-    }
-
-    private void AdjustGridColliderSize()
+    public void AdjustGridColliderSize()
     {
         // Calcula os vértices do retângulo com base no tamanho do Tilemap
         Vector2[] vertices = new Vector2[4];
         vertices[0] = Vector2.zero;
-        vertices[1] = new Vector2(LoadPlayLevel.instance.GridWidth, 0);
-        vertices[2] = new Vector2(LoadPlayLevel.instance.GridWidth, LoadPlayLevel.instance.GridHeight);
-        vertices[3] = new Vector2(0, LoadPlayLevel.instance.GridHeight);
+        if (GameStates.Instance.isNormalGame)
+        {
+            vertices[1] = new Vector2(playLevel.instance.GridWidth, 0);
+            vertices[2] = new Vector2(playLevel.instance.GridWidth, playLevel.instance.GridHeight);
+            vertices[3] = new Vector2(0, playLevel.instance.GridHeight);
+        }
+        else
+        {
+            vertices[1] = new Vector2(LoadPlayLevel.instance.GridWidth, 0);
+            vertices[2] = new Vector2(LoadPlayLevel.instance.GridWidth, LoadPlayLevel.instance.GridHeight);
+            vertices[3] = new Vector2(0, LoadPlayLevel.instance.GridHeight);
+        }
 
         // Define os vértices do PolygonCollider2D para formar o retângulo
         polygonCollider.SetPath(0, vertices);
@@ -107,7 +109,7 @@ public class CameraZoom : MonoBehaviour
     public void ZoomOutFinish()
     {
         zoomfinish = true;
-        float targetZoom = 80;
+        float targetZoom = 74;
         _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
     }
 
@@ -119,9 +121,9 @@ public class CameraZoom : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (playerRb != null)
+        if (playerRb != null && !zoomfinish)
         {
-            if (Mathf.Abs(playerRb.velocity.magnitude) < 8 && !zoomfinish)
+            if (Mathf.Abs(playerRb.velocity.magnitude) < 8)
             {
                 waitCounter += Time.deltaTime;
                 if (waitCounter > waitTime)
@@ -135,7 +137,7 @@ public class CameraZoom : MonoBehaviour
                 waitCounter = 0;
             }
 
-            if (Mathf.Abs(playerRb.velocity.y) < 8 && !zoomfinish)
+            if (Mathf.Abs(playerRb.velocity.y) < 8)
             {
                 waitCounter += Time.deltaTime;
                 if (waitCounter > waitTime)

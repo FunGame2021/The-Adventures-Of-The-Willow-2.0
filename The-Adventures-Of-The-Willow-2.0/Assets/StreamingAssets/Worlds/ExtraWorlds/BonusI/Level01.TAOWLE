@@ -1,0 +1,4052 @@
+{
+    "gridSizeData": {
+        "currentGridWidth": 80,
+        "currentGridHeight": 60
+    },
+    "levelName": "Level01",
+    "author": "FunGame",
+    "levelPreferences": {
+        "MusicID": 2,
+        "levelTime": 120,
+        "BackGroundName": "",
+        "WeatherName": "",
+        "TimeWeather": ""
+    },
+    "tilemapDataList": [
+        {
+            "tilemapName": "Solid Tilemap",
+            "tilemapIndex": 0,
+            "isSolid": true,
+            "isWallPlatform": false,
+            "shortLayerPos": 0,
+            "zPos": 0.0,
+            "tiles": [
+                {
+                    "cellPos": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 0.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 0,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 0.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 0,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 0.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 1,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 1.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 1,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 1.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 1,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 1.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 2,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 2.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 2,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 2.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 2,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 2.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 3,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 3.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 3,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 3.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 3,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 3.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 4,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 4.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 4,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 4.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 4,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 4.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 5,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 5.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 5,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 5.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 5,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 5.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 6,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 6.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 6,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 6.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 6,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 6.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 7,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 7.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 7,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 7.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 7,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 7.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 8,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 8.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 8,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 8.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 8,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 8.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 9,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 9.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 9,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 9.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 9,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 9.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 10,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 10.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 10,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 10.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 10,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 10.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 11,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 11.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 11,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 11.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 11,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 11.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 11,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 11.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 12,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 12.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 12,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 12.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 12,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 12.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 12,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 12.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 12,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 12.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 13,
+                        "y": 5,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 13.5,
+                        "y": 5.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 14,
+                        "y": 5,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 14.5,
+                        "y": 5.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 15,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 15.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 15,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 15.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 15,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 15.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 15,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 15.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 15,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 15.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 16,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 16.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 16,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 16.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 16,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 16.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 16,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 16.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 17,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 17.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 17,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 17.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 17,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 17.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 18,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 18.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 18,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 18.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 18,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 18.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 19,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 19.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 19,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 19.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 19,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 19.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 20,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 20.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 20,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 20.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 20,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 20.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 21,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 21.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 21,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 21.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 21,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 21.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 22,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 22.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 22,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 22.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 22,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 22.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 23,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 23.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 23,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 23.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 23,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 23.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 24,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 24.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 24,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 24.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 24,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 24.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 25,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 25.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 25,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 25.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 25,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 25.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 26,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 26.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 26,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 26.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 26,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 26.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 27,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 27.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 27,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 27.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 27,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 27.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 5,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 5.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 6,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 6.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 7,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 7.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 28,
+                        "y": 8,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 28.5,
+                        "y": 8.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 5,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 5.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 6,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 6.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 7,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 7.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 29,
+                        "y": 8,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 29.5,
+                        "y": 8.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 4,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 4.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 5,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 5.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 6,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 6.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 7,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 7.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 30,
+                        "y": 8,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 30.5,
+                        "y": 8.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 31,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 31.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 31,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 31.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 31,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 31.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 32,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 32.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 32,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 32.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 32,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 32.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 33,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 33.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 33,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 33.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 33,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 33.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 34,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 34.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 34,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 34.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 34,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 34.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 35,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 35.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 35,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 35.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 35,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 35.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 36,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 36.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 36,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 36.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 36,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 36.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 37,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 37.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 37,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 37.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 37,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 37.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 38,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 38.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 38,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 38.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 38,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 38.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 39,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 39.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 39,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 39.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 39,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 39.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 40,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 40.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 40,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 40.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 40,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 40.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 44,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 44.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 44,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 44.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 44,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 44.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 45,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 45.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 45,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 45.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 45,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 45.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 46,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 46.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 46,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 46.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 46,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 46.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 47,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 47.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 47,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 47.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 47,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 47.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 48,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 48.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 48,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 48.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 48,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 48.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 49,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 49.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 49,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 49.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 49,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 49.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 50,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 50.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 50,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 50.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 50,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 50.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 51,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 51.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 51,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 51.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 51,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 51.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 52,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 52.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 52,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 52.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 52,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 52.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 53,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 53.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 53,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 53.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 53,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 53.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 54,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 54.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 54,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 54.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 54,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 54.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 55,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 55.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 55,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 55.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 55,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 55.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 56,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 56.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 56,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 56.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 56,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 56.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 60,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 60.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 60,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 60.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 61,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 61.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 61,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 61.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 61,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 61.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 62,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 62.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 62,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 62.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 62,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 62.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 63,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 63.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 63,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 63.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 63,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 63.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 64,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 64.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 64,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 64.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 64,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 64.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 64,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 64.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 65,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 65.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 65,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 65.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 65,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 65.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 65,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 65.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 66,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 66.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 66,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 66.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 66,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 66.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 66,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 66.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 67,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 67.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 67,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 67.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 67,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 67.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 67,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 67.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 68,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 68.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 68,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 68.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 68,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 68.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 68,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 68.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 69,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 69.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 69,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 69.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 69,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 69.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 69,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 69.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 70,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 70.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 70,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 70.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 70,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 70.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 70,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 70.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 71,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 71.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 71,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 71.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 71,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 71.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 71,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 71.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 72,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 72.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 72,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 72.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 72,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 72.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 72,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 72.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 73,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 73.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 73,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 73.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 73,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 73.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 73,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 73.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 74,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 74.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 74,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 74.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 74,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 74.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 74,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 74.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 75,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 75.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 75,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 75.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 75,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 75.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 75,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 75.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 76,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 76.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 76,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 76.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 76,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 76.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 76,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 76.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 77,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 77.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 77,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 77.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 77,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 77.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 77,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 77.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 78,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 78.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 78,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 78.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 78,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 78.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 78,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 78.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 79,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 79.5,
+                        "y": 0.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 79,
+                        "y": 1,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 79.5,
+                        "y": 1.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 79,
+                        "y": 2,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 79.5,
+                        "y": 2.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "cellPos": {
+                        "x": 79,
+                        "y": 3,
+                        "z": 0
+                    },
+                    "tileName": "ForestGroundConvex",
+                    "localPos": {
+                        "x": 79.5,
+                        "y": 3.5,
+                        "z": 0.0
+                    }
+                }
+            ]
+        }
+    ],
+    "enemySaveData": [
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 21.16847038269043,
+                "y": 4.482466697692871,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 16.601369857788087,
+                "y": 5.478137493133545,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 23.830806732177736,
+                "y": 6.473808765411377,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 9.91158676147461,
+                "y": 3.639533519744873,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 36.77460861206055,
+                "y": 6.763224124908447,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Captain_Mushroom_Red",
+            "position": {
+                "x": 52.45010757446289,
+                "y": 4.2991838455200199,
+                "z": 0.0
+            }
+        }
+    ],
+    "gameObjectSaveData": [
+        {
+            "name": "PlayerPos",
+            "position": {
+                "x": 3.0975828170776369,
+                "y": 5.066556453704834,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Checkpoint",
+            "position": {
+                "x": 34.549251556396487,
+                "y": 3.5492520332336427,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "FinishPole01",
+            "position": {
+                "x": 67.78054809570313,
+                "y": 5.687344074249268,
+                "z": 0.0
+            }
+        }
+    ],
+    "decorSaveData": [
+        {
+            "name": "Flower_01",
+            "position": {
+                "x": 7.842525959014893,
+                "y": 2.6905360221862795,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Flower_02",
+            "position": {
+                "x": 20.332504272460939,
+                "y": 2.6868157386779787,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Flower_03",
+            "position": {
+                "x": 36.56062698364258,
+                "y": 2.655334711074829,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Rocks_Forest_0",
+            "position": {
+                "x": 50.149574279785159,
+                "y": 2.6855175495147707,
+                "z": 0.0
+            }
+        },
+        {
+            "name": "Rocks_Forest_6",
+            "position": {
+                "x": 65.91017150878906,
+                "y": 3.4489221572875978,
+                "z": 0.0
+            }
+        }
+    ],
+    "decor2SaveData": [
+        {
+            "name": "DayTree_01",
+            "position": {
+                "x": 10.689772605895996,
+                "y": 5.172736644744873,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees2"
+        },
+        {
+            "name": "DayTree_02",
+            "position": {
+                "x": 20.887765884399415,
+                "y": 5.049607276916504,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees3"
+        },
+        {
+            "name": "DayTree_03",
+            "position": {
+                "x": 38.20478820800781,
+                "y": 4.877225875854492,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees3"
+        },
+        {
+            "name": "DayTree_03",
+            "position": {
+                "x": 50.28539276123047,
+                "y": 4.951103687286377,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees2"
+        },
+        {
+            "name": "DayTree_04",
+            "position": {
+                "x": 54.25141525268555,
+                "y": 4.85260009765625,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees3"
+        },
+        {
+            "name": "DayTree_04",
+            "position": {
+                "x": 2.9499711990356447,
+                "y": 4.827974319458008,
+                "z": 0.0
+            },
+            "shortLayerName": "Trees3"
+        }
+    ],
+    "objectSaveData": [
+        {
+            "name": "SmallBox",
+            "position": {
+                "x": 8.476337432861329,
+                "y": 3.695180892944336,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BigBox",
+            "position": {
+                "x": 22.493375778198243,
+                "y": 4.581714630126953,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "SmallBox",
+            "position": {
+                "x": 17.15367317199707,
+                "y": 7.536825656890869,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "SmallBox",
+            "position": {
+                "x": 20.34596824645996,
+                "y": 10.491937637329102,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 33.48903274536133,
+                "y": 4.409332752227783,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 35.50836181640625,
+                "y": 4.384707450866699,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 36.5,
+                "y": 4.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 39.5,
+                "y": 3.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 33.95692825317383,
+                "y": 5.246614456176758,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "GoldCoin",
+            "position": {
+                "x": 34.00617980957031,
+                "y": 6.453285217285156,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 31.5,
+                "y": 6.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 32.5,
+                "y": 7.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 32.5,
+                "y": 6.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 31.5,
+                "y": 7.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 47.5,
+                "y": 3.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 49.5,
+                "y": 4.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 47.5,
+                "y": 4.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 48.5,
+                "y": 4.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 48.5,
+                "y": 3.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 49.5,
+                "y": 3.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "Star",
+            "position": {
+                "x": 42.5,
+                "y": 5.5,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "SmallBox",
+            "position": {
+                "x": 14.354909896850586,
+                "y": 7.053815841674805,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 5.363689422607422,
+                "y": 3.217344284057617,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 6.808133602142334,
+                "y": 3.4117887020111086,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 7.0998005867004398,
+                "y": 4.5090107917785648,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 5.474800109863281,
+                "y": 4.5090107917785648,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 7.030355930328369,
+                "y": 5.342344284057617,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 9.072023391723633,
+                "y": 4.703455448150635,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        },
+        {
+            "name": "BlueCoin",
+            "position": {
+                "x": 10.947023391723633,
+                "y": 4.4812331199646,
+                "z": 0.0
+            },
+            "objectType": 0,
+            "node": [],
+            "isCircular": false,
+            "isPingPong": false,
+            "id": ""
+        }
+    ],
+    "levelDotDataList": []
+}

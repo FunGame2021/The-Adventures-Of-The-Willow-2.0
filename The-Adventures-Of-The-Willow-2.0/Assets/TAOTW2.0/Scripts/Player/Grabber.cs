@@ -1,39 +1,84 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.InputSystem;
 
 public class Grabber : MonoBehaviour
 {
-    public Transform grabDetect;
-    public Transform boxHolder;
-    public float rayDist;
-    private bool Tograb;
+    [SerializeField] private Transform grabDetect;
+    [SerializeField] private Transform boxHolder;
+    [SerializeField] private float rayDist;
+    [SerializeField] private LayerMask raycastLayerMask;
 
-    private void Update()
+    private GameObject currentHeldObject; // Variável para rastrear a caixa atualmente segurada
+    private bool isGrabbing; // Variável para rastrear se o jogador está atualmente segurando uma caixa
+
+    private void FixedUpdate()
     {
-        RaycastHit2D grabCheck = Physics2D.Raycast(grabDetect.position, Vector2.right * transform.localScale, rayDist);
-        if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.IsPressed())
+        RaycastHit2D grabCheck = Physics2D.Raycast(grabDetect.position, Vector2.right * transform.localScale, rayDist, raycastLayerMask);
+
+        if (grabCheck.collider != null)
         {
-            Tograb = true;
-        }
-        if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasReleasedThisFrame())
-        {
-            Tograb = false;
-        }
-        if (grabCheck.collider != null && grabCheck.collider.gameObject.layer == LayerMask.NameToLayer("Grabable"))
-        {
-            if (Tograb)
+            bool isGrabPressed = UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.IsPressed();
+
+            if (isGrabPressed && !isGrabbing && !PlayerHealth.instance.isDead)
             {
-                grabCheck.collider.gameObject.transform.parent = boxHolder;
-                grabCheck.collider.gameObject.transform.position = boxHolder.position;
-                grabCheck.collider.gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
+                HandleGrab(grabCheck.collider.gameObject);
             }
-            else
+            else if (!isGrabPressed && isGrabbing)
             {
-                grabCheck.collider.gameObject.transform.parent = null;
-                grabCheck.collider.gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
+                HandleRelease();
             }
         }
 
+        if (PlayerHealth.instance != null)
+        {
+            if (PlayerHealth.instance.isDead)
+            {
+                HandleRelease();
+            }
+        }
+    }
+
+    private void HandleGrab(GameObject grabbedObject)
+    {
+        currentHeldObject = grabbedObject;
+        currentHeldObject.transform.parent = boxHolder;
+        currentHeldObject.transform.position = boxHolder.position;
+        Rigidbody2D rb = currentHeldObject.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+        }
+
+        // Defina a variável isBeingGrabbed como verdadeira na caixa
+        RestartObjects restartObjects = currentHeldObject.GetComponent<RestartObjects>();
+        if (restartObjects != null)
+        {
+            restartObjects.isBeingGrabbed = true;
+        }
+
+        isGrabbing = true; // Marque que o jogador está segurando uma caixa
+    }
+
+    private void HandleRelease()
+    {
+        if (currentHeldObject != null)
+        {
+            currentHeldObject.transform.parent = null;
+            Rigidbody2D rb = currentHeldObject.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+            }
+
+            // Defina a variável isBeingGrabbed como verdadeira na caixa
+            RestartObjects restartObjects = currentHeldObject.GetComponent<RestartObjects>();
+            if (restartObjects != null)
+            {
+                restartObjects.isBeingGrabbed = false;
+            }
+
+            currentHeldObject = null; // Limpe a referência para a caixa atualmente segurada
+            isGrabbing = false; // Marque que o jogador não está mais segurando uma caixa
+        }
     }
 }

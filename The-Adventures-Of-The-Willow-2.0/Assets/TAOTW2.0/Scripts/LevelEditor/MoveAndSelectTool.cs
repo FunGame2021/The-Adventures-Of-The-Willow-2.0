@@ -33,14 +33,14 @@ public class MoveAndSelectTool : MonoBehaviour
     private MoveableObjectDecor2 currentMoveable2Object;
 
     //Move GameObjects with colliders
-    private Transform selectedGameObjectSprite;
-    private Transform GameObjectParent;
+    public Transform selectedGameObjectSprite;
+    public Transform GameObjectParent;
 
     //Move objects and enemies with colliders
-    private Transform selectedEnemySprite;
-    private Transform selectedObjectSprite;
-    private Transform enemyParent;
-    private Transform objectParent;
+    public Transform selectedEnemySprite;
+    public Transform selectedObjectSprite;
+    public Transform enemyParent;
+    public Transform objectParent;
     public Vector3 offset;
     private bool isDragging = false;
 
@@ -471,7 +471,7 @@ public class MoveAndSelectTool : MonoBehaviour
 
     private Transform GetGameObjectParent(Transform GameObjectSpriteTransform)
     {
-        Transform parent = GameObjectSpriteTransform.parent;
+        Transform parent = GameObjectSpriteTransform;
 
         while (parent != null)
         {
@@ -488,8 +488,9 @@ public class MoveAndSelectTool : MonoBehaviour
 
     private Transform GetObjectParent(Transform spriteObjectTransform)
     {
-        Transform parent = spriteObjectTransform.parent;
+        Transform parent = spriteObjectTransform;
 
+        // Verifica se o objeto atual ou algum de seus pais tem a tag "ObjectObject"
         while (parent != null)
         {
             if (parent.CompareTag("ObjectObject"))
@@ -502,6 +503,8 @@ public class MoveAndSelectTool : MonoBehaviour
 
         return null;
     }
+
+
 
     private void HideUIInfo()
     {

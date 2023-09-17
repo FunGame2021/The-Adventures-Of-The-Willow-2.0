@@ -27,5 +27,9 @@ public class Coin : MonoBehaviour
     {
         collected = true;
         CoinCollect.instance.ChangeCoin(coinValue);
+        if(PlayerManager.instance != null)
+        {
+            PlayerManager.instance.IncrementCoinsCollected();
+        }
     }
 }

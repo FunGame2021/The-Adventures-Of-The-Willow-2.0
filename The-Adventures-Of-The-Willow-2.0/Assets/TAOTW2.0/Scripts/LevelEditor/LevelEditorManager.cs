@@ -1181,7 +1181,11 @@ public class LevelEditorManager : MonoBehaviour
     public void GenerateGrid()
     {
         gridVisualizer.OnGridSizeUpdated();
-
+        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        if (levelEditorCamera != null)
+        {
+            levelEditorCamera.UpdateCameraBounds();
+        }
         // Armazena os dados dos tiles existentes
         Dictionary<Vector3Int, TileBase> existingTiles = new Dictionary<Vector3Int, TileBase>();
 
@@ -1734,7 +1738,11 @@ public class LevelEditorManager : MonoBehaviour
             // Gera o grid com o novo tamanho
             GenerateGrid();
             DrawGridOutline();
-
+            LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+            if (levelEditorCamera != null)
+            {
+                levelEditorCamera.UpdateCameraBounds();
+            }
             gridVisualizer.OnGridSizeUpdated();
 
             // Limpa os inimigos existentes

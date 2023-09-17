@@ -34,6 +34,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference MenuMusicA { get; private set; }
 
     [field: Header("Game Music")]
+    [field: SerializeField] public EventReference FinishMusic { get; private set; }
     [field: SerializeField] public EventReference music { get; private set; }
     //Forest
     [field: SerializeField] public EventReference Forest01 { get; private set; }
@@ -68,6 +69,11 @@ public class FMODEvents : MonoBehaviour
     [field: Header("Objects Triggers")]
     [field: SerializeField] public EventReference CheckPoint { get; private set; }
     [field: SerializeField] public EventReference Teleport01{ get; private set; }
+
+
+    [field: Header("Objects")]
+    [field: SerializeField] public EventReference FallingObject { get; private set; }
+    [field: SerializeField] public EventReference PoofObject { get; private set; }
 
 
     [field: Header("Enemies")]

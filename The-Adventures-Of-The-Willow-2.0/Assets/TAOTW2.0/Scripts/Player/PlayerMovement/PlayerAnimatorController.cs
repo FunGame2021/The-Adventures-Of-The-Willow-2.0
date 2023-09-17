@@ -68,69 +68,81 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             PlayRandomIdleAnimation();
         }
-        //se estiver no chão pode andar e parar
-        if (PlayerController.instance.isGrounded)
+        if (FinishPoint.instance.isFinished)
         {
             animationPlayer.SetBool("JumpingV", false);
             animationPlayer.SetBool("FallingV", false);
             animationPlayer.SetBool("JumpingH", false);
-            animationPlayer.SetBool("FallingH", false);
-
-            //andar movimento
-            if (PlayerController.instance.RB.velocity.x != 0
-                && PlayerController.instance.moveInput != 0)
-            {
-                isIdle = false;
-                animationPlayer.SetBool("Walking", true);
-            }
-            else
-            {
-                animationPlayer.SetBool("Walking", false);
-                isIdle = true;
-            }
+            animationPlayer.SetBool("FallingH", false); 
+            isIdle = false;
+            animationPlayer.SetBool("Walking", true);
         }
-        else //se não estiver no chão vai saltar
+        if (!FinishPoint.instance.isFinished)
         {
-            //Se velocidade for igual a 0 salta normal verticar.
-            if (PlayerController.instance.RB.velocity.x == 0)
+            //se estiver no chão pode andar e parar
+            if (PlayerController.instance.isGrounded)
             {
-                animationPlayer.SetBool("Walking", false);
+                animationPlayer.SetBool("JumpingV", false);
+                animationPlayer.SetBool("FallingV", false);
+                animationPlayer.SetBool("JumpingH", false);
+                animationPlayer.SetBool("FallingH", false);
 
-                if (PlayerController.instance.RB.velocity.y > 0)
+                //andar movimento
+                if (PlayerController.instance.RB.velocity.x != 0
+                    && PlayerController.instance.moveInput != 0)
                 {
                     isIdle = false;
-                    animationPlayer.SetBool("JumpingV", true);
-                    animationPlayer.SetBool("FallingV", false);
-                    animationPlayer.SetBool("JumpingH", false);
-                    animationPlayer.SetBool("FallingH", false);
+                    animationPlayer.SetBool("Walking", true);
                 }
-                if (PlayerController.instance.RB.velocity.y < 0)
+                else
                 {
-                    isIdle = false;
-                    animationPlayer.SetBool("JumpingV", false);
-                    animationPlayer.SetBool("FallingV", true);
-                    animationPlayer.SetBool("JumpingH", false);
-                    animationPlayer.SetBool("FallingH", false);
+                    animationPlayer.SetBool("Walking", false);
+                    isIdle = true;
                 }
             }
-
-            else //Else velocidade for diferente a 0 salta na horizontal.
+            else //se não estiver no chão vai saltar
             {
-                if (PlayerController.instance.RB.velocity.y > 0)
+                //Se velocidade for igual a 0 salta normal verticar.
+                if (PlayerController.instance.RB.velocity.x == 0)
                 {
-                    isIdle = false;
-                    animationPlayer.SetBool("JumpingV", false);
-                    animationPlayer.SetBool("FallingV", false);
-                    animationPlayer.SetBool("JumpingH", true);
-                    animationPlayer.SetBool("FallingH", false);
+                    animationPlayer.SetBool("Walking", false);
+
+                    if (PlayerController.instance.RB.velocity.y > 0)
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("JumpingV", true);
+                        animationPlayer.SetBool("FallingV", false);
+                        animationPlayer.SetBool("JumpingH", false);
+                        animationPlayer.SetBool("FallingH", false);
+                    }
+                    if (PlayerController.instance.RB.velocity.y < 0)
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("JumpingV", false);
+                        animationPlayer.SetBool("FallingV", true);
+                        animationPlayer.SetBool("JumpingH", false);
+                        animationPlayer.SetBool("FallingH", false);
+                    }
                 }
-                if (PlayerController.instance.RB.velocity.y < 0)
+
+                else //Else velocidade for diferente a 0 salta na horizontal.
                 {
-                    isIdle = false;
-                    animationPlayer.SetBool("JumpingV", false);
-                    animationPlayer.SetBool("FallingV", false);
-                    animationPlayer.SetBool("JumpingH", false);
-                    animationPlayer.SetBool("FallingH", true);
+                    if (PlayerController.instance.RB.velocity.y > 0)
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("JumpingV", false);
+                        animationPlayer.SetBool("FallingV", false);
+                        animationPlayer.SetBool("JumpingH", true);
+                        animationPlayer.SetBool("FallingH", false);
+                    }
+                    if (PlayerController.instance.RB.velocity.y < 0)
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("JumpingV", false);
+                        animationPlayer.SetBool("FallingV", false);
+                        animationPlayer.SetBool("JumpingH", false);
+                        animationPlayer.SetBool("FallingH", true);
+                    }
                 }
             }
         }

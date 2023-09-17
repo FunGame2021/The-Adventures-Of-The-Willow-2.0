@@ -30,7 +30,7 @@ public class CheckPoint : MonoBehaviour
             if (!AudioPlayed)
             {
                 Anim.SetTrigger("appear");
-                //AudioManager.instance.PlayOneShot(FMODEvents.instance.CheckPoint, this.transform.position);
+                AudioManager.instance.PlayOneShot(FMODEvents.instance.CheckPoint, this.transform.position);
                 AudioPlayed = true;
                 StartCoroutine(ToPlayAgain());
             }
