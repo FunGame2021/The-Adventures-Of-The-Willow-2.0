@@ -17,7 +17,6 @@ public class PlayerAnimatorController : MonoBehaviour
     public bool isJump;
     public bool isMoving;
 
-    [SerializeField] private float DeadJumpForce = 1f;
 
     void Start()
     {
@@ -148,10 +147,12 @@ public class PlayerAnimatorController : MonoBehaviour
         }
     }
 
-    public void PlayerDie()
+    public void PlayDeathAnimation()
     {
-        // Aplica uma força de salto ao corpo do personagem
-        PlayerController.instance.RB.velocity = new Vector2(PlayerController.instance.RB.velocity.x, DeadJumpForce);
+        animationPlayer.SetBool("dead", true);
     }
-
+    public void StopDeathAnimation()
+    {
+        animationPlayer.SetBool("dead", false);
+    }
 }

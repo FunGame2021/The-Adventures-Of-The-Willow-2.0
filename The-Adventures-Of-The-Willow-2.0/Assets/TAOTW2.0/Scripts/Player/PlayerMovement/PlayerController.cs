@@ -5,6 +5,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
 using FMOD.Studio;
+using static UnityEngine.EventSystems.EventTrigger;
+using System.Runtime.ConstrainedExecution;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -109,6 +114,33 @@ public class PlayerController : MonoBehaviour
     public float stompForce = 10f; // Ajuste a força do salto conforme necessário.
     #endregion
 
+    #region states
+    [SerializeField] private PlayerStates playerstates;
+    //small
+    [SerializeField] private Collider2D[] SmallColliders;
+
+    //Big
+    [SerializeField] private Collider2D[] BigColliders;
+    [SerializeField] private CapsuleCollider2D footCollider;
+    [SerializeField] private CapsuleCollider2D footCollider2;
+    #endregion
+    
+    #region knockback
+
+    //KnockBack
+    public float KnockBack;
+    public float KnockBackCount;
+    public float KnockBackLength;
+    private bool knocked;
+    public bool KnockFromRight;
+    private float knockbackTimer = 0f;
+    #endregion
+
+    #region Dead animation
+    private bool isDead = false;
+    public float deathAnimationDuration = 2.0f;
+    private float deathAnimationTimer = 0.0f;
+    #endregion
     void Start()
     {
         if (instance == null)
@@ -130,10 +162,118 @@ public class PlayerController : MonoBehaviour
         normalGravity = sameGravityPlayer;
         originalRotation = transform.eulerAngles;
         stopPlayer = false;
+
+        //Change colliders with player state for big and small
+        if (playerstates.isSmall)
+        {
+            //For ground check
+            sizeCapsule = new Vector2(0.37f, 0.14f);
+
+            float newSizeX = 0.33f;
+
+            // Acesse o primeiro CapsuleCollider2D
+            footCollider.size = new Vector2(newSizeX, footCollider.size.y);
+
+            float newSize2X = 0.3f;
+            // Acesse o segundo CapsuleCollider2D
+            footCollider2.size = new Vector2(newSize2X, footCollider2.size.y);
+
+            // Deactivate big colliders
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.enabled = false;
+            }
+
+            // Activate small colliders
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.enabled = true;
+            }
+        }
+        else
+        {
+            //For ground check
+            sizeCapsule = new Vector2(0.55f, 0.14f);
+
+            float newSizeX = 0.5945079f;
+
+            // Acesse o primeiro CapsuleCollider2D
+            footCollider.size = new Vector2(newSizeX, footCollider.size.y);
+
+            float newSize2X = 0.4789852f;
+            // Acesse o segundo CapsuleCollider2D
+            footCollider2.size = new Vector2(newSize2X, footCollider2.size.y);
+
+            // Deactivate small colliders
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.enabled = false;
+            }
+
+            // Activate big colliders
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.enabled = true;
+            }
+        }
     }
 
     void Update()
     {
+        //Change colliders with player state for big and small
+        if(playerstates.isSmall)
+        {
+            //For ground check
+            sizeCapsule = new Vector2(0.37f, 0.14f);
+
+            float newSizeX = 0.33f;
+
+            // Acesse o primeiro CapsuleCollider2D
+            footCollider.size = new Vector2(newSizeX, footCollider.size.y);
+
+            float newSize2X = 0.35f;
+            // Acesse o segundo CapsuleCollider2D
+            footCollider2.size = new Vector2(newSize2X, footCollider2.size.y);
+
+            // Deactivate big colliders
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.enabled = false;
+            }
+
+            // Activate small colliders
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.enabled = true;
+            }
+        }
+        else
+        {
+            //For ground check
+            sizeCapsule = new Vector2(0.55f, 0.14f);
+
+            float newSizeX = 0.5945079f;
+
+            // Acesse o primeiro CapsuleCollider2D
+            footCollider.size = new Vector2(newSizeX, footCollider.size.y);
+
+            float newSize2X = 0.5929367f;
+            // Acesse o segundo CapsuleCollider2D
+            footCollider2.size = new Vector2(newSize2X, footCollider2.size.y);
+            
+            // Deactivate small colliders
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.enabled = false;
+            }
+
+            // Activate big colliders
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.enabled = true;
+            }
+        }
+
         isGrounded = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsGround);
         isTouchingWater = Physics2D.OverlapCircle(waterCheck.position, 0.2f, whatIsWater);
 
@@ -319,73 +459,118 @@ public class PlayerController : MonoBehaviour
             waterExitTime = 0;
         }
 
+        //Death Animation
+        if (isDead)
+        {
+            deathAnimationTimer += Time.deltaTime;
+
+            // Realize a animação de morte aqui, como interpolação da posição do personagem para o centro da tela.
+
+            if (deathAnimationTimer >= deathAnimationDuration)
+            {
+                // Quando a animação de morte estiver completa
+                // Ative uma tela de "Game Over" ou execute outras ações necessárias
+                BackToLife();
+            }
+        }
     }
     private void FixedUpdate()
     {
-        #region Jump and walk
-        if (!isWallJumping && !Swimming && !stopPlayer)
+        if (knockbackTimer > 0)
         {
-            RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+            // Reduzir o contador de tempo
+            knockbackTimer -= Time.fixedDeltaTime;
+            knocked = true;
         }
-        if(FinishPoint.instance.isFinished && stopPlayer)
+        // Verificar se o knockback terminou
+        if (knockbackTimer <= 0)
         {
-            if(FinishPole.instance.enterRight)
+            knocked = false;
+        }
+
+        #region Jump and walk
+        if (!knocked)
+        {
+            //Walk
+            if (!isWallJumping && !Swimming && !stopPlayer && !isDead)
             {
-                RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
+                RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+            }
+            //FinishPoint
+            if (FinishPoint.instance.isFinished && stopPlayer)
+            {
+                if (FinishPole.instance.enterRight)
+                {
+                    RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
+                }
+                else
+                {
+                    RB.velocity = new Vector2(-autoMoveSpeed, RB.velocity.y);
+                }
+            }
+            //Jump
+            if (jumpBoost && !stopPlayer && !isDead)
+            {
+                jumpTime = boostedJumpTime; // Usar duração de salto aumentada
             }
             else
             {
-                RB.velocity = new Vector2(-autoMoveSpeed, RB.velocity.y);
+                jumpTime = normalJumpTime;
             }
-        }
 
-        if (jumpBoost && !stopPlayer)
-        {
-            jumpTime = boostedJumpTime; // Usar duração de salto aumentada
-        }
-        else
-        {
-            jumpTime = normalJumpTime;
-        }
-
-        if (RB.velocity.y > 0 && jump)
-        {
-            jumpTimeCounter += Time.deltaTime;
-            if (jumpTimeCounter > jumpTime)
+            if (RB.velocity.y > 0 && jump)
             {
-                jump = false;
-            }
-            float t = jumpTimeCounter / jumpTime;
-            float currentJumpM = jumpMultiplier;
+                jumpTimeCounter += Time.deltaTime;
+                if (jumpTimeCounter > jumpTime)
+                {
+                    jump = false;
+                }
+                float t = jumpTimeCounter / jumpTime;
+                float currentJumpM = jumpMultiplier;
 
-            if (t > 0.5f)
+                if (t > 0.5f)
+                {
+                    currentJumpM = jumpMultiplier * (1 - t);
+                }
+                RB.velocity += vecGravity * currentJumpM * Time.deltaTime;
+            }
+
+            if (RB.velocity.y < 0)
             {
-                currentJumpM = jumpMultiplier * (1 - t);
+                RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
             }
-            RB.velocity += vecGravity * currentJumpM * Time.deltaTime;
-        }
+            #endregion
 
-        if(RB.velocity.y < 0)
-        {
-            RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
-        }
-        #endregion
-
-        if(isClimbing && !Swimming)
-        {
-            RB.gravityScale = 0;
-            RB.velocity = new Vector2(RB.velocity.x, moveInputUp * upSpeed);
-        }
-        else
-        {
-            if (!Swimming || !isOnWater)
+            if (isClimbing && !Swimming)
             {
-                RB.gravityScale = normalGravity;
+                RB.gravityScale = 0;
+                RB.velocity = new Vector2(RB.velocity.x, moveInputUp * upSpeed);
+            }
+            else
+            {
+                if (!Swimming || !isOnWater)
+                {
+                    RB.gravityScale = normalGravity;
+                }
             }
         }
-
+       
     }
 
+    public void ApplyKnockBack(float knockbackForce, float knockbackDuration, float knockbackUpForce, bool knockFromRight)
+    {
+        KnockBackCount = knockbackDuration;
+        KnockFromRight = knockFromRight;
+        // Inicializar o contador de tempo
+        knockbackTimer = knockbackDuration;
+
+        // Aplicar a força de knockback horizontal
+        Vector2 knockbackDirection = knockFromRight ? Vector2.right : Vector2.left;
+        RB.velocity = new Vector2(knockbackDirection.x * knockbackForce, RB.velocity.y);
+
+        // Aplicar a força de knockback vertical
+        RB.velocity += Vector2.up * knockbackUpForce;
+    }
 
     public void Turn()
     {
@@ -460,6 +645,66 @@ public class PlayerController : MonoBehaviour
     {
         isWallJumping = false;
     }
+
+    public void PlayerDie()
+    {
+        /*/Quando o personagem morrer, desativa o Rigidbody para evitar que ele seja afetado pela física do jogo.
+        Ativa a animação para o personagem está morto.
+Alterar os colisores do personagem para Trigger para garantir que ele não colida com outros objetos durante a animação.
+Inicie a animação de morte.
+Durante a animação de morte,  mover o GameObject do personagem para o centro da tela.
+        Usar uma abordagem de interpolação suave, como a função Vector3.Lerp, para animar o movimento.
+Quando a animação de morte estiver completa e o personagem estiver no centro da tela, você pode realizar qualquer ação adicional necessária, 
+        como exibir uma tela de "Game Over" ou permitir que o jogador reinicie o jogo.
+       
+        /*/
+        if (!isDead)
+        {
+            isDead = true; 
+            PlayerAnimatorController.instance.PlayDeathAnimation();
+
+            // Desativar o Rigidbody para parar a física
+            RB.simulated = false;
+            RB.velocity = Vector2.zero;
+
+            // Defina todos os colisores como Trigger
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.isTrigger = true;
+            }
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.isTrigger = true;
+            }
+            footCollider.isTrigger = true;
+            footCollider2.isTrigger = true;
+        }
+    }
+    public void BackToLife()
+    {
+        if (isDead)
+        {
+            isDead = false;
+            PlayerAnimatorController.instance.StopDeathAnimation();
+
+            // Reativar o Rigidbody para permitir que o personagem seja afetado pela física novamente
+            RB.simulated = true;
+
+            // Defina todos os colisores como Trigger
+            foreach (Collider2D collider in SmallColliders)
+            {
+                collider.isTrigger = false;
+            }
+            foreach (Collider2D collider in BigColliders)
+            {
+                collider.isTrigger = false;
+            }
+            footCollider.isTrigger = false;
+            footCollider2.isTrigger = false;
+        }
+    }
+
+
     #endregion
 
     #region debug
@@ -521,11 +766,6 @@ public class PlayerController : MonoBehaviour
                 RB.gravityScale = SwimGravity;
             }
            // Bubble.Play();
-        }
-
-        if(collision.CompareTag("WeakPoint"))
-        {
-            RB.velocity = new Vector2(RB.velocity.x, stompForce);
         }
     }
     private void OnTriggerStay2D(Collider2D collision)

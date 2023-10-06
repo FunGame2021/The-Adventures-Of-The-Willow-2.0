@@ -23,13 +23,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6967803973675383746}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6967803973719807066}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6967803973719807071
 GameObject:
@@ -43,8 +43,7 @@ GameObject:
   - component: {fileID: 6967803973719807067}
   - component: {fileID: 6967803973719807068}
   - component: {fileID: 6967803973719807069}
-  - component: {fileID: 6967803973719807070}
-  - component: {fileID: 1914310595840877988}
+  - component: {fileID: 6555930189999477606}
   m_Layer: 14
   m_Name: Mushroom_Invincible_Powerup
   m_TagString: Untagged
@@ -59,6 +58,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6967803973719807071}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -8.03, y: 0.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -67,7 +67,6 @@ Transform:
   - {fileID: 6967803974477282789}
   - {fileID: 6967803973675383745}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6967803973719807067
 SpriteRenderer:
@@ -108,7 +107,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2010637417
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: df3573da68b4e214ca9bfd8462c43e13, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -131,12 +130,31 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.007384777, y: -0.0044308603}
+  m_Offset: {x: -0.0060254484, y: -0.0044308603}
   serializedVersion: 2
-  m_Radius: 0.43254575
+  m_Radius: 0.18107887
 --- !u!50 &6967803973719807069
 Rigidbody2D:
   serializedVersion: 4
@@ -154,11 +172,17 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6967803973719807070
+--- !u!114 &6555930189999477606
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,26 +191,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6967803973719807071}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17f1ba738bc3aab46986ed4e7769f490, type: 3}
+  m_Script: {fileID: 11500000, guid: 23baabaf86372704db4a28d37d6179a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  castPos: {fileID: 6967803973675383745}
-  baseCastDist: 0.5
-  moveSpeed: 1.2
-  jumpheight: 500
---- !u!114 &1914310595840877988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6967803973719807071}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e72f5304b6247854b9713c99b0acf8b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PowerUpCollect: {fileID: 8300000, guid: 781133ebc10e842459d67321b1a1a380, type: 3}
 --- !u!1 &6967803974477282790
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,13 +218,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6967803974477282790}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6967803973719807066}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &6967803974477282788
 CircleCollider2D:
@@ -229,9 +236,28 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.007384777, y: -0.0044308603}
+  m_Offset: {x: -0.004666224, y: -0.0044308603}
   serializedVersion: 2
-  m_Radius: 0.43254575
+  m_Radius: 0.17428248

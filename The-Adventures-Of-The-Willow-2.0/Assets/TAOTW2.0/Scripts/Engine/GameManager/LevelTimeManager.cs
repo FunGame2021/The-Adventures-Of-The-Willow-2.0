@@ -20,6 +20,10 @@ public class LevelTimeManager : MonoBehaviour
 
     [SerializeField] private bool isNormalGame;
 
+    //Level info save
+    public float elapsedTime;
+
+
     void Start()
     {
         if(instance == null)
@@ -62,6 +66,7 @@ public class LevelTimeManager : MonoBehaviour
     {
         InitialDuration = seconds; // Atualiza a duração inicial
         remainingDuration = InitialDuration;
+        elapsedTime = 0f; // Inicializa o tempo decorrido
         UpdateUITimer();
         StartTimer();
     }
@@ -108,6 +113,7 @@ public class LevelTimeManager : MonoBehaviour
         {
             if (!isPaused)
             {
+                elapsedTime += 1f; // Incrementa o tempo decorrido
                 UpdateUITimer();
                 remainingDuration--;
             }
@@ -120,6 +126,12 @@ public class LevelTimeManager : MonoBehaviour
     {
         uiTimerText.text = $"{remainingDuration / 60:00} : {remainingDuration % 60:00}";
         uiFill.fillAmount = Mathf.InverseLerp(0, InitialDuration, remainingDuration);
+    }
+    public void OnLevelCompleted()
+    {
+        // Pare a contagem de tempo
+        StopTimer();
+
     }
 
 

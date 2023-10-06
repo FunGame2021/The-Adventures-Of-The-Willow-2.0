@@ -204,7 +204,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.009697795, y: -0.015806831}
+  m_Offset: {x: 0.0076885223, y: -0.015806831}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -215,7 +215,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.381428, y: 0.14191388}
+  m_Size: {x: 0.40152168, y: 0.14191388}
   m_EdgeRadius: 0
 --- !u!114 &5565587855255783414
 MonoBehaviour:
@@ -230,6 +230,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStomped: 0
+  bc2D: {fileID: 9139678302942994228}
+  enemyObjectToChangeTag: {fileID: 9097118317707933414}
 --- !u!1 &9097118317707933414
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,8 +244,8 @@ GameObject:
   - component: {fileID: 9097118317707933410}
   - component: {fileID: 9097118317707933411}
   - component: {fileID: 9097118317707933413}
-  - component: {fileID: 2998866680626177557}
   - component: {fileID: 512802169866436492}
+  - component: {fileID: 8172822742663543038}
   m_Layer: 9
   m_Name: Captain_Mushroom_Red
   m_TagString: Enemy
@@ -370,8 +372,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &2998866680626177557
-CapsuleCollider2D:
+--- !u!114 &512802169866436492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9097118317707933414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e04d05686d1bd94ca58649877d6bd24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  castPos: {fileID: 8388970681227192810}
+  castWallPos: {fileID: 4431741331263744645}
+  edgeCastDist: 0.25
+  wallCastDist: 0.2
+  moveSpeed: 0.7
+  scaleSpeed: 0
+--- !u!61 &8172822742663543038
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -402,24 +422,16 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.008369923, y: -0.013776243}
-  m_Size: {x: 0.46170902, y: 0.48911417}
-  m_Direction: 0
---- !u!114 &512802169866436492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9097118317707933414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e04d05686d1bd94ca58649877d6bd24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  castPos: {fileID: 8388970681227192810}
-  castWallPos: {fileID: 4431741331263744645}
-  edgeCastDist: 0.25
-  wallCastDist: 0.2
-  moveSpeed: 0.7
-  scaleSpeed: 0
+  m_Offset: {x: 0.0080373585, y: -0.012056053}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.45, y: 0.51666665}
+    newSize: {x: 0.5631579, y: 0.6789474}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.40177584, y: 0.42825568}
+  m_EdgeRadius: 0

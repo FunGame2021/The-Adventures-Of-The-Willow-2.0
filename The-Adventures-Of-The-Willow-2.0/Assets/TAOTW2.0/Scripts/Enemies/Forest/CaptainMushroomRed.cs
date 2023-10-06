@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CaptainMushroomRed : MonoBehaviour
 {
@@ -40,17 +41,9 @@ public class CaptainMushroomRed : MonoBehaviour
         audioPlayed = false;
         stompEnemy = GetComponentInChildren<StompEnemy>();
     }
-    private void Update()
-    {
-        if(stompEnemy.isStomped)
-        {
-            StompNow();
-        }
-    }
     private void StompNow()
     {
         moveSpeed = 0f;
-        animator.SetBool("Die", true);
         if (!audioPlayed)
         {
             audioPlayed = true;
@@ -79,6 +72,12 @@ public class CaptainMushroomRed : MonoBehaviour
         if (IsHittingWall() || IsNearEdge() || IsHittingEnemy() || IsHittingBox())
         {
             ChangeFacingDirection(facingDirection == LEFT ? RIGHT : LEFT);
+        }
+
+        if (stompEnemy.isStomped)
+        {
+            animator.SetBool("Die", true);
+            StompNow();
         }
     }
 
@@ -145,4 +144,5 @@ public class CaptainMushroomRed : MonoBehaviour
         Debug.DrawLine(castPos.position, targetPos, Color.blue);
     }
 
+    
 }

@@ -22,6 +22,13 @@ public class PlayWorld : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
+    private void Start()
+    { 
+        if(SaveGameManager.instance != null)
+        {
+            SaveGameManager.instance.LoadGame();
+        }
+    }
     public void ExitPlayLevel()
     {
         Destroy(gameObject);

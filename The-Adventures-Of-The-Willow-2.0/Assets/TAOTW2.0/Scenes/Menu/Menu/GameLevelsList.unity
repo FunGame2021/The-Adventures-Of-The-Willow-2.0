@@ -634,7 +634,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1583296708}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6584,6 +6584,8 @@ MonoBehaviour:
   selectedWorldName: 
   selectedLevelName: 
   isWorldmap: 0
+  isExtraLevels: 0
+  isGameLevels: 0
 --- !u!4 &1220598061
 Transform:
   m_ObjectHideFlags: 0
@@ -7142,8 +7144,6 @@ MonoBehaviour:
   worldContent: {fileID: 1824488095}
   worldButtonPrefab: {fileID: 7176568044001022766, guid: cba2cbafca92b2543980e394b4fc913a, type: 3}
   levelEditorPath: 
-  levelEditorExtraPath: 
-  levelEditorGamePath: 
   currentPanel: {fileID: 627169244}
   worldListPanel: {fileID: 627169244}
   LevelListPanel: {fileID: 381329345}

@@ -5,13 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/TAOTW2.0/Scenes/Menu/Menu/SplashScreen.unity
+    guid: aa34bfad1cf55894ba999285cf16fe20
   - enabled: 1
     path: Assets/TAOTW2.0/Scenes/Menu/Menu/LoadProfiles.unity
-    guid: d3d2327292d8aed419ca000a3c6912aa
+    guid: cc997118c975c9844b64952e91c6aca3
   - enabled: 1
     path: Assets/TAOTW2.0/Scenes/Menu/Menu/PressAnyKey.unity
     guid: e182eb6c5e44eca489ed4060c3565e08
-  - enabled: 1
+  - enabled: 0
     path: Assets/TAOTW2.0/Scenes/Menu/Menu/StartGame.unity
     guid: 424f480b48036f846be81637f5928bd1
   - enabled: 1

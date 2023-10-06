@@ -67,6 +67,10 @@ public class FinishPole : MonoBehaviour
         {
             PlayerManager.instance.FinishLevelSave();
         }
+        if(LevelTimeManager.instance != null)
+        {
+            LevelTimeManager.instance.OnLevelCompleted();
+        }
         FinishPoint.instance.FinishSequence();
         PlayFireworksEffect();
     }

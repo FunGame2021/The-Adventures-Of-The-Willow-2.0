@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -47,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 170
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -63,6 +64,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -109,9 +114,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 2849
-        width: 329
-        height: 407
+        y: 952
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -129,10 +134,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_1
       rect:
         serializedVersion: 2
-        x: 329
-        y: 2849
-        width: 329
-        height: 407
+        x: 110
+        y: 952
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,10 +155,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_2
       rect:
         serializedVersion: 2
-        x: 658
-        y: 2849
-        width: 329
-        height: 407
+        x: 220
+        y: 952
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,10 +176,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_3
       rect:
         serializedVersion: 2
-        x: 987
-        y: 2849
-        width: 329
-        height: 407
+        x: 330
+        y: 952
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -192,10 +197,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_4
       rect:
         serializedVersion: 2
-        x: 1316
-        y: 2849
-        width: 329
-        height: 407
+        x: 440
+        y: 952
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,10 +218,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_5
       rect:
         serializedVersion: 2
-        x: 1645
-        y: 2849
-        width: 329
-        height: 407
+        x: 0
+        y: 816
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -234,10 +239,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_6
       rect:
         serializedVersion: 2
-        x: 1974
-        y: 2849
-        width: 329
-        height: 407
+        x: 110
+        y: 816
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -255,10 +260,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_7
       rect:
         serializedVersion: 2
-        x: 2303
-        y: 2849
-        width: 329
-        height: 407
+        x: 220
+        y: 816
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,10 +281,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_8
       rect:
         serializedVersion: 2
-        x: 2632
-        y: 2849
-        width: 329
-        height: 407
+        x: 330
+        y: 816
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -297,10 +302,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_9
       rect:
         serializedVersion: 2
-        x: 2961
-        y: 2849
-        width: 329
-        height: 407
+        x: 440
+        y: 816
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -319,9 +324,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 2442
-        width: 329
-        height: 407
+        y: 680
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -339,10 +344,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_11
       rect:
         serializedVersion: 2
-        x: 329
-        y: 2442
-        width: 329
-        height: 407
+        x: 110
+        y: 680
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -360,10 +365,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_12
       rect:
         serializedVersion: 2
-        x: 658
-        y: 2442
-        width: 329
-        height: 407
+        x: 220
+        y: 680
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -381,10 +386,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_13
       rect:
         serializedVersion: 2
-        x: 987
-        y: 2442
-        width: 329
-        height: 407
+        x: 330
+        y: 680
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -402,10 +407,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_14
       rect:
         serializedVersion: 2
-        x: 1316
-        y: 2442
-        width: 329
-        height: 407
+        x: 440
+        y: 680
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -423,10 +428,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_15
       rect:
         serializedVersion: 2
-        x: 1645
-        y: 2442
-        width: 329
-        height: 407
+        x: 0
+        y: 544
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -444,10 +449,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_16
       rect:
         serializedVersion: 2
-        x: 1974
-        y: 2442
-        width: 329
-        height: 407
+        x: 110
+        y: 544
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -465,10 +470,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_17
       rect:
         serializedVersion: 2
-        x: 2303
-        y: 2442
-        width: 329
-        height: 407
+        x: 220
+        y: 544
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -486,10 +491,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_18
       rect:
         serializedVersion: 2
-        x: 2632
-        y: 2442
-        width: 329
-        height: 407
+        x: 330
+        y: 544
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -507,10 +512,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_19
       rect:
         serializedVersion: 2
-        x: 2961
-        y: 2442
-        width: 329
-        height: 407
+        x: 440
+        y: 544
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -529,9 +534,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 2035
-        width: 329
-        height: 407
+        y: 408
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -549,10 +554,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_21
       rect:
         serializedVersion: 2
-        x: 329
-        y: 2035
-        width: 329
-        height: 407
+        x: 110
+        y: 408
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -570,10 +575,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_22
       rect:
         serializedVersion: 2
-        x: 658
-        y: 2035
-        width: 329
-        height: 407
+        x: 220
+        y: 408
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -591,10 +596,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_23
       rect:
         serializedVersion: 2
-        x: 987
-        y: 2035
-        width: 329
-        height: 407
+        x: 330
+        y: 408
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -612,10 +617,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_24
       rect:
         serializedVersion: 2
-        x: 1316
-        y: 2035
-        width: 329
-        height: 407
+        x: 440
+        y: 408
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -633,10 +638,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_25
       rect:
         serializedVersion: 2
-        x: 1645
-        y: 2035
-        width: 329
-        height: 407
+        x: 0
+        y: 272
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -654,10 +659,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_26
       rect:
         serializedVersion: 2
-        x: 1974
-        y: 2035
-        width: 329
-        height: 407
+        x: 110
+        y: 272
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -675,10 +680,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_27
       rect:
         serializedVersion: 2
-        x: 2303
-        y: 2035
-        width: 329
-        height: 407
+        x: 220
+        y: 272
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -696,10 +701,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_28
       rect:
         serializedVersion: 2
-        x: 2632
-        y: 2035
-        width: 329
-        height: 407
+        x: 330
+        y: 272
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -717,10 +722,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_29
       rect:
         serializedVersion: 2
-        x: 2961
-        y: 2035
-        width: 329
-        height: 407
+        x: 440
+        y: 272
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -739,9 +744,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1628
-        width: 329
-        height: 407
+        y: 136
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -759,10 +764,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_31
       rect:
         serializedVersion: 2
-        x: 329
-        y: 1628
-        width: 329
-        height: 407
+        x: 110
+        y: 136
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -780,10 +785,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_32
       rect:
         serializedVersion: 2
-        x: 658
-        y: 1628
-        width: 329
-        height: 407
+        x: 220
+        y: 136
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -801,10 +806,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_33
       rect:
         serializedVersion: 2
-        x: 987
-        y: 1628
-        width: 329
-        height: 407
+        x: 330
+        y: 136
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -822,10 +827,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_34
       rect:
         serializedVersion: 2
-        x: 1316
-        y: 1628
-        width: 329
-        height: 407
+        x: 440
+        y: 136
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -843,10 +848,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_35
       rect:
         serializedVersion: 2
-        x: 1645
-        y: 1628
-        width: 329
-        height: 407
+        x: 0
+        y: 0
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -864,10 +869,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_36
       rect:
         serializedVersion: 2
-        x: 1974
-        y: 1628
-        width: 329
-        height: 407
+        x: 110
+        y: 0
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -885,10 +890,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_37
       rect:
         serializedVersion: 2
-        x: 2303
-        y: 1628
-        width: 329
-        height: 407
+        x: 220
+        y: 0
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -906,10 +911,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_38
       rect:
         serializedVersion: 2
-        x: 2632
-        y: 1628
-        width: 329
-        height: 407
+        x: 330
+        y: 0
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -927,10 +932,10 @@ TextureImporter:
       name: Air_Mushroom_Propeller_39
       rect:
         serializedVersion: 2
-        x: 2961
-        y: 1628
-        width: 329
-        height: 407
+        x: 440
+        y: 0
+        width: 110.4
+        height: 136
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -940,846 +945,6 @@ TextureImporter:
       bones: []
       spriteID: fefad15fd9da69540947554c4b83578a
       internalID: 641633930
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_40
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 96ddf6598d4b8834797a4aff396ffa9d
-      internalID: -1560412107
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_41
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 91fa4743930fb274c80296add498c225
-      internalID: -15598835
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_42
-      rect:
-        serializedVersion: 2
-        x: 658
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6859c8d924e02694a9d4e44dab597b3b
-      internalID: -889480076
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_43
-      rect:
-        serializedVersion: 2
-        x: 987
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca3294e995e450445979d0c583a721a3
-      internalID: -92307940
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_44
-      rect:
-        serializedVersion: 2
-        x: 1316
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bc0edaa6fa916a141866cbf857fe2d77
-      internalID: 1931452440
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_45
-      rect:
-        serializedVersion: 2
-        x: 1645
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0e59f0a2561e68a44b49936a868bf443
-      internalID: 868561177
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_46
-      rect:
-        serializedVersion: 2
-        x: 1974
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6acc9d60d22bd664c87b2c5e1083d87d
-      internalID: 128222958
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_47
-      rect:
-        serializedVersion: 2
-        x: 2303
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e824de8556ca40646ab9497ee13064f1
-      internalID: 664063043
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_48
-      rect:
-        serializedVersion: 2
-        x: 2632
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dec25e709905f384d8cb2d81b73a15f7
-      internalID: 431316034
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_49
-      rect:
-        serializedVersion: 2
-        x: 2961
-        y: 1221
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f97a94168d759ca4cb0296deed790297
-      internalID: -910572279
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_50
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 079aac77f71875044be6eb50938475f7
-      internalID: 1846600178
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_51
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5201a156076826849b01117da34676ce
-      internalID: 1740713646
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_52
-      rect:
-        serializedVersion: 2
-        x: 658
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d358a0baeed7d62439b616fe3a03c23f
-      internalID: -1411179877
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_53
-      rect:
-        serializedVersion: 2
-        x: 987
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 37bfa8315b4f5c74ea185184af5cfb27
-      internalID: 1548454718
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_54
-      rect:
-        serializedVersion: 2
-        x: 1316
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bcb9eeb19122cbd47b02211c0343632c
-      internalID: -2094845723
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_55
-      rect:
-        serializedVersion: 2
-        x: 1645
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2585e0be6a6ac1541af45078012068e9
-      internalID: -1233876983
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_56
-      rect:
-        serializedVersion: 2
-        x: 1974
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9870fc4c65c637f4c8ff814ae45e2daa
-      internalID: 1736364417
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_57
-      rect:
-        serializedVersion: 2
-        x: 2303
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dd0a3ba93cec5b648bb3b4dc9ec9d5ff
-      internalID: -156126997
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_58
-      rect:
-        serializedVersion: 2
-        x: 2632
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e166889f4b032f64dbcb70f87fbb4828
-      internalID: -1470792260
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_59
-      rect:
-        serializedVersion: 2
-        x: 2961
-        y: 814
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 831d20508fe174e48b29d6f8b82c1ef4
-      internalID: 625635251
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_60
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8e7d691d756a6eb4d8d3ebc4d8ed5118
-      internalID: -2074364149
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_61
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b66660e58de85fc49a85ef26bad9e86c
-      internalID: -2131582511
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_62
-      rect:
-        serializedVersion: 2
-        x: 658
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9289d5827291b0b4fbb0ee2fab8491e5
-      internalID: 774507787
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_63
-      rect:
-        serializedVersion: 2
-        x: 987
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3dd69a579e4e91f4fa3d0ce3e6929af7
-      internalID: 2117592379
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_64
-      rect:
-        serializedVersion: 2
-        x: 1316
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 66c124e8234c5f64b96a918f7a1237c5
-      internalID: 716995500
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_65
-      rect:
-        serializedVersion: 2
-        x: 1645
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2b669eac910c91340868673d4dbc0d3d
-      internalID: 1961998303
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_66
-      rect:
-        serializedVersion: 2
-        x: 1974
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 92a631471896dc74fa173010ba47b37f
-      internalID: 1371845508
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_67
-      rect:
-        serializedVersion: 2
-        x: 2303
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a3039c7d07b2e17488c5267bb315734e
-      internalID: -1951301679
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_68
-      rect:
-        serializedVersion: 2
-        x: 2632
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 73f433bc96eac3c4488cbd306d8f9a2f
-      internalID: 193653488
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_69
-      rect:
-        serializedVersion: 2
-        x: 2961
-        y: 407
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 38937911b666997408939bf78a6d84f8
-      internalID: -280058364
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_70
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dd9af8d50ae92e54792a5fb1f3a97928
-      internalID: -121525739
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_71
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bdeaadc975af70a4090db3d822051608
-      internalID: 892233338
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_72
-      rect:
-        serializedVersion: 2
-        x: 658
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a5b2cab51d54ccb4fb05599385c654d9
-      internalID: -1140824544
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_73
-      rect:
-        serializedVersion: 2
-        x: 987
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 997d73d765e186c4c8c62474341fd2f7
-      internalID: 1711853948
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_74
-      rect:
-        serializedVersion: 2
-        x: 1316
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bd77247d23c55a34380c340d88044836
-      internalID: 527050698
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_75
-      rect:
-        serializedVersion: 2
-        x: 1645
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ad434554de6e3b44cb59b66d9f809d03
-      internalID: -1440825350
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_76
-      rect:
-        serializedVersion: 2
-        x: 1974
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9d00b78bc8768e3438b8db45c2c52e60
-      internalID: 2101719506
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_77
-      rect:
-        serializedVersion: 2
-        x: 2303
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c096171aa0f80be41840f3900e57dcc0
-      internalID: 466592243
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_78
-      rect:
-        serializedVersion: 2
-        x: 2632
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 88974ce4139d40942b55d2130a8c7f96
-      internalID: -657496853
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Air_Mushroom_Propeller_79
-      rect:
-        serializedVersion: 2
-        x: 2961
-        y: 0
-        width: 329
-        height: 407
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f3f38b39c66abf54f870221ed0347e8d
-      internalID: -373497439
       vertices: []
       indices: 
       edges: []
@@ -1795,89 +960,48 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Air_Mushroom_Propeller_50: 1846600178
-      Air_Mushroom_Propeller_59: 625635251
-      Air_Mushroom_Propeller_32: -208372406
-      Air_Mushroom_Propeller_52: -1411179877
-      Air_Mushroom_Propeller_5: 932302380
-      Air_Mushroom_Propeller_14: -627064574
-      Air_Mushroom_Propeller_73: 1711853948
-      Air_Mushroom_Propeller_56: 1736364417
-      Air_Mushroom_Propeller_29: 618629779
-      Air_Mushroom_Propeller_68: 193653488
-      Air_Mushroom_Propeller_63: 2117592379
-      Air_Mushroom_Propeller_43: -92307940
-      Air_Mushroom_Propeller_21: -54799699
-      Air_Mushroom_Propeller_44: 1931452440
-      Air_Mushroom_Propeller_53: 1548454718
+      Air_Mushroom_Propeller_0: -2017466851
       Air_Mushroom_Propeller_1: 1649179263
-      Air_Mushroom_Propeller_39: 641633930
-      Air_Mushroom_Propeller_78: -657496853
-      Air_Mushroom_Propeller_55: -1233876983
-      Air_Mushroom_Propeller_7: 1376395390
-      Air_Mushroom_Propeller_45: 868561177
-      Air_Mushroom_Propeller_33: 1425001175
-      Air_Mushroom_Propeller_28: -210280688
+      Air_Mushroom_Propeller_10: 1895212954
+      Air_Mushroom_Propeller_11: -336389661
+      Air_Mushroom_Propeller_12: 1575712502
+      Air_Mushroom_Propeller_13: -1952925768
+      Air_Mushroom_Propeller_14: -627064574
       Air_Mushroom_Propeller_15: 317031763
-      Air_Mushroom_Propeller_65: 1961998303
-      Air_Mushroom_Propeller_67: -1951301679
-      Air_Mushroom_Propeller_70: -121525739
+      Air_Mushroom_Propeller_16: 1802895815
+      Air_Mushroom_Propeller_17: 1562715449
+      Air_Mushroom_Propeller_18: -2095097412
+      Air_Mushroom_Propeller_19: -1608666052
+      Air_Mushroom_Propeller_2: 1606027304
+      Air_Mushroom_Propeller_20: -1176643524
+      Air_Mushroom_Propeller_21: -54799699
+      Air_Mushroom_Propeller_22: -229178126
+      Air_Mushroom_Propeller_23: -966444925
+      Air_Mushroom_Propeller_24: -970860519
+      Air_Mushroom_Propeller_25: 902438904
+      Air_Mushroom_Propeller_26: -1284710185
+      Air_Mushroom_Propeller_27: -866344128
+      Air_Mushroom_Propeller_28: -210280688
+      Air_Mushroom_Propeller_29: 618629779
+      Air_Mushroom_Propeller_3: 1975062493
+      Air_Mushroom_Propeller_30: -1385914942
+      Air_Mushroom_Propeller_31: 1016948016
+      Air_Mushroom_Propeller_32: -208372406
+      Air_Mushroom_Propeller_33: 1425001175
+      Air_Mushroom_Propeller_34: 960677613
+      Air_Mushroom_Propeller_35: -1720921474
       Air_Mushroom_Propeller_36: -764899159
       Air_Mushroom_Propeller_37: 552943094
-      Air_Mushroom_Propeller_3: 1975062493
-      Air_Mushroom_Propeller_77: 466592243
-      Air_Mushroom_Propeller_16: 1802895815
-      Air_Mushroom_Propeller_19: -1608666052
-      Air_Mushroom_Propeller_0: -2017466851
-      Air_Mushroom_Propeller_26: -1284710185
-      Air_Mushroom_Propeller_71: 892233338
-      Air_Mushroom_Propeller_40: -1560412107
-      Air_Mushroom_Propeller_69: -280058364
-      Air_Mushroom_Propeller_18: -2095097412
-      Air_Mushroom_Propeller_17: 1562715449
-      Air_Mushroom_Propeller_30: -1385914942
-      Air_Mushroom_Propeller_74: 527050698
-      Air_Mushroom_Propeller_22: -229178126
-      Air_Mushroom_Propeller_62: 774507787
-      Air_Mushroom_Propeller_6: 1961753308
-      Air_Mushroom_Propeller_64: 716995500
-      Air_Mushroom_Propeller_75: -1440825350
-      Air_Mushroom_Propeller_60: -2074364149
-      Air_Mushroom_Propeller_61: -2131582511
-      Air_Mushroom_Propeller_9: -1013868473
-      Air_Mushroom_Propeller_79: -373497439
-      Air_Mushroom_Propeller_41: -15598835
-      Air_Mushroom_Propeller_66: 1371845508
-      Air_Mushroom_Propeller_20: -1176643524
-      Air_Mushroom_Propeller_25: 902438904
-      Air_Mushroom_Propeller_48: 431316034
-      Air_Mushroom_Propeller_54: -2094845723
-      Air_Mushroom_Propeller_57: -156126997
-      Air_Mushroom_Propeller_42: -889480076
-      Air_Mushroom_Propeller_35: -1720921474
-      Air_Mushroom_Propeller_58: -1470792260
-      Air_Mushroom_Propeller_2: 1606027304
-      Air_Mushroom_Propeller_4: -574926162
-      Air_Mushroom_Propeller_46: 128222958
-      Air_Mushroom_Propeller_47: 664063043
-      Air_Mushroom_Propeller_8: 139740734
-      Air_Mushroom_Propeller_11: -336389661
-      Air_Mushroom_Propeller_24: -970860519
-      Air_Mushroom_Propeller_12: 1575712502
-      Air_Mushroom_Propeller_31: 1016948016
-      Air_Mushroom_Propeller_10: 1895212954
-      Air_Mushroom_Propeller_27: -866344128
-      Air_Mushroom_Propeller_72: -1140824544
       Air_Mushroom_Propeller_38: 815617444
-      Air_Mushroom_Propeller_23: -966444925
-      Air_Mushroom_Propeller_49: -910572279
-      Air_Mushroom_Propeller_13: -1952925768
-      Air_Mushroom_Propeller_76: 2101719506
-      Air_Mushroom_Propeller_51: 1740713646
-      Air_Mushroom_Propeller_34: 960677613
-  spritePackingTag: 
+      Air_Mushroom_Propeller_39: 641633930
+      Air_Mushroom_Propeller_4: -574926162
+      Air_Mushroom_Propeller_5: 932302380
+      Air_Mushroom_Propeller_6: 1961753308
+      Air_Mushroom_Propeller_7: 1376395390
+      Air_Mushroom_Propeller_8: 139740734
+      Air_Mushroom_Propeller_9: -1013868473
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
