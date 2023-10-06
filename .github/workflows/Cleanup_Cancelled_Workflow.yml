@@ -1,0 +1,27 @@
+name: Cleanup Cancelled Workflow Runs
+
+on:
+  workflow_dispatch: # Permite que a ação seja acionada manualmente
+  workflow_run:
+    workflows: ["*"] # Escute todos os workflows
+    types:
+      - completed
+      - canceled
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Delete Cancelled Workflow Runs
+      run: |
+        # Listar runs de ações canceladas
+        for run_id in $(gh run list --status=completed,cancelled --query='runs[?conclusion=="cancelled"].id' --json id --color never); do
+          echo "Deleting run $run_id..."
+          gh run delete $run_id --force
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
