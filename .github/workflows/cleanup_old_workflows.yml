@@ -1,7 +1,7 @@
-name: Cleanup Old Workflows
+name: Cleanup Old Workflow Runs
 
 on:
-  workflow_dispatch: # Isso permite que a ação seja acionada manualmente
+  workflow_dispatch: # Permite que a ação seja acionada manualmente
 
 jobs:
   cleanup:
@@ -11,12 +11,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Delete Old Workflows
+    - name: Delete Old Workflow Runs
       run: |
-        # Script para encontrar e excluir workflows com mais de 3 semanas
-        # Substitua "3 weeks" pelo seu próprio critério de tempo, se necessário
-        for run_id in $(gh workflow list | awk '$2 < "3 weeks" {print $1}'); do
-          gh workflow run $run_id delete
+        # Substitua 'Windows', 'Linux' e 'Mac' pelos nomes dos seus workflows
+        workflows=("AllWindowsVersionsSeparated" "AllLinuxVersion" "AllMacVersions")
+        for workflow in "${workflows[@]}"; do
+          # Listar runs antigos com base no nome do workflow
+          for run_id in $(gh workflow list --workflow="$workflow" | awk '$2 < "3 weeks" {print $1}'); do
+            echo "Deleting run $run_id for workflow $workflow..."
+            gh workflow run $run_id delete
+          done
         done
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token de acesso necessário para interagir com a API do GitHub
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
