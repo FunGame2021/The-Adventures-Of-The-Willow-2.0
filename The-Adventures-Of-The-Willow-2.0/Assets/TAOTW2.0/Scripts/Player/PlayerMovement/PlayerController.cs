@@ -2,14 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.EventSystems;
 using FMOD.Studio;
-using static UnityEngine.EventSystems.EventTrigger;
-using System.Runtime.ConstrainedExecution;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor;
-using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
