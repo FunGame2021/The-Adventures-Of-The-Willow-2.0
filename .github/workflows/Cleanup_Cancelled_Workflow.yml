@@ -1,0 +1,23 @@
+name: Cleanup Cancelled Workflow Runs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Executar diariamente
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Delete Cancelled Workflow Runs
+      run: |
+        for run_id in $(gh run list --status=completed,cancelled --json id --jq '.[] | select(.conclusion == "cancelled") | .id'); do
+          echo "Deleting run $run_id..."
+          gh run delete $run_id --force
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
