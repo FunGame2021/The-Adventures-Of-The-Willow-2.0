@@ -1,0 +1,22 @@
+name: Cleanup Old Workflows
+
+on:
+  workflow_dispatch: # Isso permite que a ação seja acionada manualmente
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Delete Old Workflows
+      run: |
+        # Script para encontrar e excluir workflows com mais de 3 semanas
+        # Substitua "3 weeks" pelo seu próprio critério de tempo, se necessário
+        for run_id in $(gh workflow list | awk '$2 < "3 weeks" {print $1}'); do
+          gh workflow run $run_id delete
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token de acesso necessário para interagir com a API do GitHub
