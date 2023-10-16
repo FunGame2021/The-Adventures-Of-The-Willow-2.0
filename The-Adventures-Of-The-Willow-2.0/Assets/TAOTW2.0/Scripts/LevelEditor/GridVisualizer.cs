@@ -7,7 +7,7 @@ public class GridVisualizer : MonoBehaviour
     [SerializeField] private GameObject GridVisualizerObj;
     [SerializeField] private Transform squareTransform; // Referência ao Transform do quad
     [SerializeField] private Material materialWithShader; // Material com o Shader Graph
-    [SerializeField] private bool isGridEnabled;
+    public bool isGridEnabled;
     [SerializeField] private Button gridViewButton;
 
     private void Start()

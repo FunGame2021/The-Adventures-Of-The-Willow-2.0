@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 5737499835107130889}
   - component: {fileID: 3146329021962202073}
   - component: {fileID: 7363133405376081000}
+  - component: {fileID: 9151117949082869378}
   m_Layer: 0
   m_Name: LevelDot
-  m_TagString: Leveldot
+  m_TagString: LevelDot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0.28773582, b: 0.28773582, a: 1}
+  m_Color: {r: 0.14697742, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -120,3 +121,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &9151117949082869378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109911152652461386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 869a62cb616ff0743afd13e52435bcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedColor: {r: 1, g: 0.25943398, b: 0.25943398, a: 1}
+  levelName: 
+  levelPath: 
+  isFirstLevel: 0

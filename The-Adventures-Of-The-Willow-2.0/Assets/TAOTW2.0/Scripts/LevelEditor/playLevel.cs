@@ -117,7 +117,7 @@ public class playLevel : MonoBehaviour
                 LevelNames = PlayWorld.instance.selectedLevelName;
             }
 
-            LoadLevel(worldNames, LevelNames);
+            //LoadLevel(worldNames, LevelNames);
             StartedLevel = false;
             LevelInfoPanel.SetActive(true);
         }
@@ -129,7 +129,7 @@ public class playLevel : MonoBehaviour
                 worldNames = PlayWorld.instance.selectedWorldName;
                 LevelNames = PlayWorld.instance.selectedLevelName;
             }
-            LoadWorld(worldNames);
+            //LoadWorld(worldNames);
             StartedWorld = false;
             WorldInfoPanel.SetActive(true);
         }
@@ -182,6 +182,7 @@ public class playLevel : MonoBehaviour
     }
 
     #region Load Level
+    /*/
     private void SetTilemapLayer(Tilemap tilemap, LayerMask layerMask)
     {
         tilemap.gameObject.layer = LayerMaskToLayer(layerMask);
@@ -576,6 +577,7 @@ public class playLevel : MonoBehaviour
         PlayerPrefab = Instantiate(PlayerPrefab, playerPosition, Quaternion.identity);
 
     }
+    /*/
 
     public void AdjustDeathZoneColliderSize()
     {
@@ -674,6 +676,7 @@ public class playLevel : MonoBehaviour
     #endregion
 
     #region Load World
+    /*/
     public void LoadWorld(string worldName)
     {
         string worldFolderPath;
@@ -903,6 +906,6 @@ public class playLevel : MonoBehaviour
         {
             Debug.LogWarning("Save file not found: " + loadPath);
         }
-    }
+    }/*/
     #endregion
 }

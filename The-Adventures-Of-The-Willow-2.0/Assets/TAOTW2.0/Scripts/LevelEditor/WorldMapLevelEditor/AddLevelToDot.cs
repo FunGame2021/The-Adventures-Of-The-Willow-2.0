@@ -16,14 +16,14 @@ public class AddLevelToDot : MonoBehaviour
     [HideInInspector] public string levelEditorPath; // Caminho para a pasta "LevelEditor"
     [SerializeField] private GameObject levelListPanel; // Referência para o painel com a lista de mundos
 
-    private string currentLevelName;
-    private string currentLevelPath;
-
+    [SerializeField] private string currentLevel;
+    [SerializeField] private string currentWorld;
 
     public delegate void MouseClick();
     public static event MouseClick OnMouseClick;
     public static Vector3 mousePosition;
     public static GameObject selectedLevelDot;
+    public bool isSelectingLevel;
     Vector3 DotOffset;
 
     [SerializeField] private GameObject PanelOptions;
@@ -36,72 +36,92 @@ public class AddLevelToDot : MonoBehaviour
     {
         // Obtém o caminho completo para a pasta "LevelEditor"
         levelEditorPath = Path.Combine(Application.persistentDataPath, "LevelEditor");
+        isSelectingLevel = false;
     }
     private void Update()
     {
-        if (OnMouseClick != null && Mouse.current.rightButton.wasPressedThisFrame)
+        if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            OnMouseClick();
-            if (selectedLevelDot)
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+
+            if (hit.collider != null && (hit.collider.CompareTag("LevelDot") || hit.collider.GetComponent<LevelDot>()))
             {
-                PanelOptions.SetActive(true);
-                UpdateLevelDotValues();
-                currentLevelDotComponent = selectedLevelDot.GetComponent<LevelDot>();
+                selectedLevelDot = hit.collider.gameObject;
+                OnMouseClick?.Invoke();
+                if (selectedLevelDot)
+                {
+                    isSelectingLevel = true;
+                    PanelOptions.SetActive(true);
+                    currentLevelDotComponent = selectedLevelDot.GetComponent<LevelDot>();
+                    UpdateLevelDotValues();
+                }
             }
         }
 
-        if (OnMouseClick != null && Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            OnMouseClick();
-            if (selectedLevelDot)
-            {
-                DotOffset = selectedLevelDot.transform.position - mousePosition;
-            }
-        }
-        else if (OnMouseClick != null && Mouse.current.leftButton.isPressed)
-        {
-            if (selectedLevelDot)
-            {
-                Vector3 newPosition = mousePosition + DotOffset;
-                newPosition.z = selectedLevelDot.transform.position.z; // Mantém o valor do ZPos
-                selectedLevelDot.transform.position = newPosition;
-            }
-        }
 
+        //if (OnMouseClick != null && Mouse.current.leftButton.wasPressedThisFrame && !isSelectingLevel)
+        //{
+        //    OnMouseClick();
+        //    if (selectedLevelDot)
+        //    {
+        //        // Converte a posição do mouse para as coordenadas locais do selectedLevelDot
+        //        Vector3 localMousePosition = selectedLevelDot.transform.InverseTransformPoint(mousePosition);
+        //        DotOffset = selectedLevelDot.transform.localPosition - localMousePosition;
+        //    }
+        //}
+        //else if (OnMouseClick != null && Mouse.current.leftButton.isPressed && !isSelectingLevel)
+        //{
+        //    if (selectedLevelDot)
+        //    {
+        //        // Converte a posição do mouse para as coordenadas locais do selectedLevelDot
+        //        Vector3 localMousePosition = selectedLevelDot.transform.InverseTransformPoint(mousePosition);
+        //        Vector3 newPosition = localMousePosition + DotOffset;
+        //        selectedLevelDot.transform.localPosition = newPosition;
+        //    }
+        //}
     }
 
-    private void LateUpdate()
-    {
-        if (selectedLevelDot != null && Mouse.current.leftButton.isPressed)
-        {
-            Vector3 newPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + DotOffset;
-            newPosition.z = selectedLevelDot.transform.position.z; // Mantém o valor do ZPos
-            selectedLevelDot.transform.position = newPosition;
+    //private void LateUpdate()
+    //{
+    //    if (selectedLevelDot != null && Mouse.current.leftButton.isPressed && !isSelectingLevel)
+    //    {
+    //        // Converte a posição do mouse para as coordenadas locais do selectedLevelDot
+    //        Vector3 localMousePosition = selectedLevelDot.transform.InverseTransformPoint(mousePosition);
+    //        Vector3 newPosition = localMousePosition + DotOffset;
+    //        selectedLevelDot.transform.localPosition = newPosition;
 
-            // Obtém o componente MoveableObject do objeto selecionado
-            LevelDot levelDot = selectedLevelDot.GetComponent<LevelDot>();
-
-        }
-    }
+    //        // Obtém o componente MoveableObject do objeto selecionado
+    //        LevelDot levelDot = selectedLevelDot.GetComponent<LevelDot>();
+    //    }
+    //}
 
     private void UpdateLevelDotValues()
-    { 
+    {
+        currentWorld = currentLevelDotComponent.worldName;
+        currentLevel = currentLevelDotComponent.levelName;
         LevelDotLevelName.text = currentLevelDotComponent.levelName;
-        currentLevelDotComponent.levelName = Path.GetFileNameWithoutExtension(currentLevelDotComponent.levelPath);
-        currentLevelPath = currentLevelDotComponent.levelPath;
         isFirstLevel.isOn = currentLevelDotComponent.isFirstLevel;
     }
 
+
     public void OnOkClick()
     {
-        currentLevelDotComponent.levelPath = currentLevelPath;
-        currentLevelDotComponent.isFirstLevel = isFirstLevel;
-        PanelOptions.SetActive(false);
+        if (currentLevelDotComponent != null)
+        {
+            currentLevelDotComponent.SetLevelPath(currentWorld, currentLevel);
+            LevelDotLevelName.text = currentLevel;
+            currentLevelDotComponent.isFirstLevel = isFirstLevel.isOn;
+            PanelOptions.SetActive(false);
+            isSelectingLevel = false;
+            UpdateLevelDotValues();
+        }
     }
 
     public void AddLevelDot()
     {
         InstantiateLevelButtons(WorldManager.instance.currentWorldName);
+        levelListPanel.SetActive(true);
     }
 
     private void InstantiateLevelButtons(string worldName)
@@ -142,14 +162,8 @@ public class AddLevelToDot : MonoBehaviour
                 string level = levelName; // Variável temporária para evitar closure
                 levelButton.onClick.AddListener(() =>
                 {
-                    // Define o nome do nível selecionado
-                    currentLevelName = level;
-
-                    // Obtém o caminho completo para o nível
-                    currentLevelPath = Path.Combine(worldFolderPath, level + ".TAOWLE");
-
-                    // Seleciona o nível no LevelDot
-                    UpdateLevelDotValues();
+                    currentLevel = level;
+                    currentWorld = WorldManager.instance.currentWorldName;
 
                     // Fecha o painel atual
                     if (levelListPanel != null)

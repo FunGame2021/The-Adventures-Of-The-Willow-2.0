@@ -100,7 +100,7 @@ public class WorldManager : MonoBehaviour
         {
             // Carrega o mundo atual e o nível atual
             SelectWorld(currentWorldName);
-            LevelEditorManager.instance.LoadLevel(currentWorldName, currentLevelName);
+            LevelEditorManager.instance.LoadLevel(currentWorldName, currentLevelName, "Sector1");
         }
     }
 
@@ -230,7 +230,8 @@ public class WorldManager : MonoBehaviour
 
                     LevelEditorManager.instance.isWorldMapEditor = false;
                     // Chame a função que carrega o nível ou execute qualquer outra ação desejada com o nível selecionado
-                    LevelEditorManager.instance.LoadLevel(worldName, level);
+                    LevelEditorManager.instance.LoadLevel(worldName, level, "Sector1");
+                    SectorManager.instance.currentSectorName = "Sector1";
 
                     // Fecha o painel atual
                     if (levelListPanel != null)

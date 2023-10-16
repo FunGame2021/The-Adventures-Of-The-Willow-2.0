@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System.Text.RegularExpressions;
+using static Cinemachine.DocumentationSortingAttribute;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -55,7 +56,7 @@ public class LevelEditorManager : MonoBehaviour
     public GameObject tilemapOptionsPanel; // Referência ao painel de opções
     public GameObject deleteWarningPanel;
     public Button okButton; // Referência ao botão "OK" no painel de opções
-    [HideInInspector]public Button selectedButton; // Variável para armazenar o botão selecionado
+    [HideInInspector] public Button selectedButton; // Variável para armazenar o botão selecionado
 
 
     [HideInInspector] public Tilemap selectedTilemap;
@@ -90,7 +91,7 @@ public class LevelEditorManager : MonoBehaviour
     #region Decor
     public DecorData ScriptableDecorData;
     public string selectedDecorName;
-    
+
 
     //Decor 2 No z-pos or shortlayer choose
     public Decor2Data ScriptableDecor2Data;
@@ -106,13 +107,13 @@ public class LevelEditorManager : MonoBehaviour
     private bool snapGrid;
     //public event Action<string> OnEnemySelected;
 
-    public Transform EnemyContainer;public EraserTool eraserTool;
+    public Transform EnemyContainer; public EraserTool eraserTool;
 
     //drag enemy and objects
     public Button snapGridButton; // Arraste o botão aqui no Inspector
     public Button selectPointButton; // Botão de ativação/desativação da ferramenta selectpoint
     public bool isActiveSelectPoint = false; // Indica se a ferramenta select point está ativa 
-    
+
 
 
 
@@ -152,8 +153,8 @@ public class LevelEditorManager : MonoBehaviour
 
     [SerializeField] private GridVisualizer gridVisualizer;
 
-    [SerializeField] private GameObject PanelLevelEditor;
-    [SerializeField] private GameObject PanelWorldEditor;
+    [SerializeField] private GameObject[] PanelLevelEditor;
+    [SerializeField] private GameObject[] PanelWorldEditor;
 
     //Info Level Edito Object selected to intantiate
     public string selectedStringInfo;
@@ -549,7 +550,7 @@ public class LevelEditorManager : MonoBehaviour
                 }
                 else //se o selectedGameObjectName não foro o Playerpos instancia os objetor normais não PlayerPos
                 {
-                    
+
                     GameObject gameObjectPrefab = FindGameObjectPrefabByName(selectedGameObjectName);
 
                     selectedStringInfo = selectedGameObjectName;
@@ -595,13 +596,25 @@ public class LevelEditorManager : MonoBehaviour
 
         if (isWorldMapEditor)
         {
-            PanelWorldEditor.SetActive(true);
-            PanelLevelEditor.SetActive(false);
+            foreach (GameObject panel in PanelWorldEditor)
+            {
+                panel.SetActive(true);
+            }
+            foreach (GameObject panel in PanelLevelEditor)
+            {
+                panel.SetActive(false);
+            }
         }
         else
         {
-            PanelLevelEditor.SetActive(true);
-            PanelWorldEditor.SetActive(false);
+            foreach (GameObject panel in PanelWorldEditor)
+            {
+                panel.SetActive(false);
+            }
+            foreach (GameObject panel in PanelLevelEditor)
+            {
+                panel.SetActive(true);
+            }
         }
     }
     private void AddTilemapButtonListeners()
@@ -625,7 +638,7 @@ public class LevelEditorManager : MonoBehaviour
         Tilemap newTilemap = newTilemapObject.AddComponent<Tilemap>();
         TilemapRenderer newTilemapRenderer = newTilemapObject.AddComponent<TilemapRenderer>();
 
-        
+
         // Define a posição do novo Tilemap
         newTilemapObject.transform.position = new Vector3Int(0, 0, 0);
 
@@ -839,7 +852,7 @@ public class LevelEditorManager : MonoBehaviour
             }
 
             //adicionar colisor ou remover
-            if(tempIsSolid && !tempIsWallPlatform)
+            if (tempIsSolid && !tempIsWallPlatform)
             {
                 SetTilemapLayer(selectedTilemap, groundLayer);
             }
@@ -1129,7 +1142,7 @@ public class LevelEditorManager : MonoBehaviour
 
     }
 
-   
+
     private GameObject FindEnemyPrefabByName(string enemyName)
     {
         // Percorre as categorias e inimigos no EnemyData
@@ -1151,7 +1164,7 @@ public class LevelEditorManager : MonoBehaviour
         return null;
     }
 
-   
+
 
 
     private bool IsMouseOverUI()
@@ -1177,7 +1190,7 @@ public class LevelEditorManager : MonoBehaviour
     #endregion
 
     #region Grid
-   
+
     public void GenerateGrid()
     {
         gridVisualizer.OnGridSizeUpdated();
@@ -1227,7 +1240,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         if (currentGridHeight > newHeight || currentGridWidth > newWidth)
         {
-            warnSizeGrid.SetActive(true); 
+            warnSizeGrid.SetActive(true);
             confirmButton.onClick.AddListener(() => OnConfirmButtonClicked(newWidth, newHeight));
 
         }
@@ -1356,59 +1369,85 @@ public class LevelEditorManager : MonoBehaviour
         {
             UnityEngine.Debug.LogWarning("O nome do nível já existe!");
             return;
-
         }
-        // Cria um novo objeto LevelData e define o nome do nível e o autor
-        LevelData levelData = new LevelData();
-        levelData.levelName = levelName;
-        levelData.author = author;
 
-        // Cria um novo TilemapData com um Tilemap vazio
+        // Cria um novo objeto LevelDataWrapper para conter as informações do nível
+        LevelDataWrapper levelDataWrapper = new LevelDataWrapper();
+
+        // Define o nome do nível e o autor no LevelDataWrapper
+        levelDataWrapper.levelName = levelName;
+        levelDataWrapper.author = author;
+        levelDataWrapper.levelTime = 60;
+
+        // Crie um novo setor chamado "Sector1" e preencha seus dados
+        SectorData sectorData1 = new SectorData();
+
+
+        // Define o tamanho da grade do setor como 20x20
+        sectorData1.gridSizeData = new GridSizeData();
+        sectorData1.gridSizeData.currentGridWidth = 20; // Largura da grade
+        sectorData1.gridSizeData.currentGridHeight = 20; // Altura da grade
+
+
+        // Define as preferências do nível, como a música (MusicID)
+        sectorData1.levelPreferences = new LevelPreferences();
+        sectorData1.levelPreferences.MusicID = 1; // ID da música do nível
+
+
+        // Crie um novo TilemapData vazio para o setor
         TilemapData emptyTilemapData = new TilemapData();
-        emptyTilemapData.tilemapName = "EmptyTilemap";
-        emptyTilemapData.tilemapIndex = 0;
-        emptyTilemapData.isSolid = false;
-        emptyTilemapData.isWallPlatform = false;
-        emptyTilemapData.shortLayerPos = 0;
-        emptyTilemapData.zPos = 0;
-        emptyTilemapData.tiles = new List<TileData>();
+        emptyTilemapData.tilemapName = "EmptyTilemap"; // Nome do tilemap
+        emptyTilemapData.tilemapIndex = 0; // Índice do tilemap
+        emptyTilemapData.isSolid = false; // Define se é sólido
+        emptyTilemapData.isWallPlatform = false; // Define se é uma plataforma de parede
+        emptyTilemapData.shortLayerPos = 0; // Posição da camada curta
+        emptyTilemapData.zPos = 0; // Posição Z
+        emptyTilemapData.tiles = new List<TileData>(); // Lista de dados do tile
 
 
-        // Cria um objeto TilemapDataWrapper e define os dados
-        TilemapDataWrapper tilemapDataWrapper = new TilemapDataWrapper();
-        tilemapDataWrapper.gridSizeData = new GridSizeData();
-        tilemapDataWrapper.gridSizeData.currentGridWidth = 20; // Define a largura da grade como 20
-        tilemapDataWrapper.gridSizeData.currentGridHeight = 20; // Define a altura da grade como 20
+        // Adicione o TilemapData vazio ao setor
+        sectorData1.tilemapDataList = new List<TilemapData>() { emptyTilemapData };
 
 
-        tilemapDataWrapper.levelPreferences = new LevelPreferences();
-        tilemapDataWrapper.levelPreferences.MusicID = 1;
+        // Inicialize as listas para dados de inimigos, decoração, objetos, etc.
+        sectorData1.sectorName = "Sector1";
+        sectorData1.enemySaveData = new List<EnemySaveData>();
+        sectorData1.decorSaveData = new List<DecorSaveData>();
+        sectorData1.decor2SaveData = new List<Decor2SaveData>();
+        sectorData1.objectSaveData = new List<ObjectSaveData>();
+        sectorData1.gameObjectSaveData = new List<GameObjectSaveData>();
 
-        tilemapDataWrapper.levelName = levelName;
-        tilemapDataWrapper.author = author;
-        tilemapDataWrapper.tilemapDataList = new List<TilemapData>() { emptyTilemapData };
-        tilemapDataWrapper.enemySaveData = new List<EnemySaveData>();
-        tilemapDataWrapper.decorSaveData = new List<DecorSaveData>();
-        tilemapDataWrapper.decor2SaveData = new List<Decor2SaveData>();
-        tilemapDataWrapper.objectSaveData = new List<ObjectSaveData>();
-        tilemapDataWrapper.gameObjectSaveData = new List<GameObjectSaveData>();
+        // Adicione sectorData1 à lista de setores no LevelDataWrapper
+        levelDataWrapper.sectorData = new List<SectorData> { sectorData1 };
 
-        // Converte o objeto TilemapDataWrapper em JSON
-        string json = JsonUtility.ToJson(tilemapDataWrapper);
-
+        // Converte o objeto LevelDataWrapper em formato JSON
+        string json = JsonUtility.ToJson(levelDataWrapper);
         // Obtém o caminho completo para a pasta do mundo atual
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, WorldManager.instance.currentWorldName);
 
-        // Obtém o caminho completo para o arquivo do novo nível com a extensão ".TAOWLE" dentro da pasta do nível
+
+        // Verifica se a pasta do mundo existe
+        if (!Directory.Exists(worldFolderPath))
+        {
+            // Cria a pasta do mundo se não existir
+            Directory.CreateDirectory(worldFolderPath);
+        }
+
+        // Obtém o caminho completo para o arquivo JSON com a extensão ".TAOWLE" dentro da pasta do mundo
         string newLevelFilePath = Path.Combine(worldFolderPath, levelName + ".TAOWLE");
+
 
         // Salva o JSON em um arquivo
         File.WriteAllText(newLevelFilePath, json);
 
+
         // Atualiza a lista de botões de nível
         WorldManager.instance.InstantiateLevelButtons(WorldManager.instance.currentWorldName);
+
+        // Exibe uma mensagem de log informando que o novo nível foi criado e salvo
         Debug.Log("Novo nível criado e salvo: " + newLevelFilePath);
     }
+
 
     private bool IsLevelNameExists(string levelName)
     {
@@ -1437,7 +1476,7 @@ public class LevelEditorManager : MonoBehaviour
 
     public void Save()
     {
-        if(isWorldMapEditor)
+        if (isWorldMapEditor)
         {
             SaveWorld();
         }
@@ -1451,6 +1490,16 @@ public class LevelEditorManager : MonoBehaviour
         // Obtém o nome do nível e autor dos campos de entrada
         string levelName = levelNameInput.text;
         string author = authorInput.text;
+
+        // Cria um objeto LevelData para salvar os dados do nível
+        LevelDataWrapper levelDataWrapper = new LevelDataWrapper();
+        levelDataWrapper.levelName = levelName;
+        levelDataWrapper.author = author;
+        levelDataWrapper.levelTime = LevelSettings.instance.levelTime;
+
+        LoadExistingSectors(levelDataWrapper);
+
+
 
         // Verifica se houve alterações nos campos de entrada
         if (!string.IsNullOrEmpty(levelName) && levelName != WorldManager.instance.currentLevelName)
@@ -1505,7 +1554,7 @@ public class LevelEditorManager : MonoBehaviour
         {
             TilemapData tilemapData = new TilemapData();
             tilemapData.tilemapName = tilemap.name;
-            tilemapData.tilemapIndex = tilemap.transform.GetSiblingIndex(); 
+            tilemapData.tilemapIndex = tilemap.transform.GetSiblingIndex();
             int WallLayer = LayerMask.NameToLayer("Wall");
             tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer);
 
@@ -1646,27 +1695,105 @@ public class LevelEditorManager : MonoBehaviour
         }
 
 
+        #endregion
+
+        foreach (GameObjectSaveData gameObjectData in gameObjectList)
+        {
+            if (gameObjectData.name == "PlayerPos")
+            {
+                // Captura um screenshot do nível
+                LevelShoot.instance.CaptureAndSaveScreenshot(levelName, currentGridWidth, currentGridHeight);
+            }
+        }
+        // Inicialize levelDataWrapper.sectorData se estiver nulo
+        if (levelDataWrapper.sectorData == null)
+        {
+            levelDataWrapper.sectorData = new List<SectorData>();
+        }
+        else
+        {
+            // Carregue os dados existentes do arquivo JSON, se houver
+            LoadExistingSectors(levelDataWrapper);
+        }
+
+        // Obtém o nome do setor atualmente selecionado
+        string currentSectorName = SectorManager.instance.currentSectorName;
+        bool sectorExistsInSave = false;
+        SectorData currentSectorData = null;
+
+        // Verifica se o nome do setor atual está no JSON de save
+        foreach (SectorData sectorData in levelDataWrapper.sectorData)
+        {
+            if (sectorData.sectorName == currentSectorName)
+            {
+                // Marque que o setor existe no save
+                sectorExistsInSave = true;
+
+                // Guarde uma referência para o setor encontrado
+                currentSectorData = sectorData;
+                // Saia do loop, pois o setor foi encontrado e atualizado
+                break;
+            }
+        }
+
+        if (!sectorExistsInSave)
+        {
+            // Se o setor não existir no save, crie um novo setor
+            currentSectorData = new SectorData();
+            currentSectorData.sectorName = currentSectorName;
+            // Preencha com os dados apropriados
+            // Define o tamanho da grade do setor como 20x20
+            currentSectorData.gridSizeData = new GridSizeData();
+            currentSectorData.gridSizeData.currentGridWidth = 20; // Largura da grade
+            currentSectorData.gridSizeData.currentGridHeight = 20; // Altura da grade
+
+            currentSectorData.levelPreferences = new LevelPreferences();
+
+            currentSectorData.levelPreferences.MusicID = 1; // ID da música do nível
+
+            currentSectorData.enemySaveData = new List<EnemySaveData>();
+            currentSectorData.decorSaveData = new List<DecorSaveData>();
+            currentSectorData.decor2SaveData = new List<Decor2SaveData>();
+            currentSectorData.objectSaveData = new List<ObjectSaveData>();
+            currentSectorData.gameObjectSaveData = new List<GameObjectSaveData>();
+
+            // Crie um novo TilemapData vazio para o setor
+            TilemapData emptyTilemapData = new TilemapData();
+            emptyTilemapData.tilemapName = "EmptyTilemap"; // Nome do tilemap
+            emptyTilemapData.tilemapIndex = 0; // Índice do tilemap
+            emptyTilemapData.isSolid = false; // Define se é sólido
+            emptyTilemapData.isWallPlatform = false; // Define se é uma plataforma de parede
+            emptyTilemapData.shortLayerPos = 0; // Posição da camada curta
+            emptyTilemapData.zPos = 0; // Posição Z
+            emptyTilemapData.tiles = new List<TileData>(); // Lista de dados do tile
 
 
-        // Cria um objeto que contém os dados do gridSizeData e tilemapDataList
-        TilemapDataWrapper tilemapDataWrapper = new TilemapDataWrapper();
-        tilemapDataWrapper.levelName = levelName;
-        tilemapDataWrapper.author = author;
-        // Obtém o MusicID do LevelSettings e atribui ao LevelPreferences
-        tilemapDataWrapper.levelPreferences = new LevelPreferences();
-        tilemapDataWrapper.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
-        tilemapDataWrapper.levelPreferences.levelTime = LevelSettings.instance.levelTime;
-        tilemapDataWrapper.gridSizeData = gridSizeData;
-        tilemapDataWrapper.tilemapDataList = tilemapDataList;
-        tilemapDataWrapper.enemySaveData = enemyList;
-        tilemapDataWrapper.gameObjectSaveData = gameObjectList;
-        tilemapDataWrapper.decorSaveData = decorList;
-        tilemapDataWrapper.decor2SaveData = decor2List;
-        tilemapDataWrapper.objectSaveData = objectList;
+            // Adicione o TilemapData vazio ao setor
+            currentSectorData.tilemapDataList = new List<TilemapData>() { emptyTilemapData };
+
+
+            // Adicione o novo setor à lista de setores no save
+            levelDataWrapper.sectorData.Add(currentSectorData);
+        }
+        else
+        {
+            // Atualize os dados do setor existente com os novos dados
+            currentSectorData.gridSizeData = gridSizeData; // Preencha com os dados apropriados
+            currentSectorData.levelPreferences = new LevelPreferences(); // Preencha com os dados apropriados
+            currentSectorData.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
+
+            currentSectorData.tilemapDataList = tilemapDataList; // Preencha com os dados apropriados
+            currentSectorData.enemySaveData = enemyList; // Preencha com os dados apropriados
+            currentSectorData.gameObjectSaveData = gameObjectList; // Preencha com os dados apropriados
+            currentSectorData.decorSaveData = decorList; // Preencha com os dados apropriados
+            currentSectorData.decor2SaveData = decor2List; // Preencha com os dados apropriados
+            currentSectorData.objectSaveData = objectList; // Preencha com os dados apropriados
+        }
+
 
         // Converte o objeto para JSON
-        string json = JsonUtility.ToJson(tilemapDataWrapper, true);
-        #endregion
+        string json = JsonUtility.ToJson(levelDataWrapper, true);
+
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, WorldManager.instance.currentWorldName);
 
@@ -1686,7 +1813,42 @@ public class LevelEditorManager : MonoBehaviour
         Debug.Log("Tilemap data saved to " + savePath);
     }
 
-    public void LoadLevel(string worldName, string level)
+    private void LoadExistingSectors(LevelDataWrapper levelDataWrapper)
+    {
+        // Obtém o caminho completo para o arquivo JSON
+        string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, WorldManager.instance.currentWorldName);
+        string filePath = Path.Combine(worldFolderPath, levelDataWrapper.levelName + ".TAOWLE");
+
+        // Verifica se o arquivo JSON existe
+        if (File.Exists(filePath))
+        {
+            // Lê o conteúdo do arquivo JSON
+            string json = File.ReadAllText(filePath);
+
+            // Deserializa o JSON de volta para um objeto LevelDataWrapper
+            LevelDataWrapper loadedData = JsonUtility.FromJson<LevelDataWrapper>(json);
+
+            // Verifica se os dados foram carregados com sucesso
+            if (loadedData != null)
+            {
+                // Atribui os dados carregados à lista de setores em levelDataWrapper
+                levelDataWrapper.sectorData = loadedData.sectorData;
+
+                Debug.Log("Existing sectors loaded successfully.");
+            }
+            else
+            {
+                Debug.LogWarning("Failed to load existing sectors from JSON.");
+            }
+        }
+        else
+        {
+            Debug.Log("No existing sectors found for this level.");
+        }
+    }
+
+
+    public void LoadLevel(string worldName, string level, string sectorName)
     {
 
 
@@ -1698,7 +1860,7 @@ public class LevelEditorManager : MonoBehaviour
 
         Debug.Log("Tilemap data loaded from " + worldName + "/" + level + ".TAOWLE");
 
-	
+
         // Verifica se o arquivo JSON existe
         if (File.Exists(loadPath))
         {
@@ -1706,407 +1868,889 @@ public class LevelEditorManager : MonoBehaviour
             // Lê o conteúdo do arquivo JSON
             string json = File.ReadAllText(loadPath);
 
-            // Converte o JSON de volta para o objeto TilemapDataWrapper
-            TilemapDataWrapper tilemapDataWrapper = JsonUtility.FromJson<TilemapDataWrapper>(json);
-
-            // Obtém o objeto GridSizeData do TilemapDataWrapper
-            GridSizeData gridSizeData = tilemapDataWrapper.gridSizeData;
-
-            // Obtém a lista de EnemySaveData do TilemapDataWrapper
-            List<EnemySaveData> enemyList = tilemapDataWrapper.enemySaveData;
-            List<GameObjectSaveData> gameObjectList = tilemapDataWrapper.gameObjectSaveData;
-            List<ObjectSaveData> objectList = tilemapDataWrapper.objectSaveData;
-            List<DecorSaveData> decorList = tilemapDataWrapper.decorSaveData; 
-            List<Decor2SaveData> decor2List = tilemapDataWrapper.decor2SaveData;
-
-            // Obtém a lista de TilemapData do TilemapDataWrappere
-            List<TilemapData> tilemapDataList = tilemapDataWrapper.tilemapDataList;
-
-            // Limpa os Tilemaps existentes
-            ClearTilemaps();
-
-            Debug.Log("Load");
-            Debug.Log(tilemapDataWrapper.levelPreferences.levelTime);
-            LevelSettings.instance.SetMusicID(tilemapDataWrapper.levelPreferences.MusicID);
-            LevelSettings.instance.newLevelTime = tilemapDataWrapper.levelPreferences.levelTime;
-            
-            LevelSettings.instance.UpdateValues();
-            // Restaura o tamanho do grid
-            currentGridWidth = gridSizeData.currentGridWidth;
-            currentGridHeight = gridSizeData.currentGridHeight;
-
-            // Gera o grid com o novo tamanho
-            GenerateGrid();
-            DrawGridOutline();
-            LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
-            if (levelEditorCamera != null)
+            // Desserializa o JSON para um objeto LevelDataWrapper
+            LevelDataWrapper levelDataWrapper = JsonUtility.FromJson<LevelDataWrapper>(json);
+            if (levelDataWrapper != null)
             {
-                levelEditorCamera.UpdateCameraBounds();
-            }
-            gridVisualizer.OnGridSizeUpdated();
+                // Aqui, você pode carregar as informações gerais do nível (nome e autor)
+                string loadedLevelName = levelDataWrapper.levelName;
+                string loadedAuthor = levelDataWrapper.author;
 
-            // Limpa os inimigos existentes
-            ClearEnemies();
-            // Limpa os objetos existentes
-            ClearObjects();
-            ClearGameObjects();
-            // Limpa os elementos decorativos existentes
-            ClearDecor();
-            ClearNodes();
-            levelNameInput.text = tilemapDataWrapper.levelName;
-            authorInput.text = tilemapDataWrapper.author;
+                // Exemplo: Defina o nome do nível e autor carregados em campos de entrada
+                levelNameInput.text = loadedLevelName;
+                authorInput.text = loadedAuthor;
 
-            // Carrega os inimigos salvos
-            foreach (EnemySaveData enemyData in enemyList)
-            {
-                // Encontre o prefab do inimigo com base no nome do inimigo
-                GameObject enemyPrefab = null;
-                foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
+                LevelSettings.instance.newLevelTime = levelDataWrapper.levelTime;
+
+                // Limpe os botões existentes antes de criar novos
+                SectorManager.instance.ClearSectorButtons();
+
+                // Itera sobre a lista de setores no LevelDataWrapper
+                foreach (SectorData sectorDataBTN in levelDataWrapper.sectorData)
                 {
-                    foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
+                    // Crie um botão para cada setor
+                    SectorManager.instance.AddSectorList(sectorDataBTN.sectorName);
+                    SectorManager.instance.CreateSectorButton(sectorDataBTN.sectorName);
+                }
+
+                // Procura o setor especificado pelo nome
+                SectorData sectorData = levelDataWrapper.sectorData.Find(sector => sector.sectorName == sectorName);
+
+                if (sectorData != null)
+                {
+                    // Agora você pode acessar os dados do setor especificado
+                    GridSizeData gridSizeData = sectorData.gridSizeData;
+                    LevelPreferences levelPreferences = sectorData.levelPreferences;
+                    List<TilemapData> tilemapDataList = sectorData.tilemapDataList;
+                    List<EnemySaveData> enemyList = sectorData.enemySaveData;
+                    List<GameObjectSaveData> gameObjectList = sectorData.gameObjectSaveData;
+                    List<DecorSaveData> decorList = sectorData.decorSaveData;
+                    List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
+                    List<ObjectSaveData> objectList = sectorData.objectSaveData;
+
+                    // Limpa os Tilemaps existentes
+                    ClearTilemaps();
+
+                    LevelSettings.instance.SetMusicID(sectorData.levelPreferences.MusicID);
+
+                    LevelSettings.instance.UpdateValues();
+                    // Restaura o tamanho do grid
+                    currentGridWidth = gridSizeData.currentGridWidth;
+                    currentGridHeight = gridSizeData.currentGridHeight;
+
+                    // Gera o grid com o novo tamanho
+                    GenerateGrid();
+                    DrawGridOutline();
+                    LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+                    if (levelEditorCamera != null)
                     {
-                        if (enemyInfo.enemyName == enemyData.name)
-                        {
-                            enemyPrefab = enemyInfo.prefab;
-                            break;
-                        }
+                        levelEditorCamera.UpdateCameraBounds();
                     }
-                    if (enemyPrefab != null)
-                        break;
-                }
+                    gridVisualizer.OnGridSizeUpdated();
 
-                if (enemyPrefab != null)
-                {
-                    // Crie um objeto do inimigo e defina o nome e a posição
-                    GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
-                    enemyObject.transform.SetParent(enemyContainer.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
-                }
-            }
+                    // Limpa os inimigos existentes
+                    ClearEnemies();
+                    // Limpa os objetos existentes
+                    ClearObjects();
+                    ClearGameObjects();
+                    // Limpa os elementos decorativos existentes
+                    ClearDecor();
+                    ClearNodes();
 
-
-            foreach (GameObjectSaveData gameObjectData in gameObjectList)
-            {
-                GameObject gameObjectPrefab = null;
-                foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
-                {
-                    foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                    // Carrega os inimigos salvos
+                    foreach (EnemySaveData enemyData in enemyList)
                     {
-                        if (gameObjectInfo.GameObjectName == gameObjectData.name)
+                        // Encontre o prefab do inimigo com base no nome do inimigo
+                        GameObject enemyPrefab = null;
+                        foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
                         {
-                            gameObjectPrefab = gameObjectInfo.prefab;
-                            break;
-                        }
-                    }
-                    if (gameObjectPrefab != null)
-                        break;
-                }
-
-                if (gameObjectPrefab != null)
-                {
-                    // Crie um objeto do inimigo e defina o nome e a posição
-                    GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
-                    gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for enemy: " + gameObjectData.name);
-                }
-            }
-
-            // Carrega os objetos salvos
-            foreach (ObjectSaveData objectData in objectList)
-            {
-                GameObject objectPrefab = null;
-                foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
-                {
-                    foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
-                    {
-                        if (objectInfo.ObjectName == objectData.name)
-                        {
-                            objectPrefab = objectInfo.prefab;
-                            break;
-                        }
-                    }
-                    if (objectPrefab != null)
-                        break;
-                }
-
-                if (objectPrefab != null)
-                {
-                    // Crie um novo objeto com base no prefab e defina o nome e a posição
-                    GameObject objectObject = Instantiate(objectPrefab, objectData.position, Quaternion.identity);
-                    objectObject.transform.SetParent(objectsContainer.transform);
-
-                    ObjectType objectType = objectData.objectType;
-
-                    // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
-                    if (objectType == ObjectType.Moving)
-                    {
-                        PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                        if (movementComponent != null)
-                        {
-                            movementComponent.isCircular = objectData.isCircular;
-                            movementComponent.isPingPong = objectData.isPingPong;
-                            movementComponent.id = objectData.id;
-
-                            movementComponent.nodes = new Transform[objectData.node.Count];
-                            movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
-
-                            for (int i = 0; i < objectData.node.Count; i++)
+                            foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
                             {
-                                // Instancie o prefab dos nodes em vez de criar um novo Transform vazio
-                                GameObject nodePrefab = NodeObjectPrefab; // Obtenha o prefab dos nodes da variável NodeObjectPrefab
-                                GameObject newNodeObject = Instantiate(nodePrefab, objectData.node[i].position, Quaternion.identity);
-                                newNodeObject.name = "Node " + i; // Defina o nome do objeto do node para identificação
+                                if (enemyInfo.enemyName == enemyData.name)
+                                {
+                                    enemyPrefab = enemyInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (enemyPrefab != null)
+                                break;
+                        }
 
-                                Transform nodeTransform = newNodeObject.transform;
-                                movementComponent.nodes[i] = nodeTransform;
-                                movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
+                        if (enemyPrefab != null)
+                        {
+                            // Crie um objeto do inimigo e defina o nome e a posição
+                            GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
+                            enemyObject.transform.SetParent(enemyContainer.transform);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
+                        }
+                    }
+
+
+                    foreach (GameObjectSaveData gameObjectData in gameObjectList)
+                    {
+                        GameObject gameObjectPrefab = null;
+                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        {
+                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            {
+                                if (gameObjectInfo.GameObjectName == gameObjectData.name)
+                                {
+                                    gameObjectPrefab = gameObjectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (gameObjectPrefab != null)
+                                break;
+                        }
+
+                        if (gameObjectPrefab != null)
+                        {
+                            // Crie um objeto do inimigo e defina o nome e a posição
+                            GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
+                            gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for enemy: " + gameObjectData.name);
+                        }
+                    }
+
+                    // Carrega os objetos salvos
+                    foreach (ObjectSaveData objectData in objectList)
+                    {
+                        GameObject objectPrefab = null;
+                        foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                        {
+                            foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                            {
+                                if (objectInfo.ObjectName == objectData.name)
+                                {
+                                    objectPrefab = objectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (objectPrefab != null)
+                                break;
+                        }
+
+                        if (objectPrefab != null)
+                        {
+                            // Crie um novo objeto com base no prefab e defina o nome e a posição
+                            GameObject objectObject = Instantiate(objectPrefab, objectData.position, Quaternion.identity);
+                            objectObject.transform.SetParent(objectsContainer.transform);
+
+                            ObjectType objectType = objectData.objectType;
+
+                            // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
+                            if (objectType == ObjectType.Moving)
+                            {
+                                PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
+                                if (movementComponent != null)
+                                {
+                                    movementComponent.isCircular = objectData.isCircular;
+                                    movementComponent.isPingPong = objectData.isPingPong;
+                                    movementComponent.id = objectData.id;
+
+                                    movementComponent.nodes = new Transform[objectData.node.Count];
+                                    movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
+
+                                    for (int i = 0; i < objectData.node.Count; i++)
+                                    {
+                                        // Instancie o prefab dos nodes em vez de criar um novo Transform vazio
+                                        GameObject nodePrefab = NodeObjectPrefab; // Obtenha o prefab dos nodes da variável NodeObjectPrefab
+                                        GameObject newNodeObject = Instantiate(nodePrefab, objectData.node[i].position, Quaternion.identity);
+                                        newNodeObject.name = "Node " + i; // Defina o nome do objeto do node para identificação
+
+                                        Transform nodeTransform = newNodeObject.transform;
+                                        movementComponent.nodes[i] = nodeTransform;
+                                        movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for object: " + objectData.name);
+                        }
+                    }
+
+
+                    // Carrega os decorativos salvos
+                    foreach (DecorSaveData decorData in decorList)
+                    {
+                        GameObject decorPrefab = null;
+
+                        foreach (DecorData.DecorCategory category in ScriptableDecorData.categories)
+                        {
+                            foreach (DecorData.DecorInfo decorInfo in category.decorations)
+                            {
+                                if (decorInfo.decorName == decorData.name)
+                                {
+                                    decorPrefab = decorInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (decorPrefab != null)
+                                break;
+                        }
+
+                        if (decorPrefab != null)
+                        {
+                            GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
+                            decorObject.transform.SetParent(decorContainer.transform);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for decor: " + decorData.name);
+                        }
+                    }
+
+                    // Carrega os decorativos salvos
+                    foreach (Decor2SaveData decor2Data in decor2List)
+                    {
+                        GameObject decor2Prefab = null;
+
+                        foreach (Decor2Data.Decor2Category category in ScriptableDecor2Data.categories)
+                        {
+                            foreach (Decor2Data.Decor2Info decor2Info in category.decorations)
+                            {
+                                if (decor2Info.decor2Name == decor2Data.name)
+                                {
+                                    decor2Prefab = decor2Info.prefab;
+                                    break;
+                                }
+                            }
+                            if (decor2Prefab != null)
+                                break;
+                        }
+
+                        if (decor2Prefab != null)
+                        {
+                            GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
+                            decor2Object.transform.SetParent(decor2Container.transform);
+
+                            // Encontra o primeiro SpriteRenderer em um ancestral
+                            SpriteRenderer[] spriteRenderers = decor2Object.GetComponentsInChildren<SpriteRenderer>();
+                            if (spriteRenderers != null)
+                            {
+                                foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+                                {
+                                    // Define o shortLayer a partir dos dados salvos
+                                    spriteRenderer.sortingLayerName = decor2Data.shortLayerName;
+                                }
+
+                            }
+                            else
+                            {
+                                Debug.LogWarning("SpriteRenderer component not found on Decor2Object: " + decor2Data.name);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
+                        }
+                    }
+
+                    // Percorre os TilemapData da lista
+                    foreach (TilemapData tilemapData in tilemapDataList)
+                    {
+                        // Cria um novo Tilemap no Grid da cena
+                        GameObject newTilemapObject = new GameObject(tilemapData.tilemapName);
+                        newTilemapObject.transform.SetParent(tilemapGrid.transform, false);
+
+                        Tilemap newTilemap = newTilemapObject.AddComponent<Tilemap>();
+                        //newTilemapObject.AddComponent<TilemapRenderer>();
+                        TilemapRenderer newTilemapRenderer = newTilemapObject.AddComponent<TilemapRenderer>();
+
+
+                        // Define a posição do novo Tilemap
+                        newTilemapObject.transform.position = new Vector3Int(0, 0, Mathf.RoundToInt(tilemapData.zPos));
+
+                        newTilemapRenderer.sortingOrder = tilemapData.shortLayerPos;
+
+                        // Adiciona o Tilemap à lista
+                        tilemaps.Add(newTilemap);
+
+                        // Cria um novo botão para o Tilemap no UI
+                        Button newButton = Instantiate(tilemapButtonPrefab, uiButtonContainer);
+                        newButton.transform.SetParent(uiButtonContainer, false);
+
+                        // Configura o callback de clique para selecionar o Tilemap correspondente
+                        int index = tilemapButtons.Count;
+                        newButton.onClick.AddListener(() => SelectTilemap(index));
+
+                        // Adiciona o botão à lista
+                        tilemapButtons.Add(newButton);
+
+                        // Atualiza os listeners dos botões
+                        AddTilemapButtonListeners();
+
+                        // Seleciona o Tilemap recém-criado, se for o único existente
+                        if (tilemaps.Count == 1)
+                        {
+                            SelectTilemap(0);
+                        }
+
+                        // Configura a propriedade "isSolid" do Tilemap
+                        if (tilemapData.isSolid)
+                        {
+                            // Adiciona um Collider2D ao Tilemap se ainda não existir
+                            if (newTilemap.GetComponent<TilemapCollider2D>() == null)
+                            {
+                                newTilemap.gameObject.AddComponent<TilemapCollider2D>();
+                            }
+
+                            // Obtém o componente TilemapCollider2D do Tilemap
+                            TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
+
+                            // Verifica se o TilemapCollider2D existe
+                            if (tilemapCollider2D != null)
+                            {
+                                // Ativa o "Used by Composite" no TilemapCollider2D
+                                tilemapCollider2D.usedByComposite = true;
+                            }
+
+                            // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
+                            if (newTilemap.GetComponent<CompositeCollider2D>() == null)
+                            {
+                                newTilemap.gameObject.AddComponent<CompositeCollider2D>();
+                            }
+
+                            // Obtém o componente CompositeCollider2D do Tilemap
+                            CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
+
+                            // Verifica se o CompositeCollider2D existe
+                            if (compositeCollider2D != null)
+                            {
+                                // Obtém o Rigidbody2D associado ao CompositeCollider2D
+                                Rigidbody2D rb = compositeCollider2D.attachedRigidbody;
+
+                                // Verifica se o Rigidbody2D existe
+                                if (rb != null)
+                                {
+                                    // Define o tipo de corpo como estático
+                                    rb.bodyType = RigidbodyType2D.Static;
+                                }
+                            }
+
+                            //adicionar colisor ou remover
+                            if (tilemapData.isSolid && !tilemapData.isWallPlatform)
+                            {
+                                SetTilemapLayer(newTilemap, groundLayer);
+                            }
+                            if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                            {
+                                SetTilemapLayer(newTilemap, wallLayer);
+                            }
+                        }
+                        else
+                        {
+                            // Define a layer do Tilemap para a layer "Default"
+                            SetTilemapLayer(newTilemap, defaultLayer);
+                        }
+
+                        //Configura a propriedade "isOneWayPlatform" do Tilemap
+                        //if(tilemapData.isOneWayPlatform && tilemapData.isSolid)
+                        //{
+                        //    // Obtém o componente TilemapCollider2D do Tilemap
+                        //    TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
+
+                        //    // Verifica se o TilemapCollider2D existe
+                        //    if (tilemapCollider2D != null)
+                        //    {
+                        //        // Ativa o "Used by Effector2D" no TilemapCollider2D
+                        //        tilemapCollider2D.usedByEffector = true;
+                        //    }
+                        //    // Adiciona um Effector2D ao Tilemap se ainda não existir
+                        //    if (newTilemap.GetComponent<PlatformEffector2D>() == null)
+                        //    {
+                        //        newTilemap.gameObject.AddComponent<PlatformEffector2D>();
+                        //    }
+
+                        //    // Obtém o componente CompositeCollider2D do Tilemap
+                        //    CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
+
+                        //    // Verifica se o CompositeCollider2D existe
+                        //    if (compositeCollider2D != null)
+                        //    {
+                        //        compositeCollider2D.usedByEffector = true;
+                        //    }
+                        //}
+
+                        // Percorre os TileData do TilemapData
+                        foreach (TileData tileData in tilemapData.tiles)
+                        {
+                            // Carrega a telha do TileData.tileName
+                            TileBase tile = GetTileByName(tileData.tileName);
+
+                            // Verifica se a telha existe
+                            if (tile != null)
+                            {
+                                // Define a telha no Tilemap na posição cellPos
+                                newTilemap.SetTile(tileData.cellPos, tile);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Tile not found: " + tileData.tileName);
                             }
                         }
                     }
                 }
+
                 else
                 {
-                    Debug.LogWarning("Prefab not found for object: " + objectData.name);
-                }
-            }
+                    Debug.LogWarning("Sector not found: " + sectorName);
 
+                    // Carregue o Setor1 por padrão, se o setor especificado não for encontrado
+                    sectorName = "Sector1";
+                    sectorData = levelDataWrapper.sectorData.Find(sector => sector.sectorName == sectorName);
 
-            // Carrega os decorativos salvos
-            foreach (DecorSaveData decorData in decorList)
-            {
-                GameObject decorPrefab = null;
-
-                foreach (DecorData.DecorCategory category in ScriptableDecorData.categories)
-                {
-                    foreach (DecorData.DecorInfo decorInfo in category.decorations)
+                    if (sectorData != null)
                     {
-                        if (decorInfo.decorName == decorData.name)
+                        // Agora você pode acessar os dados do setor especificado
+                        GridSizeData gridSizeData = sectorData.gridSizeData;
+                        LevelPreferences levelPreferences = sectorData.levelPreferences;
+                        List<TilemapData> tilemapDataList = sectorData.tilemapDataList;
+                        List<EnemySaveData> enemyList = sectorData.enemySaveData;
+                        List<GameObjectSaveData> gameObjectList = sectorData.gameObjectSaveData;
+                        List<DecorSaveData> decorList = sectorData.decorSaveData;
+                        List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
+                        List<ObjectSaveData> objectList = sectorData.objectSaveData;
+
+                        // Limpa os Tilemaps existentes
+                        ClearTilemaps();
+
+                        LevelSettings.instance.SetMusicID(sectorData.levelPreferences.MusicID);
+
+                        LevelSettings.instance.UpdateValues();
+                        // Restaura o tamanho do grid
+                        currentGridWidth = gridSizeData.currentGridWidth;
+                        currentGridHeight = gridSizeData.currentGridHeight;
+
+                        // Gera o grid com o novo tamanho
+                        GenerateGrid();
+                        DrawGridOutline();
+                        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+                        if (levelEditorCamera != null)
                         {
-                            decorPrefab = decorInfo.prefab;
-                            break;
+                            levelEditorCamera.UpdateCameraBounds();
                         }
-                    }
-                    if (decorPrefab != null)
-                        break;
-                }
+                        gridVisualizer.OnGridSizeUpdated();
 
-                if (decorPrefab != null)
-                {
-                    GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
-                    decorObject.transform.SetParent(decorContainer.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for decor: " + decorData.name);
-                }
-            }
+                        // Limpa os inimigos existentes
+                        ClearEnemies();
+                        // Limpa os objetos existentes
+                        ClearObjects();
+                        ClearGameObjects();
+                        // Limpa os elementos decorativos existentes
+                        ClearDecor();
+                        ClearNodes();
 
-            // Carrega os decorativos salvos
-            foreach (Decor2SaveData decor2Data in decor2List)
-            {
-                GameObject decor2Prefab = null;
-
-                foreach (Decor2Data.Decor2Category category in ScriptableDecor2Data.categories)
-                {
-                    foreach (Decor2Data.Decor2Info decor2Info in category.decorations)
-                    {
-                        if (decor2Info.decor2Name == decor2Data.name)
+                        // Carrega os inimigos salvos
+                        foreach (EnemySaveData enemyData in enemyList)
                         {
-                            decor2Prefab = decor2Info.prefab;
-                            break;
+                            // Encontre o prefab do inimigo com base no nome do inimigo
+                            GameObject enemyPrefab = null;
+                            foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
+                            {
+                                foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
+                                {
+                                    if (enemyInfo.enemyName == enemyData.name)
+                                    {
+                                        enemyPrefab = enemyInfo.prefab;
+                                        break;
+                                    }
+                                }
+                                if (enemyPrefab != null)
+                                    break;
+                            }
+
+                            if (enemyPrefab != null)
+                            {
+                                // Crie um objeto do inimigo e defina o nome e a posição
+                                GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
+                                enemyObject.transform.SetParent(enemyContainer.transform);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
+                            }
                         }
-                    }
-                    if (decor2Prefab != null)
-                        break;
-                }
 
-                if (decor2Prefab != null)
-                {
-                    GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
-                    decor2Object.transform.SetParent(decor2Container.transform);
 
-                    // Encontra o primeiro SpriteRenderer em um ancestral
-                    SpriteRenderer[] spriteRenderers = decor2Object.GetComponentsInChildren<SpriteRenderer>();
-                    if (spriteRenderers != null)
-                    {
-                        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+                        foreach (GameObjectSaveData gameObjectData in gameObjectList)
                         {
-                            // Define o shortLayer a partir dos dados salvos
-                            spriteRenderer.sortingLayerName = decor2Data.shortLayerName;
+                            GameObject gameObjectPrefab = null;
+                            foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                            {
+                                foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                                {
+                                    if (gameObjectInfo.GameObjectName == gameObjectData.name)
+                                    {
+                                        gameObjectPrefab = gameObjectInfo.prefab;
+                                        break;
+                                    }
+                                }
+                                if (gameObjectPrefab != null)
+                                    break;
+                            }
+
+                            if (gameObjectPrefab != null)
+                            {
+                                // Crie um objeto do inimigo e defina o nome e a posição
+                                GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
+                                gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for enemy: " + gameObjectData.name);
+                            }
+                        }
+
+                        // Carrega os objetos salvos
+                        foreach (ObjectSaveData objectData in objectList)
+                        {
+                            GameObject objectPrefab = null;
+                            foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                            {
+                                foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                                {
+                                    if (objectInfo.ObjectName == objectData.name)
+                                    {
+                                        objectPrefab = objectInfo.prefab;
+                                        break;
+                                    }
+                                }
+                                if (objectPrefab != null)
+                                    break;
+                            }
+
+                            if (objectPrefab != null)
+                            {
+                                // Crie um novo objeto com base no prefab e defina o nome e a posição
+                                GameObject objectObject = Instantiate(objectPrefab, objectData.position, Quaternion.identity);
+                                objectObject.transform.SetParent(objectsContainer.transform);
+
+                                ObjectType objectType = objectData.objectType;
+
+                                // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
+                                if (objectType == ObjectType.Moving)
+                                {
+                                    PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
+                                    if (movementComponent != null)
+                                    {
+                                        movementComponent.isCircular = objectData.isCircular;
+                                        movementComponent.isPingPong = objectData.isPingPong;
+                                        movementComponent.id = objectData.id;
+
+                                        movementComponent.nodes = new Transform[objectData.node.Count];
+                                        movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
+
+                                        for (int i = 0; i < objectData.node.Count; i++)
+                                        {
+                                            // Instancie o prefab dos nodes em vez de criar um novo Transform vazio
+                                            GameObject nodePrefab = NodeObjectPrefab; // Obtenha o prefab dos nodes da variável NodeObjectPrefab
+                                            GameObject newNodeObject = Instantiate(nodePrefab, objectData.node[i].position, Quaternion.identity);
+                                            newNodeObject.name = "Node " + i; // Defina o nome do objeto do node para identificação
+
+                                            Transform nodeTransform = newNodeObject.transform;
+                                            movementComponent.nodes[i] = nodeTransform;
+                                            movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for object: " + objectData.name);
+                            }
+                        }
+
+
+                        // Carrega os decorativos salvos
+                        foreach (DecorSaveData decorData in decorList)
+                        {
+                            GameObject decorPrefab = null;
+
+                            foreach (DecorData.DecorCategory category in ScriptableDecorData.categories)
+                            {
+                                foreach (DecorData.DecorInfo decorInfo in category.decorations)
+                                {
+                                    if (decorInfo.decorName == decorData.name)
+                                    {
+                                        decorPrefab = decorInfo.prefab;
+                                        break;
+                                    }
+                                }
+                                if (decorPrefab != null)
+                                    break;
+                            }
+
+                            if (decorPrefab != null)
+                            {
+                                GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
+                                decorObject.transform.SetParent(decorContainer.transform);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for decor: " + decorData.name);
+                            }
+                        }
+
+                        // Carrega os decorativos salvos
+                        foreach (Decor2SaveData decor2Data in decor2List)
+                        {
+                            GameObject decor2Prefab = null;
+
+                            foreach (Decor2Data.Decor2Category category in ScriptableDecor2Data.categories)
+                            {
+                                foreach (Decor2Data.Decor2Info decor2Info in category.decorations)
+                                {
+                                    if (decor2Info.decor2Name == decor2Data.name)
+                                    {
+                                        decor2Prefab = decor2Info.prefab;
+                                        break;
+                                    }
+                                }
+                                if (decor2Prefab != null)
+                                    break;
+                            }
+
+                            if (decor2Prefab != null)
+                            {
+                                GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
+                                decor2Object.transform.SetParent(decor2Container.transform);
+
+                                // Encontra o primeiro SpriteRenderer em um ancestral
+                                SpriteRenderer[] spriteRenderers = decor2Object.GetComponentsInChildren<SpriteRenderer>();
+                                if (spriteRenderers != null)
+                                {
+                                    foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+                                    {
+                                        // Define o shortLayer a partir dos dados salvos
+                                        spriteRenderer.sortingLayerName = decor2Data.shortLayerName;
+                                    }
+
+                                }
+                                else
+                                {
+                                    Debug.LogWarning("SpriteRenderer component not found on Decor2Object: " + decor2Data.name);
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
+                            }
+                        }
+
+                        // Percorre os TilemapData da lista
+                        foreach (TilemapData tilemapData in tilemapDataList)
+                        {
+                            // Cria um novo Tilemap no Grid da cena
+                            GameObject newTilemapObject = new GameObject(tilemapData.tilemapName);
+                            newTilemapObject.transform.SetParent(tilemapGrid.transform, false);
+
+                            Tilemap newTilemap = newTilemapObject.AddComponent<Tilemap>();
+                            //newTilemapObject.AddComponent<TilemapRenderer>();
+                            TilemapRenderer newTilemapRenderer = newTilemapObject.AddComponent<TilemapRenderer>();
+
+
+                            // Define a posição do novo Tilemap
+                            newTilemapObject.transform.position = new Vector3Int(0, 0, Mathf.RoundToInt(tilemapData.zPos));
+
+                            newTilemapRenderer.sortingOrder = tilemapData.shortLayerPos;
+
+                            // Adiciona o Tilemap à lista
+                            tilemaps.Add(newTilemap);
+
+                            // Cria um novo botão para o Tilemap no UI
+                            Button newButton = Instantiate(tilemapButtonPrefab, uiButtonContainer);
+                            newButton.transform.SetParent(uiButtonContainer, false);
+
+                            // Configura o callback de clique para selecionar o Tilemap correspondente
+                            int index = tilemapButtons.Count;
+                            newButton.onClick.AddListener(() => SelectTilemap(index));
+
+                            // Adiciona o botão à lista
+                            tilemapButtons.Add(newButton);
+
+                            // Atualiza os listeners dos botões
+                            AddTilemapButtonListeners();
+
+                            // Seleciona o Tilemap recém-criado, se for o único existente
+                            if (tilemaps.Count == 1)
+                            {
+                                SelectTilemap(0);
+                            }
+
+                            // Configura a propriedade "isSolid" do Tilemap
+                            if (tilemapData.isSolid)
+                            {
+                                // Adiciona um Collider2D ao Tilemap se ainda não existir
+                                if (newTilemap.GetComponent<TilemapCollider2D>() == null)
+                                {
+                                    newTilemap.gameObject.AddComponent<TilemapCollider2D>();
+                                }
+
+                                // Obtém o componente TilemapCollider2D do Tilemap
+                                TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
+
+                                // Verifica se o TilemapCollider2D existe
+                                if (tilemapCollider2D != null)
+                                {
+                                    // Ativa o "Used by Composite" no TilemapCollider2D
+                                    tilemapCollider2D.usedByComposite = true;
+                                }
+
+                                // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
+                                if (newTilemap.GetComponent<CompositeCollider2D>() == null)
+                                {
+                                    newTilemap.gameObject.AddComponent<CompositeCollider2D>();
+                                }
+
+                                // Obtém o componente CompositeCollider2D do Tilemap
+                                CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
+
+                                // Verifica se o CompositeCollider2D existe
+                                if (compositeCollider2D != null)
+                                {
+                                    // Obtém o Rigidbody2D associado ao CompositeCollider2D
+                                    Rigidbody2D rb = compositeCollider2D.attachedRigidbody;
+
+                                    // Verifica se o Rigidbody2D existe
+                                    if (rb != null)
+                                    {
+                                        // Define o tipo de corpo como estático
+                                        rb.bodyType = RigidbodyType2D.Static;
+                                    }
+                                }
+
+                                //adicionar colisor ou remover
+                                if (tilemapData.isSolid && !tilemapData.isWallPlatform)
+                                {
+                                    SetTilemapLayer(newTilemap, groundLayer);
+                                }
+                                if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                                {
+                                    SetTilemapLayer(newTilemap, wallLayer);
+                                }
+                            }
+                            else
+                            {
+                                // Define a layer do Tilemap para a layer "Default"
+                                SetTilemapLayer(newTilemap, defaultLayer);
+                            }
+
+                            //Configura a propriedade "isOneWayPlatform" do Tilemap
+                            //if(tilemapData.isOneWayPlatform && tilemapData.isSolid)
+                            //{
+                            //    // Obtém o componente TilemapCollider2D do Tilemap
+                            //    TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
+
+                            //    // Verifica se o TilemapCollider2D existe
+                            //    if (tilemapCollider2D != null)
+                            //    {
+                            //        // Ativa o "Used by Effector2D" no TilemapCollider2D
+                            //        tilemapCollider2D.usedByEffector = true;
+                            //    }
+                            //    // Adiciona um Effector2D ao Tilemap se ainda não existir
+                            //    if (newTilemap.GetComponent<PlatformEffector2D>() == null)
+                            //    {
+                            //        newTilemap.gameObject.AddComponent<PlatformEffector2D>();
+                            //    }
+
+                            //    // Obtém o componente CompositeCollider2D do Tilemap
+                            //    CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
+
+                            //    // Verifica se o CompositeCollider2D existe
+                            //    if (compositeCollider2D != null)
+                            //    {
+                            //        compositeCollider2D.usedByEffector = true;
+                            //    }
+                            //}
+
+                            // Percorre os TileData do TilemapData
+                            foreach (TileData tileData in tilemapData.tiles)
+                            {
+                                // Carrega a telha do TileData.tileName
+                                TileBase tile = GetTileByName(tileData.tileName);
+
+                                // Verifica se a telha existe
+                                if (tile != null)
+                                {
+                                    // Define a telha no Tilemap na posição cellPos
+                                    newTilemap.SetTile(tileData.cellPos, tile);
+                                }
+                                else
+                                {
+                                    Debug.LogWarning("Tile not found: " + tileData.tileName);
+                                }
+                            }
                         }
 
                     }
                     else
                     {
-                        Debug.LogWarning("SpriteRenderer component not found on Decor2Object: " + decor2Data.name);
+                        Debug.LogWarning("Failed to load level data.");
                     }
-                }
-                else
-                {
-                    Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
                 }
             }
-
-            // Percorre os TilemapData da lista
-            foreach (TilemapData tilemapData in tilemapDataList)
+            else
             {
-                // Cria um novo Tilemap no Grid da cena
-                GameObject newTilemapObject = new GameObject(tilemapData.tilemapName);
-                newTilemapObject.transform.SetParent(tilemapGrid.transform, false);
+                Debug.LogWarning("Save file not found: " + loadPath);
+            }
+        }
+    }
+    public void DeleteSector(string sectorName, string worldName, string level)
+    {
+        // Verificar se o setor a ser excluído não é o setor principal (sector1)
+        if (sectorName != "Sector1")
+        {
+            // Obtém o caminho completo para a pasta do mundo
+            string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
 
-                Tilemap newTilemap = newTilemapObject.AddComponent<Tilemap>();
-                //newTilemapObject.AddComponent<TilemapRenderer>();
-                TilemapRenderer newTilemapRenderer = newTilemapObject.AddComponent<TilemapRenderer>();
+            // Obtém o caminho completo para o arquivo JSON com a extensão ".TAOWLE" dentro da pasta do mundo
+            string loadPath = Path.Combine(worldFolderPath, level + ".TAOWLE");
 
+            // Verificar se o arquivo JSON existe
+            if (File.Exists(loadPath))
+            {
+                // Lê o conteúdo do arquivo JSON
+                string jsonContent = File.ReadAllText(loadPath);
 
-                // Define a posição do novo Tilemap
-                newTilemapObject.transform.position = new Vector3Int(0, 0, Mathf.RoundToInt(tilemapData.zPos));
+                // Desserializa o JSON em um objeto LevelDataWrapper
+                LevelDataWrapper levelDataWrapper = JsonUtility.FromJson<LevelDataWrapper>(jsonContent);
 
-                newTilemapRenderer.sortingOrder = tilemapData.shortLayerPos;
-
-                // Adiciona o Tilemap à lista
-                tilemaps.Add(newTilemap);
-
-                // Cria um novo botão para o Tilemap no UI
-                Button newButton = Instantiate(tilemapButtonPrefab, uiButtonContainer);
-                newButton.transform.SetParent(uiButtonContainer, false);
-
-                // Configura o callback de clique para selecionar o Tilemap correspondente
-                int index = tilemapButtons.Count;
-                newButton.onClick.AddListener(() => SelectTilemap(index));
-
-                // Adiciona o botão à lista
-                tilemapButtons.Add(newButton);
-
-                // Atualiza os listeners dos botões
-                AddTilemapButtonListeners();
-
-                // Seleciona o Tilemap recém-criado, se for o único existente
-                if (tilemaps.Count == 1)
+                // Encontre e remova o setor com o mesmo nome
+                int indexToRemove = levelDataWrapper.sectorData.FindIndex(sectorData => sectorData.sectorName == sectorName);
+                if (indexToRemove >= 0)
                 {
-                    SelectTilemap(0);
-                }
+                    levelDataWrapper.sectorData.RemoveAt(indexToRemove);
 
-                // Configura a propriedade "isSolid" do Tilemap
-                if (tilemapData.isSolid)
-                {
-                    // Adiciona um Collider2D ao Tilemap se ainda não existir
-                    if (newTilemap.GetComponent<TilemapCollider2D>() == null)
+                    // Serialize o objeto LevelDataWrapper de volta para JSON
+                    string updatedJson = JsonUtility.ToJson(levelDataWrapper);
+
+                    // Escreva o JSON atualizado de volta no arquivo
+                    File.WriteAllText(loadPath, updatedJson);
+
+                    Debug.Log("Setor removido do JSON: " + sectorName);
+
+                    // Atualize a interface do usuário após a exclusão do setor
+                    SectorManager.instance.ClearSectorButtons();
+
+                    // Itera sobre a lista de setores no LevelDataWrapper e recria os botões
+                    foreach (SectorData sectorDataBTN in levelDataWrapper.sectorData)
                     {
-                        newTilemap.gameObject.AddComponent<TilemapCollider2D>();
-                    }
-
-                    // Obtém o componente TilemapCollider2D do Tilemap
-                    TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
-
-                    // Verifica se o TilemapCollider2D existe
-                    if (tilemapCollider2D != null)
-                    {
-                        // Ativa o "Used by Composite" no TilemapCollider2D
-                        tilemapCollider2D.usedByComposite = true;
-                    }
-
-                    // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
-                    if (newTilemap.GetComponent<CompositeCollider2D>() == null)
-                    {
-                        newTilemap.gameObject.AddComponent<CompositeCollider2D>();
-                    }
-
-                    // Obtém o componente CompositeCollider2D do Tilemap
-                    CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
-
-                    // Verifica se o CompositeCollider2D existe
-                    if (compositeCollider2D != null)
-                    {
-                        // Obtém o Rigidbody2D associado ao CompositeCollider2D
-                        Rigidbody2D rb = compositeCollider2D.attachedRigidbody;
-
-                        // Verifica se o Rigidbody2D existe
-                        if (rb != null)
-                        {
-                            // Define o tipo de corpo como estático
-                            rb.bodyType = RigidbodyType2D.Static;
-                        }
-                    }
-
-                    //adicionar colisor ou remover
-                    if (tilemapData.isSolid && !tilemapData.isWallPlatform)
-                    {
-                        SetTilemapLayer(newTilemap, groundLayer);
-                    }
-                    if (tilemapData.isSolid && tilemapData.isWallPlatform)
-                    {
-                        SetTilemapLayer(newTilemap, wallLayer);
+                        // Crie um botão para cada setor
+                        SectorManager.instance.CreateSectorButton(sectorDataBTN.sectorName);
                     }
                 }
                 else
                 {
-                    // Define a layer do Tilemap para a layer "Default"
-                    SetTilemapLayer(newTilemap, defaultLayer);
+                    Debug.LogWarning("Setor não encontrado no JSON: " + sectorName);
                 }
-
-                //Configura a propriedade "isOneWayPlatform" do Tilemap
-                //if(tilemapData.isOneWayPlatform && tilemapData.isSolid)
-                //{
-                //    // Obtém o componente TilemapCollider2D do Tilemap
-                //    TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
-
-                //    // Verifica se o TilemapCollider2D existe
-                //    if (tilemapCollider2D != null)
-                //    {
-                //        // Ativa o "Used by Effector2D" no TilemapCollider2D
-                //        tilemapCollider2D.usedByEffector = true;
-                //    }
-                //    // Adiciona um Effector2D ao Tilemap se ainda não existir
-                //    if (newTilemap.GetComponent<PlatformEffector2D>() == null)
-                //    {
-                //        newTilemap.gameObject.AddComponent<PlatformEffector2D>();
-                //    }
-
-                //    // Obtém o componente CompositeCollider2D do Tilemap
-                //    CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
-
-                //    // Verifica se o CompositeCollider2D existe
-                //    if (compositeCollider2D != null)
-                //    {
-                //        compositeCollider2D.usedByEffector = true;
-                //    }
-                //}
-
-                // Percorre os TileData do TilemapData
-                foreach (TileData tileData in tilemapData.tiles)
-                {
-                    // Carrega a telha do TileData.tileName
-                    TileBase tile = GetTileByName(tileData.tileName);
-
-                    // Verifica se a telha existe
-                    if (tile != null)
-                    {
-                        // Define a telha no Tilemap na posição cellPos
-                        newTilemap.SetTile(tileData.cellPos, tile);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Tile not found: " + tileData.tileName);
-                    }
-                }
+            }
+            else
+            {
+                Debug.LogWarning("Arquivo JSON não encontrado: " + loadPath);
             }
         }
         else
         {
-            Debug.LogWarning("Save file not found: " + loadPath);
+            Debug.LogWarning("Não é possível excluir o setor principal.");
         }
     }
 
     public void SaveWorld()
     {
-      
+        // Cria um objeto LevelData para salvar os dados do nível
+        LevelDataWrapper levelDataWrapper = new LevelDataWrapper();
+
+        LoadExistingSectors(levelDataWrapper);
+
         #region save Things
         // Obtém a lista de Tilemaps ativos na cena
         List<Tilemap> activeTilemaps = new List<Tilemap>();
@@ -2185,29 +2829,31 @@ public class LevelEditorManager : MonoBehaviour
             if (levelDot != null)
             {
                 LevelDotData dotData = new LevelDotData();
-                dotData.levelPath = levelDot.GetLevelPath();
+                dotData.levelName = levelDot.levelName;
+                dotData.worldName = levelDot.worldName;
+                dotData.isFirstLevel = levelDot.isFirstLevel;
                 Vector3 LevelDotPos = levelDot.transform.position;
                 dotData.dotPosition = LevelDotPos;
                 levelDotDataList.Add(dotData);
             }
         }
 
-        // Cria um objeto que contém os dados do gridSizeData e tilemapDataList
-        TilemapDataWrapper tilemapDataWrapper = new TilemapDataWrapper();
-        // Obtém o MusicID do LevelSettings e atribui ao LevelPreferences
-        tilemapDataWrapper.levelPreferences = new LevelPreferences();
-        tilemapDataWrapper.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
-        tilemapDataWrapper.levelPreferences.levelTime = LevelSettings.instance.levelTime;
-        tilemapDataWrapper.gridSizeData = gridSizeData;
-        tilemapDataWrapper.tilemapDataList = tilemapDataList;
-        tilemapDataWrapper.gameObjectSaveData = gameObjectList;
+        SectorData sectorData = new SectorData();
+        sectorData.levelPreferences = new LevelPreferences();
+        sectorData.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
+        sectorData.gridSizeData = gridSizeData;
+        sectorData.tilemapDataList = tilemapDataList;
+        sectorData.gameObjectSaveData = gameObjectList;
 
         // Adicione a lista de LevelDotData ao objeto TilemapDataWrapper
-        tilemapDataWrapper.levelDotDataList = levelDotDataList;
+        sectorData.levelDotDataList = levelDotDataList;
 
         // Converte o objeto para JSON
-        string json = JsonUtility.ToJson(tilemapDataWrapper, true);
+        string json = JsonUtility.ToJson(sectorData, true);
         #endregion
+
+
+
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, WorldManager.instance.currentWorldName);
 
@@ -2248,7 +2894,7 @@ public class LevelEditorManager : MonoBehaviour
             if (!string.IsNullOrEmpty(json))
             {
                 // Converte o JSON de volta para o objeto TilemapDataWrapper
-                TilemapDataWrapper tilemapDataWrapper = JsonUtility.FromJson<TilemapDataWrapper>(json);
+                SectorData tilemapDataWrapper = JsonUtility.FromJson<SectorData>(json);
 
                 // Obtém o objeto GridSizeData do TilemapDataWrapper
                 GridSizeData gridSizeData = tilemapDataWrapper.gridSizeData;
@@ -2266,7 +2912,6 @@ public class LevelEditorManager : MonoBehaviour
 
 
                 LevelSettings.instance.SetMusicID(tilemapDataWrapper.levelPreferences.MusicID);
-                LevelSettings.instance.levelTime = tilemapDataWrapper.levelPreferences.levelTime;
                 // Restaura o tamanho do grid
                 currentGridWidth = gridSizeData.currentGridWidth;
                 currentGridHeight = gridSizeData.currentGridHeight;
@@ -2316,7 +2961,7 @@ public class LevelEditorManager : MonoBehaviour
                 foreach (LevelDotData dotData in levelDotDataList)
                 {
                     // Crie um novo objeto LevelDot na cena
-                    GameObject newLevelDotObject = Instantiate(levelDotPrefab, dotData.dotPosition, Quaternion.identity);
+                    GameObject newLevelDotObject = Instantiate(levelDotPrefab, dotData.dotPosition, Quaternion.identity, GameObjectsContainer.transform);
 
                     // Obtenha o componente LevelDot do novo objeto
                     LevelDot newLevelDot = newLevelDotObject.GetComponent<LevelDot>();
@@ -2324,7 +2969,8 @@ public class LevelEditorManager : MonoBehaviour
                     // Atribua as informações carregadas ao novo objeto LevelDot
                     if (newLevelDot != null)
                     {
-                        newLevelDot.SetLevelPath(dotData.levelPath);
+                        newLevelDot.SetLevelPath(dotData.worldName, dotData.levelName);
+                        newLevelDot.isFirstLevel = dotData.isFirstLevel;
                         // Você pode configurar outros dados do LevelDot aqui, se necessário
                     }
                 }
@@ -2464,7 +3110,7 @@ public class LevelEditorManager : MonoBehaviour
 
                 // Crie um objeto TilemapDataWrapper com as informações padrão
 
-                TilemapDataWrapper defaultWorldData = new TilemapDataWrapper();
+                SectorData defaultWorldData = new SectorData();
                 defaultWorldData.gridSizeData = new GridSizeData();
                 defaultWorldData.gridSizeData.currentGridWidth = 20; // Tamanho de exemplo
                 defaultWorldData.gridSizeData.currentGridHeight = 20; // Tamanho de exemplo
@@ -2637,77 +3283,77 @@ public class LevelEditorManager : MonoBehaviour
         return layer - 1;
     }
     public void DeleteCurrentLevel(string worldName)
-{
-    // Obtém o caminho completo para o arquivo do nível atual
-    string levelFilePath = Path.Combine(WorldManager.instance.levelEditorPath, worldName, saveFileName);
-
-    // Verifica se o arquivo existe
-    if (File.Exists(levelFilePath))
-    {
-        // Exclui o arquivo do nível
-        File.Delete(levelFilePath);
-
-        Debug.Log("Nível excluído: " + levelFilePath);
-    }
-    else
-    {
-        Debug.LogWarning("O nível não existe: " + levelFilePath);
-    }
-}
-
-public void DuplicateCurrentLevel(string worldName, string levelName)
-{
-    // Obtém o caminho completo para a pasta do mundo
-    string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
-
-    // Verifica se a pasta do mundo existe
-    if (Directory.Exists(worldFolderPath))
     {
         // Obtém o caminho completo para o arquivo do nível atual
-        string levelFilePath = Path.Combine(worldFolderPath, levelName + ".TAOWLE");
+        string levelFilePath = Path.Combine(WorldManager.instance.levelEditorPath, worldName, saveFileName);
 
-        // Verifica se o arquivo do nível atual existe
+        // Verifica se o arquivo existe
         if (File.Exists(levelFilePath))
         {
-            // Obtém o diretório e o nome do arquivo do nível atual
-            string levelDirectory = Path.GetDirectoryName(levelFilePath);
-            string levelFileName = Path.GetFileNameWithoutExtension(levelFilePath);
+            // Exclui o arquivo do nível
+            File.Delete(levelFilePath);
 
-            // Verifica se o nível atual já possui um número entre parênteses no nome
-            Regex regex = new Regex(@"(.+)\((\d+)\)$");
-            Match match = regex.Match(levelFileName);
-
-            // Se o nível atual não possui um número entre parênteses no nome, adiciona "(1)"
-            if (!match.Success)
-            {
-                levelFileName += "(1)";
-            }
-            else
-            {
-                // Se o nível atual já possui um número entre parênteses no nome, incrementa o número
-                int count = int.Parse(match.Groups[2].Value);
-                count++;
-                levelFileName = match.Groups[1].Value + "(" + count.ToString() + ")";
-            }
-
-            // Obtém o caminho completo para o novo arquivo do nível duplicado
-            string newLevelFilePath = Path.Combine(levelDirectory, levelFileName + ".TAOWLE");
-
-            // Copia o arquivo do nível atual para o novo arquivo
-            File.Copy(levelFilePath, newLevelFilePath);
-
-            Debug.Log("Nível duplicado com sucesso: " + levelFileName);
+            Debug.Log("Nível excluído: " + levelFilePath);
         }
         else
         {
-            Debug.LogWarning("O arquivo do nível atual não existe!");
+            Debug.LogWarning("O nível não existe: " + levelFilePath);
         }
     }
-    else
+
+    public void DuplicateCurrentLevel(string worldName, string levelName)
     {
-        Debug.LogWarning("A pasta do mundo não existe!");
+        // Obtém o caminho completo para a pasta do mundo
+        string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
+
+        // Verifica se a pasta do mundo existe
+        if (Directory.Exists(worldFolderPath))
+        {
+            // Obtém o caminho completo para o arquivo do nível atual
+            string levelFilePath = Path.Combine(worldFolderPath, levelName + ".TAOWLE");
+
+            // Verifica se o arquivo do nível atual existe
+            if (File.Exists(levelFilePath))
+            {
+                // Obtém o diretório e o nome do arquivo do nível atual
+                string levelDirectory = Path.GetDirectoryName(levelFilePath);
+                string levelFileName = Path.GetFileNameWithoutExtension(levelFilePath);
+
+                // Verifica se o nível atual já possui um número entre parênteses no nome
+                Regex regex = new Regex(@"(.+)\((\d+)\)$");
+                Match match = regex.Match(levelFileName);
+
+                // Se o nível atual não possui um número entre parênteses no nome, adiciona "(1)"
+                if (!match.Success)
+                {
+                    levelFileName += "(1)";
+                }
+                else
+                {
+                    // Se o nível atual já possui um número entre parênteses no nome, incrementa o número
+                    int count = int.Parse(match.Groups[2].Value);
+                    count++;
+                    levelFileName = match.Groups[1].Value + "(" + count.ToString() + ")";
+                }
+
+                // Obtém o caminho completo para o novo arquivo do nível duplicado
+                string newLevelFilePath = Path.Combine(levelDirectory, levelFileName + ".TAOWLE");
+
+                // Copia o arquivo do nível atual para o novo arquivo
+                File.Copy(levelFilePath, newLevelFilePath);
+
+                Debug.Log("Nível duplicado com sucesso: " + levelFileName);
+            }
+            else
+            {
+                Debug.LogWarning("O arquivo do nível atual não existe!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("A pasta do mundo não existe!");
+        }
     }
-}
 
     #endregion
 
@@ -2757,7 +3403,6 @@ public class GridSizeData
 public class LevelPreferences
 {
     public int MusicID;
-    public int levelTime;
     public string BackGroundName;
     public string WeatherName;
     public string TimeWeather;
@@ -2822,16 +3467,26 @@ public class LevelData
 [System.Serializable]
 public class LevelDotData
 {
-    public string levelPath;
+    public string levelName;
+    public string worldName;
+    public bool isFirstLevel;
     public Vector3 dotPosition;
 }
 
 [System.Serializable]
-public class TilemapDataWrapper
+public class LevelDataWrapper
 {
-    public GridSizeData gridSizeData;
     public string levelName;
     public string author;
+    public int levelTime;
+    public List<SectorData> sectorData;
+}
+
+[System.Serializable]
+public class SectorData
+{
+    public string sectorName;
+    public GridSizeData gridSizeData;
     public LevelPreferences levelPreferences;
     public List<TilemapData> tilemapDataList;
     public List<EnemySaveData> enemySaveData;

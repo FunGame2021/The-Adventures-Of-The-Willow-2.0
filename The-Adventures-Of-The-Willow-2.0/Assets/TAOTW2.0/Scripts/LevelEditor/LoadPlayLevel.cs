@@ -96,7 +96,7 @@ public class LoadPlayLevel : MonoBehaviour
             //LevelNames = LevelEditorController.instance.AtualLevel;
         }
         
-        LoadLevel(worldNames, LevelNames);
+        //LoadLevel(worldNames, LevelNames);
         StartedLevel = false;
         LevelInfoPanel.SetActive(true);
 
@@ -155,7 +155,7 @@ public class LoadPlayLevel : MonoBehaviour
         return layer - 1;
     }
 
-
+    /*/
     public void LoadLevel(string worldName, string level)
     {
         // Obtém o caminho completo para a pasta do mundo
@@ -556,7 +556,7 @@ public class LoadPlayLevel : MonoBehaviour
         DeathZone.transform.position = newPosition;
     }
 
-
+    /*/
 
     // Função para reproduzir a música selecionada
     private void PlayMusic()

@@ -185,11 +185,18 @@ public class MoveAndSelectTool : MonoBehaviour
                         GameObject hitObject = hit.collider.gameObject;
 
                         // Verifique se o objeto atingido é um sprite
-                        if (hitObject.CompareTag("GameObject"))
+                        if (hitObject.CompareTag("GameObject") || hitObject.CompareTag("LevelDot"))
                         {
                             selectedGameObjectSprite = hitObject.transform;
                             stringInfo = selectedGameObjectSprite.name;
-                            GameObjectParent = GetGameObjectParent(selectedGameObjectSprite);
+                            if(hitObject.CompareTag("LevelDot"))
+                            {
+                                GameObjectParent = hitObject.transform;
+                            }
+                            else
+                            {
+                                GameObjectParent = GetGameObjectParent(selectedGameObjectSprite);
+                            }
                             offset = GameObjectParent.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
                             isDragging = true;
