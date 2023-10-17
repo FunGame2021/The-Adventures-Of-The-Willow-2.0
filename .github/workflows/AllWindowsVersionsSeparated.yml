@@ -16,21 +16,26 @@ jobs:
           - StandaloneWindows
     timeout-minutes: 220
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
+
+      - name: Create Library folder if it does not exist
+        run: |
+          mkdir -p ${{ matrix.projectPath }}/Library
+        - uses: actions/cache@v2
         with:
           path: ${{ matrix.projectPath }}/Library
-          key:
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
-            hashFiles(matrix.projectPath) }}
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
           restore-keys: |
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+
+      - name: Build with Unity
+        uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -40,11 +45,13 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Build_Windows
           path: build
-            
+
   buildForWindows64:
     name: Build for Windows 64-bit
     runs-on: windows-2019
@@ -59,21 +66,26 @@ jobs:
           - StandaloneWindows64
     timeout-minutes: 220
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
+
+      - name: Create Library folder if it does not exist
+        run: |
+          mkdir -p ${{ matrix.projectPath }}/Library
+        - uses: actions/cache@v2
         with:
           path: ${{ matrix.projectPath }}/Library
-          key:
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
-            hashFiles(matrix.projectPath) }}
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
           restore-keys: |
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+
+      - name: Build with Unity
+        uses: game-ci/unity-builder@v2
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -83,7 +95,9 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Build_Windows64
           path: build
