@@ -45,7 +45,7 @@ public class RestartObjects : MonoBehaviour
 
     private void Update()
     {
-        if(GameStates.Instance.isNormalGame)
+        if(GameStates.instance.isLevelStarted)
         {
             if (playLevel.instance != null && !isSimulated)
             {
@@ -55,9 +55,6 @@ public class RestartObjects : MonoBehaviour
                     rb.simulated = true;
                 }
             }
-        }
-        else
-        {
             if (LoadPlayLevel.instance != null && !isSimulated)
             {
                 if (LoadPlayLevel.instance.isPlayingLevel)
@@ -67,6 +64,7 @@ public class RestartObjects : MonoBehaviour
                 }
             }
         }
+
         if (PlayerHealth.instance != null)
         {
             if (PlayerHealth.instance.isDead && !IsOverlapping(initialPosition))

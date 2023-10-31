@@ -135,15 +135,18 @@ public class SectorManager : MonoBehaviour
 
     }
 
-
     public void ClearSectorButtons()
     {
-        // Limpa a lista de setores na interface
-        foreach (Transform child in sectorList)
+        if (sectorList != null)
         {
-            Destroy(child.gameObject);
+            // Limpa a lista de setores na interface
+            foreach (Transform child in sectorList)
+            {
+                Destroy(child.gameObject);
+            }
         }
     }
+
 
     public void CreateSectorButton(string sectorName)
     {

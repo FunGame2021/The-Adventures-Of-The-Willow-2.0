@@ -48,6 +48,7 @@ public class LevelEditorManager : MonoBehaviour
     public TMP_InputField tilemapNameInput;
     public Toggle toggleSolid;
     public Toggle toggleWallPlatform;
+    public Toggle toggleIcePlatform;
     public TMP_InputField zPosInput;
     public TMP_InputField ShortLayerPosInput;
 
@@ -66,6 +67,7 @@ public class LevelEditorManager : MonoBehaviour
     [HideInInspector] public string tempTilemapName;
     [HideInInspector] public bool tempIsSolid;
     [HideInInspector] public bool tempIsWallPlatform;
+    [HideInInspector] public bool tempIsIcePlatform;
     [HideInInspector] public float tempZPos;
     [HideInInspector] public int tempShortLayerPos;
 
@@ -73,6 +75,7 @@ public class LevelEditorManager : MonoBehaviour
     public LayerMask wallLayer;
     public LayerMask groundLayer;
     public LayerMask defaultLayer;
+    public string IceTag;
 
     #endregion
 
@@ -187,6 +190,7 @@ public class LevelEditorManager : MonoBehaviour
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
+        tempIsIcePlatform = toggleIcePlatform.isOn;
         //tempIsOneWayPlatform = toggleOneWayPlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
         int.TryParse(ShortLayerPosInput.text, out tempShortLayerPos);
@@ -512,7 +516,7 @@ public class LevelEditorManager : MonoBehaviour
 
                         selectedStringInfo = selectedGameObjectName;
 
-                        if (gameObjectPrefab != null)
+                        if (gameObjectPrefab != null && SectorManager.instance.currentSectorName == "Sector1")
                         {
                             // Converte a posição do mouse para a posição no mundo
                             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -711,6 +715,7 @@ public class LevelEditorManager : MonoBehaviour
 
         toggleSolid.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
         toggleWallPlatform.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
+        toggleIcePlatform.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
         zPosInput.text = tilemap.transform.position.z.ToString();
 
 
@@ -718,6 +723,7 @@ public class LevelEditorManager : MonoBehaviour
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
+        tempIsIcePlatform = toggleIcePlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
         int.TryParse(ShortLayerPosInput.text, out tempShortLayerPos);
         UpdateTempValues();
@@ -771,6 +777,7 @@ public class LevelEditorManager : MonoBehaviour
         tempIsSolid = toggleSolid.isOn;
         //tempIsOneWayPlatform = toggleOneWayPlatform.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
+        tempIsIcePlatform = toggleIcePlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
         int.TryParse(ShortLayerPosInput.text, out tempShortLayerPos);
     }
@@ -859,6 +866,15 @@ public class LevelEditorManager : MonoBehaviour
             if (tempIsSolid && tempIsWallPlatform)
             {
                 SetTilemapLayer(selectedTilemap, wallLayer);
+            }
+            if (tempIsSolid && tempIsIcePlatform && !tempIsWallPlatform)
+            {
+                selectedTilemap.gameObject.tag = IceTag;
+                SetTilemapLayer(selectedTilemap, groundLayer);
+            }
+            if (tempIsSolid && !tempIsIcePlatform)
+            {
+                selectedTilemap.gameObject.tag = "ground";
             }
             if (!tempIsSolid && !tempIsWallPlatform)
             {
@@ -1416,6 +1432,7 @@ public class LevelEditorManager : MonoBehaviour
         sectorData1.decor2SaveData = new List<Decor2SaveData>();
         sectorData1.objectSaveData = new List<ObjectSaveData>();
         sectorData1.gameObjectSaveData = new List<GameObjectSaveData>();
+        sectorData1.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
 
         // Adicione sectorData1 à lista de setores no LevelDataWrapper
         levelDataWrapper.sectorData = new List<SectorData> { sectorData1 };
@@ -1556,9 +1573,9 @@ public class LevelEditorManager : MonoBehaviour
             tilemapData.tilemapName = tilemap.name;
             tilemapData.tilemapIndex = tilemap.transform.GetSiblingIndex();
             int WallLayer = LayerMask.NameToLayer("Wall");
-            tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer);
+            tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer); 
+            tilemapData.isIce = tilemap.gameObject.CompareTag(IceTag);
 
-            Debug.Log("isWallPlatform: " + tilemapData.isWallPlatform);
             //tilemapData.isOneWayPlatform = tilemap.GetComponent<TilemapCollider2D>() != null;
             tilemapData.isSolid = tilemap.GetComponent<TilemapCollider2D>() != null;
             tilemapData.shortLayerPos = tilemap.GetComponent<TilemapRenderer>().sortingOrder;
@@ -1602,15 +1619,72 @@ public class LevelEditorManager : MonoBehaviour
 
         // Obtém a lista de GameObjectSaveData dos GameObjects na cena
         List<GameObjectSaveData> gameObjectList = new List<GameObjectSaveData>();
+        List<TriggerGameObjectSaveData> triggerList = new List<TriggerGameObjectSaveData>();
+        List<ParticlesSaveData> particlesList = new List<ParticlesSaveData>();
         GameObject[] gameObjectObjects = GameObject.FindGameObjectsWithTag("GameObject");
         foreach (GameObject gameObjectObject in gameObjectObjects)
         {
             string gameObjectName = gameObjectObject.name.Replace("(Clone)", "");
             Vector3 gameObjectPosition = gameObjectObject.transform.position;
-            GameObjectSaveData gameObjectData = new GameObjectSaveData();
-            gameObjectData.name = gameObjectName;
-            gameObjectData.position = gameObjectPosition;
-            gameObjectList.Add(gameObjectData);
+
+            // Verifique se o objeto tem o nome "Trigger"
+            if (gameObjectName.Contains("Trigger"))
+            {
+                // Obtenha o script TriggerObject do objeto "Trigger" diretamente
+                TriggerObject triggerObjectScript = gameObjectObject.GetComponentInChildren<TriggerObject>();
+
+                if (triggerObjectScript != null)
+                {
+                    // Crie um objeto TriggerGameObjectSaveData
+                    TriggerGameObjectSaveData triggerData = new TriggerGameObjectSaveData();
+
+                    // Agora você pode acessar o valor triggerType
+                    string triggerType = triggerObjectScript.thisTriggerType;
+                    Vector2 triggerScale = triggerObjectScript.thisScale;
+
+                    triggerData.name = gameObjectName;
+                    triggerData.position = gameObjectPosition;
+                    triggerData.type = triggerType;
+                    triggerData.scale = triggerScale;
+                    triggerData.customScript = triggerObjectScript.customScript;
+                    // Adicione o objeto TriggerGameObjectSaveData à lista de objetos Trigger
+                    triggerList.Add(triggerData);
+                }
+                else
+                {
+                    Debug.LogWarning("TriggerObject script not found on Trigger: " + gameObjectName);
+                }
+            }
+            else if(gameObjectName.Contains("Particle"))
+            {
+                ParticlesObject particlesObjectScript = gameObjectObject.GetComponent<ParticlesObject>();
+                if(particlesObjectScript != null)
+                {
+                    // Crie um objeto TriggerGameObjectSaveData
+                    ParticlesSaveData particlesData = new ParticlesSaveData();
+                    string particleType = particlesObjectScript.particleType;
+                    bool initialStarted = particlesObjectScript.initialStarted;
+                    bool isLoop = particlesObjectScript.isLoop;
+
+                    particlesData.name = gameObjectName;
+                    particlesData.nameID = particleType;
+                    particlesData.initialStarted = initialStarted;
+                    particlesData.isLoop = isLoop;
+                    particlesData.position = gameObjectPosition;
+
+                    particlesList.Add(particlesData);
+                }
+
+            }
+            else
+            {
+                // Crie um objeto GameObjectSaveData para outros objetos
+                GameObjectSaveData gameObjectData = new GameObjectSaveData();
+                gameObjectData.name = gameObjectName;
+                gameObjectData.position = gameObjectPosition;
+
+                gameObjectList.Add(gameObjectData);
+            }
         }
 
         // Obtém a lista de DecorSaveData dos elementos decorativos na cena
@@ -1755,6 +1829,8 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.decorSaveData = new List<DecorSaveData>();
             currentSectorData.decor2SaveData = new List<Decor2SaveData>();
             currentSectorData.objectSaveData = new List<ObjectSaveData>();
+            currentSectorData.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
+            currentSectorData.particlesSaveData = new List<ParticlesSaveData>() ;
             currentSectorData.gameObjectSaveData = new List<GameObjectSaveData>();
 
             // Crie um novo TilemapData vazio para o setor
@@ -1785,6 +1861,8 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.tilemapDataList = tilemapDataList; // Preencha com os dados apropriados
             currentSectorData.enemySaveData = enemyList; // Preencha com os dados apropriados
             currentSectorData.gameObjectSaveData = gameObjectList; // Preencha com os dados apropriados
+            currentSectorData.triggerGameObjectSaveData = triggerList;
+            currentSectorData.particlesSaveData = particlesList;
             currentSectorData.decorSaveData = decorList; // Preencha com os dados apropriados
             currentSectorData.decor2SaveData = decor2List; // Preencha com os dados apropriados
             currentSectorData.objectSaveData = objectList; // Preencha com os dados apropriados
@@ -1881,9 +1959,11 @@ public class LevelEditorManager : MonoBehaviour
                 authorInput.text = loadedAuthor;
 
                 LevelSettings.instance.newLevelTime = levelDataWrapper.levelTime;
-
-                // Limpe os botões existentes antes de criar novos
-                SectorManager.instance.ClearSectorButtons();
+                if (SectorManager.instance != null)
+                {
+                    // Limpe os botões existentes antes de criar novos
+                    SectorManager.instance.ClearSectorButtons();
+                }
 
                 // Itera sobre a lista de setores no LevelDataWrapper
                 foreach (SectorData sectorDataBTN in levelDataWrapper.sectorData)
@@ -1904,6 +1984,8 @@ public class LevelEditorManager : MonoBehaviour
                     List<TilemapData> tilemapDataList = sectorData.tilemapDataList;
                     List<EnemySaveData> enemyList = sectorData.enemySaveData;
                     List<GameObjectSaveData> gameObjectList = sectorData.gameObjectSaveData;
+                    List<TriggerGameObjectSaveData> triggerList = sectorData.triggerGameObjectSaveData;
+                    List<ParticlesSaveData> particlesList = sectorData.particlesSaveData;
                     List<DecorSaveData> decorList = sectorData.decorSaveData;
                     List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
                     List<ObjectSaveData> objectList = sectorData.objectSaveData;
@@ -1969,14 +2051,16 @@ public class LevelEditorManager : MonoBehaviour
                     }
 
 
-                    foreach (GameObjectSaveData gameObjectData in gameObjectList)
+                    // Para objetos Trigger
+                    foreach (TriggerGameObjectSaveData triggerData in triggerList)
                     {
+                        // Encontre o prefab do objeto Trigger
                         GameObject gameObjectPrefab = null;
                         foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
                         {
                             foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
                             {
-                                if (gameObjectInfo.GameObjectName == gameObjectData.name)
+                                if (gameObjectInfo.GameObjectName == triggerData.name)
                                 {
                                     gameObjectPrefab = gameObjectInfo.prefab;
                                     break;
@@ -1988,15 +2072,115 @@ public class LevelEditorManager : MonoBehaviour
 
                         if (gameObjectPrefab != null)
                         {
-                            // Crie um objeto do inimigo e defina o nome e a posição
-                            GameObject gameObjectObject = Instantiate(gameObjectPrefab, gameObjectData.position, Quaternion.identity);
+                            GameObject gameObjectObject = Instantiate(gameObjectPrefab, triggerData.position, Quaternion.identity);
+                            gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
+
+                            // Procure o objeto Trigger com a tag "Trigger" aninhado dentro de gameObjectObject
+                            GameObject triggerTransform = gameObjectObject.transform.Find("TriggerSquare").gameObject;
+
+                            if (triggerTransform != null)
+                            {
+                                GameObject triggerObject = triggerTransform.gameObject;
+
+                                // Defina a escala do objeto Trigger
+                                triggerObject.transform.localScale = new Vector3(triggerData.scale.x, triggerData.scale.y, 1f);
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Trigger object not found inside: " + gameObjectObject.name);
+                            }
+
+                            // Agora, configure o componente do script do prefab com os valores de triggerData
+                            TriggerObject triggerScript = gameObjectObject.GetComponentInChildren<TriggerObject>();
+                            if (triggerScript != null)
+                            {
+                                triggerScript.thisTriggerType = triggerData.type;
+                                triggerScript.customScript = triggerData.customScript;
+                            }
+                            else
+                            {
+                                Debug.LogWarning("TriggerObject script not found on Trigger object: " + triggerData.name);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for Trigger object: " + triggerData.name);
+                        }
+                    }
+
+
+                    foreach (ParticlesSaveData particleData in particlesList)
+                    {
+                        // Encontre o prefab do objeto Trigger
+                        GameObject gameObjectPrefab = null;
+                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        {
+                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            {
+                                if (gameObjectInfo.GameObjectName == particleData.name)
+                                {
+                                    gameObjectPrefab = gameObjectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (gameObjectPrefab != null)
+                                break;
+                        }
+
+                        if (gameObjectPrefab != null)
+                        {
+                            GameObject gameObjectObject = Instantiate(gameObjectPrefab, particleData.position, Quaternion.identity);
+                            gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
+
+                            ParticlesObject particlesScript = gameObjectObject.GetComponentInChildren<ParticlesObject>();
+                            if (particlesScript != null)
+                            {
+                                particlesScript.particleType = particleData.nameID;
+                                particlesScript.initialStarted = particleData.initialStarted;
+                                particlesScript.isLoop = particleData.isLoop;
+                            }
+                            else
+                            {
+                                Debug.LogWarning("ParticlesObject script not found on Particle object: " + particleData.name);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for Particle object: " + particleData.name);
+                        }
+                    }
+
+                    // Para objetos normais
+                    foreach (GameObjectSaveData normalObjectData in gameObjectList)
+                    {
+                        // Encontre o prefab do objeto normal
+                        GameObject gameObjectPrefab = null;
+                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        {
+                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            {
+                                if (gameObjectInfo.GameObjectName == normalObjectData.name)
+                                {
+                                    gameObjectPrefab = gameObjectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (gameObjectPrefab != null)
+                                break;
+                        }
+
+                        if (gameObjectPrefab != null)
+                        {
+                            // Crie o objeto e defina o nome e a posição
+                            GameObject gameObjectObject = Instantiate(gameObjectPrefab, normalObjectData.position, Quaternion.identity);
                             gameObjectObject.transform.SetParent(GameObjectsContainer.transform);
                         }
                         else
                         {
-                            Debug.LogWarning("Prefab not found for enemy: " + gameObjectData.name);
+                            Debug.LogWarning("Prefab not found for normal object: " + normalObjectData.name);
                         }
                     }
+
 
                     // Carrega os objetos salvos
                     foreach (ObjectSaveData objectData in objectList)
@@ -2221,9 +2405,13 @@ public class LevelEditorManager : MonoBehaviour
                             {
                                 SetTilemapLayer(newTilemap, groundLayer);
                             }
-                            if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                            else if (tilemapData.isSolid && tilemapData.isWallPlatform)
                             {
                                 SetTilemapLayer(newTilemap, wallLayer);
+                            }
+                            else if (tilemapData.isSolid && tilemapData.isIce)
+                            {
+                                newTilemap.gameObject.tag = IceTag;
                             }
                         }
                         else
@@ -3252,7 +3440,6 @@ public class LevelEditorManager : MonoBehaviour
             Destroy(node);
         }
     }
-
     private void SetTilemapLayer(Tilemap tilemap, LayerMask layerMask)
     {
         tilemap.gameObject.layer = LayerMaskToLayer(layerMask);
@@ -3377,7 +3564,7 @@ public class TilemapData
     public string tilemapName;
     public int tilemapIndex;
     public bool isSolid;
-    //public bool isOneWayPlatform;
+    public bool isIce;
     public bool isWallPlatform;
     public int shortLayerPos;
     public float zPos;
@@ -3423,6 +3610,17 @@ public class GameObjectSaveData
 }
 
 [System.Serializable]
+public class TriggerGameObjectSaveData
+{
+    public string name;
+    public Vector3 position;
+    public string type; // Campo para o tipo do objeto
+    public Vector2 scale; // Campo para a escala do objeto
+    public string customScript;
+}
+
+
+[System.Serializable]
 public class DecorSaveData
 {
     public string name;
@@ -3449,7 +3647,6 @@ public class ObjectSaveData
     public string id;
 }
 
-
 [System.Serializable]
 public class MovementNodeData
 {
@@ -3465,6 +3662,16 @@ public class LevelData
 }
 
 [System.Serializable]
+public class ParticlesSaveData
+{
+    public string name;
+    public string nameID;
+    public bool initialStarted;
+    public bool isLoop;
+    public Vector3 position;
+}
+   
+[System.Serializable] 
 public class LevelDotData
 {
     public string levelName;
@@ -3491,6 +3698,8 @@ public class SectorData
     public List<TilemapData> tilemapDataList;
     public List<EnemySaveData> enemySaveData;
     public List<GameObjectSaveData> gameObjectSaveData;
+    public List<TriggerGameObjectSaveData> triggerGameObjectSaveData;
+    public List<ParticlesSaveData> particlesSaveData;
     public List<DecorSaveData> decorSaveData;
     public List<Decor2SaveData> decor2SaveData;
     public List<ObjectSaveData> objectSaveData;

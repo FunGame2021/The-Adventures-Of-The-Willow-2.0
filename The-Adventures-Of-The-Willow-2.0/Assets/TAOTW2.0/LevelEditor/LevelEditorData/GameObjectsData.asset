@@ -17,12 +17,14 @@ MonoBehaviour:
     GameObjects:
     - GameObjectName: PlayerPos
       prefab: {fileID: 1845644384022529618, guid: c8fff7da48e8d8643af74ac0e82a4e2b, type: 3}
-    - GameObjectName: PlayParticlesTrigger
-      prefab: {fileID: 0}
+    - GameObjectName: Trigger
+      prefab: {fileID: 8073006243446092738, guid: 61b731e4bb4c662468eb7b67fccb93c2, type: 3}
     - GameObjectName: Checkpoint
       prefab: {fileID: 7617463625491203095, guid: c6cac15fc6952fb4ea61e6ce7a83ffdb, type: 3}
     - GameObjectName: FinishPole01
       prefab: {fileID: 6336052689785982531, guid: 02f564810b2856246a9333ee4b6fa149, type: 3}
+    - GameObjectName: Particle
+      prefab: {fileID: 3051811093845615744, guid: 5acbdc45d5b1bb44aa443b49778fd241, type: 3}
   - GameObjectsCategoryName: WorldGameObjects
     GameObjects:
     - GameObjectName: LevelDot

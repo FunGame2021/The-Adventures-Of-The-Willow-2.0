@@ -40,13 +40,16 @@ public class FinishPole : MonoBehaviour
                 // Execute o código apropriado para essa situação
                 enterRight = false;
             }
-            if(GameStates.Instance.isNormalGame)
+            if(GameStates.instance.isLevelStarted)
             {
-                playLevel.instance.StopMusic();
-            }
-            else
-            {
-                LoadPlayLevel.instance.StopMusic();
+                if (LoadPlayLevel.instance != null)
+                {
+                    LoadPlayLevel.instance.StopMusic();
+                }
+                if (playLevel.instance != null)
+                {
+                    playLevel.instance.StopMusic();
+                }
             }
             PlayEndMusic();
             Finish();

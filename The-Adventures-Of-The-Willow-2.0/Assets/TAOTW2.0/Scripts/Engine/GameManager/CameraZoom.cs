@@ -52,7 +52,7 @@ public class CameraZoom : MonoBehaviour
         // Calcula os vértices do retângulo com base no tamanho do Tilemap
         Vector2[] vertices = new Vector2[4];
         vertices[0] = Vector2.zero;
-        if (GameStates.Instance.isNormalGame)
+        if (GameStates.instance.isNormalGame)
         {
             vertices[1] = new Vector2(playLevel.instance.GridWidth, 0);
             vertices[2] = new Vector2(playLevel.instance.GridWidth, playLevel.instance.GridHeight);

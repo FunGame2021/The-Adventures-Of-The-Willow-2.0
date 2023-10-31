@@ -94,12 +94,13 @@ public class PlayerController : MonoBehaviour
     private bool isHeadFirst = false;
     private float rotationSpeed = 5f; // interpolação da rotação
     private float canJumpWaterNow = 0;
-
+    
     [SerializeField] private bool afterWaterOutside;
     [SerializeField] private Transform castOrigin; // O ponto de origem do lançamento da caixa
     [SerializeField] private Vector2 castSize;     // O tamanho da caixa de colisão
     [SerializeField] private LayerMask whatIsHit;  // A camada de objetos que queremos verificar colisões
     private Vector3 originalRotation;
+	
     #endregion
 
     //stomp
@@ -530,7 +531,8 @@ public class PlayerController : MonoBehaviour
 
             if (RB.velocity.y < 0)
             {
-                RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
+                RB.velocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
+                //RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
             }
             #endregion
 
@@ -547,7 +549,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-       
+
+        
+
     }
 
     public void ApplyKnockBack(float knockbackForce, float knockbackDuration, float knockbackUpForce, bool knockFromRight)
@@ -754,7 +758,10 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
             isOnWater = true;
             //evitar ele afundar;
             RB.drag = 20f;
-            if (canJumpWaterNow <= 0)
+			jump = false;
+			// O jogador está na água, então ajuste sua velocidade de queda
+            RB.velocity = new Vector2(RB.velocity.x, 0f); // Define a velocidade vertical como zero 		 
+			if (canJumpWaterNow <= 0)
             {
                 RB.gravityScale = SwimGravity;
             }
@@ -765,6 +772,7 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
     {
         if (collision.gameObject.CompareTag("water"))
         {
+            
             //if (PlayerAbilities.playerAbilitiesInstance.hasSwimming)
             //{
             //    Debug.Log("Water");

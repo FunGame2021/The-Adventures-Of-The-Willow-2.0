@@ -50,10 +50,19 @@ public class EraserTool : MonoBehaviour
                 GameObject hitObject = hit.collider.gameObject;
 
                 // Verifique se o objeto atingido é um sprite
-                if (hitObject.CompareTag("Enemy") || hitObject.CompareTag("LevelDot"))
+                if (hitObject.CompareTag("Enemy") || hitObject.CompareTag("LevelDot") || hitObject.CompareTag("GameObject")
+                    || hitObject.CompareTag("ObjectObject"))
                 {
                     selectedEnemySprite = hitObject.transform;
                     if (hitObject.CompareTag("LevelDot"))
+                    {
+                        enemyParent = hitObject.transform;
+                    }
+                    else if (hitObject.CompareTag("GameObject"))
+                    {
+                        enemyParent = hitObject.transform;
+                    }
+                    else if (hitObject.CompareTag("ObjectObject"))
                     {
                         enemyParent = hitObject.transform;
                     }

@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class GameStates : MonoBehaviour
 {
-    public static GameStates Instance;
-    public bool isLevelEditor;
+    public static GameStates instance;
+    public bool isLevelStarted = false;
     public bool isNormalGame;
 
+    void Awake()
+    {
+        isLevelStarted = false;
+    }
     void Start()
     {
-        if(Instance == null)
+        if(instance == null)
         {
-            Instance = this;
+            instance = this;
         }
     }
 

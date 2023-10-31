@@ -283,9 +283,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveInput: 0
-  moveSpeed: 6
+  moveSpeed: 4
   speedChangeSmoothTime: 0.5
-  boostSpeed: 8
+  boostSpeed: 6
   isGrounded: 1
   groundCheck: {fileID: 8908717514910039223}
   sizeCapsule: {x: 0.37, y: 0.14}
@@ -293,15 +293,15 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 192
-  jumpPower: 13
-  fallMultiplier: 3
-  jumpMultiplier: 1
+  jumpPower: 7
+  fallMultiplier: 0.1
+  jumpMultiplier: 2
   jumpTime: 0.4
   normalJumpTime: 0.4
-  boostedJumpTime: 5
+  boostedJumpTime: 0.7
   coyoteTime: 0.2
   RB: {fileID: 6915230460424986886}
-  sameGravityPlayer: 4
+  sameGravityPlayer: 2
   stopPlayer: 0
   autoMoveSpeed: 1.5
   wallCheck: {fileID: 3536767284115880431}
@@ -316,35 +316,35 @@ MonoBehaviour:
   wallJumpingTime: 0.2
   wallJumpingCounter: -114.71074
   wallJumpingDuration: 0.2
-  upSpeed: 8
+  upSpeed: 3
   waterCheck: {fileID: 8522897643443992576}
   whatIsWater:
     serializedVersion: 2
     m_Bits: 16
   SwimSpeed: 5
   RotationSpeed: 360
-  waterJumpForce: 20
-  SwimBoostSpeed: 15
+  waterJumpForce: 10
+  SwimBoostSpeed: 8
   afterWaterOutside: 0
   castOrigin: {fileID: 5192782855542571540}
   castSize: {x: 0.9, y: 1.35}
   whatIsHit:
     serializedVersion: 2
     m_Bits: 67108928
-  stompForce: 10
+  stompForce: 7
   playerstates: {fileID: 7550289033753128257}
   SmallColliders:
-  - {fileID: 3876583545862505583}
   - {fileID: 2798556647221471218}
+  - {fileID: 3876583545862505583}
   BigColliders:
-  - {fileID: 1622869368492588601}
   - {fileID: 3889837068287469320}
+  - {fileID: 1622869368492588601}
   footCollider: {fileID: 1952163072232265785}
   footCollider2: {fileID: 7136093794938499027}
   KnockBack: 0
-  KnockBackCount: 0
+  KnockBackCount: 0.3
   KnockBackLength: 0
-  KnockFromRight: 0
+  KnockFromRight: 1
   deathAnimationDuration: 2
 --- !u!114 &7153235750983776138
 MonoBehaviour:
@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c0454d14cc0a74dac42b6d6b209361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 5303974247762489985}
   lerpTime: 0
   myColors:
   - {r: 0.89337146, g: 1, b: 0, a: 1}

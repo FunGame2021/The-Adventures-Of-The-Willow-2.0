@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class CaptainMushroomRed : MonoBehaviour
 {
@@ -24,6 +23,7 @@ public class CaptainMushroomRed : MonoBehaviour
 
     Rigidbody2D rb2d;
 
+    public float moveSpeedTemp = 5f;//same moveSpeed
     public float moveSpeed = 5f;
     public float scaleSpeed = 5f;
     private bool audioPlayed = false;
@@ -31,7 +31,21 @@ public class CaptainMushroomRed : MonoBehaviour
     private StompEnemy stompEnemy;
 
     private Animator animator;
+    private bool enemyStopped;
 
+    private void Awake()
+    {
+        //Stop enemy
+        if(GameStates.instance != null)
+        {
+            if(!GameStates.instance.isLevelStarted)
+            {
+                moveSpeed = 0f;
+                rb2d.bodyType = RigidbodyType2D.Static;
+                enemyStopped = true;
+            }
+        }
+    }
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -40,6 +54,24 @@ public class CaptainMushroomRed : MonoBehaviour
         facingDirection = LEFT;
         audioPlayed = false;
         stompEnemy = GetComponentInChildren<StompEnemy>();
+    }
+    private void Update()
+    {
+        if (GameStates.instance != null)
+        {
+            if (!GameStates.instance.isLevelStarted)
+            {
+                moveSpeed = 0f;
+                rb2d.bodyType = RigidbodyType2D.Static;
+                enemyStopped = true;
+            }
+            else
+            {
+                moveSpeed = moveSpeedTemp;
+                rb2d.bodyType = RigidbodyType2D.Dynamic;
+                enemyStopped = false;
+            }
+        }
     }
     private void StompNow()
     {
@@ -61,13 +93,16 @@ public class CaptainMushroomRed : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb2d.velocity += Physics2D.gravity * Time.fixedDeltaTime;
-        float rigidbodyDrag = Mathf.Clamp01(1.0f - (rb2d.drag * Time.fixedDeltaTime));
-        rb2d.velocity *= rigidbodyDrag;
+        if (!enemyStopped)
+        {
+            rb2d.velocity += Physics2D.gravity * Time.fixedDeltaTime;
+            float rigidbodyDrag = Mathf.Clamp01(1.0f - (rb2d.drag * Time.fixedDeltaTime));
+            rb2d.velocity *= rigidbodyDrag;
 
-        float vX = moveSpeed * (facingDirection == LEFT ? -1 : 1);
+            float vX = moveSpeed * (facingDirection == LEFT ? -1 : 1);
 
-        rb2d.velocity = new Vector2(vX, rb2d.velocity.y);
+            rb2d.velocity = new Vector2(vX, rb2d.velocity.y);
+        }
 
         if (IsHittingWall() || IsNearEdge() || IsHittingEnemy() || IsHittingBox())
         {

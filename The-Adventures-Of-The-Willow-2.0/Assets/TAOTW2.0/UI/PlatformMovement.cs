@@ -50,7 +50,7 @@ public class PlatformMovement : MonoBehaviour
     private void Update()
     {
         // Move a plataforma em direção à posição alvo apenas se o editor de níveis não estiver ativo
-        if (!GameStates.Instance.isLevelEditor)
+        if (GameStates.instance.isLevelStarted)
         {
             // Calcula a velocidade atual da plataforma usando o tempo de transição atual entre os nós
             float currentSpeed = speed / currentTransitionTime;

@@ -45,7 +45,8 @@ public class PlayerHealth : MonoBehaviour
     }
     private void Update()
     {
-        if(GameStates.Instance.isNormalGame)
+        //verifica se o gamestate está em jogo normal ou jogo e editor
+        if(GameStates.instance.isNormalGame)
         {
             if (LevelTimeManager.instance.remainingDuration <= 0 && playLevel.instance.StartedLevel)
             {

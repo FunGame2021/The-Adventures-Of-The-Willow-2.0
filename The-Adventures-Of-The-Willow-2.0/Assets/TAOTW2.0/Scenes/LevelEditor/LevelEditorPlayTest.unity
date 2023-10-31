@@ -277,7 +277,7 @@ Transform:
   m_GameObject: {fileID: 70122581}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00000004635917, y: 0.09549, z: 0}
+  m_LocalPosition: {x: 0.00000003760293, y: 0.09549, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1501,7 +1501,7 @@ MonoBehaviour:
   objectsContainer: {fileID: 1183521451}
   ScriptableEnemyData: {fileID: 11400000, guid: 6af1fab145e678844b8645684e919a1e, type: 2}
   enemyContainer: {fileID: 1768649737}
-  ScriptableGameObjectData: {fileID: 11400000, guid: b4299db087183ea48a5e12d87cd3a4b5, type: 2}
+  ScriptableGameObjectData: {fileID: 11400000, guid: fd771a3eaa03736439693f1e8620901f, type: 2}
   GameObjectsContainer: {fileID: 1183521451}
   PlayerPrefab: {fileID: 155168309214299445, guid: 280e6a23a2ee9c6469e881e2754c4b90, type: 3}
   PlayerPos: {fileID: 0}
@@ -1518,6 +1518,7 @@ MonoBehaviour:
   defaultLayer:
     serializedVersion: 2
     m_Bits: 1
+  IceTag: IcePlatform
   tileCategories:
   - {fileID: 11400000, guid: 86ffc369cefd3ae41855115371dd6b6d, type: 2}
   - {fileID: 11400000, guid: a5ba0374cd6507846a4184c7d46d0346, type: 2}
@@ -1525,6 +1526,7 @@ MonoBehaviour:
   LevelInfoPanel: {fileID: 222392409}
   PressStartInfo: {fileID: 1901415463}
   DeathZone: {fileID: 149098929}
+  isPlayingLevel: 0
 --- !u!4 &919967683
 Transform:
   m_ObjectHideFlags: 0
@@ -1552,7 +1554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4131caf3a351424d86646e285732f60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLevelEditor: 0
+  isLevelStarted: 0
+  isNormalGame: 0
 --- !u!1 &1008656539
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,6 +2298,8 @@ MonoBehaviour:
   uiTimerText: {fileID: 1643715330}
   InitialDuration: 0
   remainingDuration: 0
+  isNormalGame: 0
+  elapsedTime: 0
 --- !u!4 &1433299922
 Transform:
   m_ObjectHideFlags: 0
@@ -3730,13 +3735,13 @@ SceneRoots:
   - {fileID: 1953167602}
   - {fileID: 672503332}
   - {fileID: 284529322}
+  - {fileID: 281650737}
   - {fileID: 1997582536}
   - {fileID: 556946276}
   - {fileID: 1768649737}
-  - {fileID: 281650737}
+  - {fileID: 1183521451}
   - {fileID: 453998444}
   - {fileID: 545384908}
-  - {fileID: 1183521451}
   - {fileID: 1419800379}
   - {fileID: 1749840833}
   - {fileID: 317825013}

@@ -88,6 +88,5 @@ public class LevelEditorController : MonoBehaviour
         Destroy(gameObject);
     }
 
-    //Load Level On New Scene
 
 }

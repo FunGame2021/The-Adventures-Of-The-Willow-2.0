@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterShaderTopMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: 63845ddc9362aea45a5b5763ce0978a5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bd2e336eee6571a4c8b224347541c54a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RenderTexture:
+        m_Texture: {fileID: 8400000, guid: be6487d785982be4c8ac6e868f320dc5, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterFill:
+        m_Texture: {fileID: 2800000, guid: bd2e336eee6571a4c8b224347541c54a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterFill2:
+        m_Texture: {fileID: 2800000, guid: cc1c95c5fb2b82c4c96978d52d09efb8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterTop:
+        m_Texture: {fileID: 2800000, guid: 0702a6a9d3cd5d1449ae8698b9a46d62, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _NoiseScale: 15
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RefractionStrength: 1
+    - _Transparency: 0.7
+    - _WaterSpeed: 0.05
+    m_Colors:
+    - _Color: {r: 0.3537736, g: 0.8667573, b: 1, a: 1}
+    - _LineColor: {r: 0.5681738, g: 0.6279674, b: 0.9056604, a: 1}
+    - _Offset: {r: 0, g: 0.16, b: 0, a: 0}
+    - _ReflectionAlphaTiling: {r: 1, g: 1.57, b: 0, a: 0}
+    - _ReflectionTexTiling: {r: 1, g: -1, b: 0, a: 0}
+    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _WaterCausticsTextureTiling: {r: 5, g: 2, b: 0, a: 0}
+    - _WaterFIllColor: {r: 0.55108577, g: 0.5707844, b: 0.9056604, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &6581607819866062798
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
