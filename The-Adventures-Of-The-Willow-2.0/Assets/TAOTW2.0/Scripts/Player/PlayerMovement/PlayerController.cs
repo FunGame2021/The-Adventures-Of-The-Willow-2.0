@@ -51,6 +51,9 @@ public class PlayerController : MonoBehaviour
     public bool stopPlayer = false;
     public float autoMoveSpeed = 5f; // Velocidade do movimento automático
 
+    [SerializeField] public PhysicsMaterial2D withFriction;
+    [SerializeField] public PhysicsMaterial2D noFriction;
+
     #region WallJump
 
     [Header("WallJump")]
@@ -70,9 +73,9 @@ public class PlayerController : MonoBehaviour
 
     #region Ladder
     [SerializeField] private float upSpeed;
-    private float moveInputUp;
-    private bool isOnLadder;
-    private bool isClimbing;
+    [HideInInspector] public float moveInputUp;
+    [HideInInspector] public bool isOnLadder;
+    [HideInInspector] public bool isClimbing;
     #endregion
 
     #region Swim
@@ -135,12 +138,42 @@ public class PlayerController : MonoBehaviour
     public float deathAnimationDuration = 2.0f;
     private float deathAnimationTimer = 0.0f;
     #endregion
+
+    #region movingPlatforms
+    [SerializeField] private LayerMask whatIsMovingPlatform;
+    private bool isOnPlatform;
+    private Rigidbody2D platform;
+    [SerializeField] private Transform _originalParent; 
+    public Transform PlayerTrans;
+    public float zRotation = 0f;
+    #endregion
+
+    #region GroundTypes
+    //Sticky and Icy Platforms
+    public bool isOnStickyPlatform;
+    public bool isOnIcePlatform;
+
+    public float iceSlideMaxSpeed = 5f; // velocidade máxima quando escorregando
+    public float iceSlideAccelAmount = 2.5f; // aceleração quando escorregando
+    public float iceSlipFactor = 0.5f;
+
+    public float stickyPlatformSlowdownFactor = 2f;
+    #endregion
+
+    //Particles
+    public ParticleSystem Bubble;
+    private bool WindParticlesPlayNow;
+    [SerializeField] private ParticleSystem WindParticles;
+    [SerializeField] private ParticleSystem WaterParticles;
+    private Vector2 _lastVelocity;
+
     void Start()
     {
         if (instance == null)
         { 
             instance = this;
         }
+        _originalParent = transform.parent;
         // Inicialize a câmera ou realize outras ações, se necessário.
         if (CameraZoom.instance != null)
         {
@@ -214,8 +247,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+        //fix player rotation on platform rotation
+        if (!Swimming)
+        {
+            Vector3 eulers = PlayerTrans.eulerAngles;
+            PlayerTrans.eulerAngles = new Vector3(eulers.x, eulers.y, zRotation);
+        }
+
         //Change colliders with player state for big and small
-        if(playerstates.isSmall)
+        if (playerstates.isSmall)
         {
             //For ground check
             sizeCapsule = new Vector2(0.37f, 0.14f);
@@ -269,8 +310,21 @@ public class PlayerController : MonoBehaviour
         }
 
         isGrounded = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsGround);
+        isOnPlatform = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsMovingPlatform);
         isTouchingWater = Physics2D.OverlapCircle(waterCheck.position, 0.2f, whatIsWater);
-
+        Collider2D colliders = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsMovingPlatform);
+        if (colliders != null)
+        {
+            if (colliders.tag == "MovingPlatform")
+            {
+                SetPlayerParent(colliders.transform);
+                platform = colliders.gameObject.GetComponent<Rigidbody2D>();
+            }
+        }
+        else
+        {
+            ResetPlayerParent();
+        }
         moveInput = UserInput.instance.moveInput.x;
         moveInputUp = UserInput.instance.moveInput.y;
         // Verifica se o jogador está colidindo com uma parede
@@ -287,6 +341,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        
         if (isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
@@ -421,7 +476,6 @@ public class PlayerController : MonoBehaviour
         }
         if ((groundHit.collider != null || ceilingHit.collider != null || leftHit.collider != null || rightHit.collider != null) && afterWaterOutside)
         {
-            Debug.Log("hit");
             transform.eulerAngles = originalRotation;
             afterWaterOutside = false;
         }
@@ -482,13 +536,69 @@ public class PlayerController : MonoBehaviour
             knocked = false;
         }
 
+        if (moveInput != 0)
+        {
+            RemovePlayerFriction();
+        }
+        else
+        {
+            AddPlayerFriction();
+        }
+
         #region Jump and walk
         if (!knocked)
         {
             //Walk
-            if (!isWallJumping && !Swimming && !stopPlayer && !isDead)
+            if (!isWallJumping && !Swimming && !stopPlayer && !isDead && !isOnPlatform)
             {
-                RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+                if (!isOnIcePlatform && !isOnStickyPlatform)
+                {
+                    RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+                }
+                else if (isOnIcePlatform)
+                {
+                    float targetVelocity = Mathf.Clamp(moveInput * iceSlideMaxSpeed, -iceSlideMaxSpeed, iceSlideMaxSpeed);
+                    RB.velocity = new Vector2(Mathf.MoveTowards(RB.velocity.x, targetVelocity * 10, iceSlideAccelAmount * Time.deltaTime), RB.velocity.y);
+
+                    // Reduz a velocidade do jogador enquanto escorrega no gelo
+                    RB.AddForce(Vector2.left * RB.velocity.x * iceSlipFactor * Time.deltaTime);
+                    if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(_lastVelocity.x))
+                    {
+                        if (facingRight)
+                        {
+                            Vector3 scale = WaterParticles.transform.localScale;
+                            scale.x *= 1;
+                            WaterParticles.transform.localScale = scale;
+                            WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 38.72f);
+                        }
+                        else
+                        {
+                            Vector3 scale = WaterParticles.transform.localScale;
+                            scale.x *= 1;
+                            WaterParticles.transform.localScale = scale;
+                            WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 139.186f);
+                        }
+
+                        WaterParticles.Play();
+                    }
+                }
+                else if (isOnStickyPlatform)
+                {
+                    // Simular aderência na plataforma pegajosa
+                    RB.velocity = new Vector2(moveInput * currentMoveSpeed * stickyPlatformSlowdownFactor, RB.velocity.y);
+                }
+            }
+            else
+            {
+                if(platform != null)
+                {
+                    //RB.velocity = platform.GetComponent<Rigidbody2D>().velocity;
+                    RB.velocity = new Vector2(moveInput * currentMoveSpeed + platform.velocity.x, RB.velocity.y);
+                }
+                else
+                {
+                    RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+                }
             }
             //FinishPoint
             if (FinishPoint.instance.isFinished && stopPlayer)
@@ -576,6 +686,48 @@ public class PlayerController : MonoBehaviour
             // Flips the player along the x-axis
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             facingRight = !facingRight;
+        }
+    }
+
+    #region MovingPlatformsParents
+    public void SetPlayerParent(Transform newParent)
+    {
+        transform.parent = newParent;
+    }
+    public void ResetPlayerParent()
+    {
+        transform.parent = _originalParent;
+    }
+    #endregion
+
+    public void AddPlayerFriction()
+    {
+        RB.sharedMaterial = withFriction;
+        footCollider.sharedMaterial = withFriction;
+        footCollider2.sharedMaterial = withFriction;
+        foreach (Collider2D collider in BigColliders)
+        {
+            collider.sharedMaterial = withFriction;
+        }
+
+        foreach (Collider2D collider in SmallColliders)
+        {
+            collider.sharedMaterial = withFriction;
+        }
+    }
+    public void RemovePlayerFriction()
+    {
+        RB.sharedMaterial = noFriction;
+        footCollider.sharedMaterial = noFriction;
+        footCollider2.sharedMaterial = noFriction;
+        foreach (Collider2D collider in BigColliders)
+        {
+            collider.sharedMaterial = noFriction;
+        }
+
+        foreach (Collider2D collider in SmallColliders)
+        {
+            collider.sharedMaterial = noFriction;
         }
     }
 
@@ -815,5 +967,31 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
     }
     #endregion
     #region Colliders
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "StickyPlatform")
+        {
+            isOnStickyPlatform = true;
+        }
+        if (collision.gameObject.tag == "IcePlatform")
+        {
+            isOnIcePlatform = true;
+        }
+
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "StickyPlatform")
+        {
+            isOnStickyPlatform = false;
+        }
+        if (collision.gameObject.tag == "IcePlatform")
+        {
+            isOnIcePlatform = false;
+        }
+    }
     #endregion
 }

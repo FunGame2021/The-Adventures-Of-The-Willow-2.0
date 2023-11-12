@@ -292,7 +292,7 @@ MonoBehaviour:
   angleCapsule: 0
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 67109056
   jumpPower: 7
   fallMultiplier: 0.1
   jumpMultiplier: 2
@@ -302,12 +302,14 @@ MonoBehaviour:
   coyoteTime: 0.2
   RB: {fileID: 6915230460424986886}
   sameGravityPlayer: 2
-  stopPlayer: 0
+  stopPlayer: 1
   autoMoveSpeed: 1.5
+  withFriction: {fileID: 6200000, guid: 7524e06eb6bccd4419520e0c475e6243, type: 2}
+  noFriction: {fileID: 6200000, guid: 7cd774f1cab18954ab27d36691ceb528, type: 2}
   wallCheck: {fileID: 3536767284115880431}
   whatIsWall:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 536870912
   rayDistance: 1
   isWallSliding: 0
   wallSlidingSpeed: 1
@@ -346,6 +348,21 @@ MonoBehaviour:
   KnockBackLength: 0
   KnockFromRight: 1
   deathAnimationDuration: 2
+  whatIsMovingPlatform:
+    serializedVersion: 2
+    m_Bits: 67108864
+  _originalParent: {fileID: 0}
+  PlayerTrans: {fileID: 4275676865161093360}
+  zRotation: 0
+  isOnStickyPlatform: 0
+  isOnIcePlatform: 0
+  iceSlideMaxSpeed: 5
+  iceSlideAccelAmount: 4
+  iceSlipFactor: 0.1
+  stickyPlatformSlowdownFactor: 0
+  Bubble: {fileID: 0}
+  WindParticles: {fileID: 0}
+  WaterParticles: {fileID: 0}
 --- !u!114 &7153235750983776138
 MonoBehaviour:
   m_ObjectHideFlags: 0

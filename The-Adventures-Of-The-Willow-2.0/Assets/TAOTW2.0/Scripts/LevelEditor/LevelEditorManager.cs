@@ -7,7 +7,6 @@ using System.IO;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System.Text.RegularExpressions;
-using static Cinemachine.DocumentationSortingAttribute;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -21,6 +20,7 @@ public class LevelEditorManager : MonoBehaviour
     public GameObject tilemapContainer;
     public GameObject decorContainer;
     public GameObject objectsContainer;
+    public GameObject nodesLineRendererContainer;
 
     public Toggle enemyToggle;
     public Toggle decorToggle;
@@ -49,6 +49,7 @@ public class LevelEditorManager : MonoBehaviour
     public Toggle toggleSolid;
     public Toggle toggleWallPlatform;
     public Toggle toggleIcePlatform;
+    public Toggle toggleStickyPlatform;
     public TMP_InputField zPosInput;
     public TMP_InputField ShortLayerPosInput;
 
@@ -61,13 +62,13 @@ public class LevelEditorManager : MonoBehaviour
 
 
     [HideInInspector] public Tilemap selectedTilemap;
-    private Renderer objectRenderer;
 
     //Armazenar Info Temporáriamente
     [HideInInspector] public string tempTilemapName;
     [HideInInspector] public bool tempIsSolid;
     [HideInInspector] public bool tempIsWallPlatform;
     [HideInInspector] public bool tempIsIcePlatform;
+    [HideInInspector] public bool tempIsStickyPlatform;
     [HideInInspector] public float tempZPos;
     [HideInInspector] public int tempShortLayerPos;
 
@@ -76,6 +77,7 @@ public class LevelEditorManager : MonoBehaviour
     public LayerMask groundLayer;
     public LayerMask defaultLayer;
     public string IceTag;
+    public string StickyTag;
 
     #endregion
 
@@ -121,6 +123,7 @@ public class LevelEditorManager : MonoBehaviour
 
 
     #endregion
+
     //Nodes
 
     [SerializeField] private GameObject NodeObjectPrefab;
@@ -134,6 +137,9 @@ public class LevelEditorManager : MonoBehaviour
     public TMP_InputField inputFieldX; // Referência ao InputField para X
     public TMP_InputField inputFieldY; // Referência ao InputField para Y
 
+    public TextMeshProUGUI infoGridX; // Referência ao InputField para X
+    public TextMeshProUGUI infoGridY; // Referência ao InputField para Y
+
     public int gridSizeX; // Variável para armazenar o valor de X
     public int gridSizeY; // Variável para armazenar o valor de Y
 
@@ -141,7 +147,7 @@ public class LevelEditorManager : MonoBehaviour
 
     public GameObject warnSizeGrid;
     public UnityEngine.UI.Button confirmButton;
-
+    public GameObject gridPanel;
     #endregion
 
     public TMP_InputField levelNameInput;
@@ -191,7 +197,7 @@ public class LevelEditorManager : MonoBehaviour
         tempIsSolid = toggleSolid.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
         tempIsIcePlatform = toggleIcePlatform.isOn;
-        //tempIsOneWayPlatform = toggleOneWayPlatform.isOn;
+        tempIsStickyPlatform = toggleStickyPlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
         int.TryParse(ShortLayerPosInput.text, out tempShortLayerPos);
 
@@ -457,7 +463,19 @@ public class LevelEditorManager : MonoBehaviour
                     }
                     // Instancia o objeto no mundo na posição do mouse
                     GameObject instantiatedObject = Instantiate(objectPrefab, mousePosition, Quaternion.identity);
+                    // Verifica a tag do objeto e altera o nome conforme necessário
+                    if (instantiatedObject.CompareTag("MovingPlatform"))
+                    {
+                        // Obtém uma lista de objetos com a mesma tag
+                        GameObject[] movingPlatforms = GameObject.FindGameObjectsWithTag("MovingPlatform");
 
+                        // Gere um ID exclusivo usando System.Guid
+                        string uniqueID = System.Guid.NewGuid().ToString();
+
+                        // Use o ID exclusivo para nomear o objeto instanciado
+                        instantiatedObject.name = selectedObjectName + "_" + uniqueID;
+
+                    }
                     // Define o contêiner como pai do objeto instanciado
                     instantiatedObject.transform.SetParent(objectsContainer.transform);
 
@@ -632,6 +650,7 @@ public class LevelEditorManager : MonoBehaviour
     }
 
     #region Tilemap
+    
     public void AddTilemap()
     {
         // Cria um novo Tilemap no Grid da cena
@@ -713,17 +732,33 @@ public class LevelEditorManager : MonoBehaviour
 
         tilemapNameInput.text = tilemap.name;
 
-        toggleSolid.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
-        toggleWallPlatform.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
-        toggleIcePlatform.isOn = (tilemap.GetComponent<TilemapCollider2D>() != null);
+        // Verifique se o tilemap tem um componente TilemapCollider2D
+        bool hasCollider = tilemap.GetComponent<TilemapCollider2D>() != null;
+
+        toggleSolid.isOn = hasCollider;
+        toggleWallPlatform.isOn = hasCollider && tilemap.gameObject.layer == LayerMask.NameToLayer("Wall"); // Use LayerMask.NameToLayer para comparar a camada.
+        toggleIcePlatform.isOn = hasCollider && tilemap.tag == "IcePlatform";
+        toggleStickyPlatform.isOn = hasCollider && tilemap.tag == "StickyPlatform";
         zPosInput.text = tilemap.transform.position.z.ToString();
 
-
+        // Obtenha o componente Renderer do Tilemap
+        Renderer objectRenderer = tilemap.GetComponent<TilemapRenderer>();
+        if (objectRenderer != null)
+        {
+            // Defina o valor do Sorting Layer no campo ShortLayerPosInput
+            ShortLayerPosInput.text = objectRenderer.sortingOrder.ToString();
+        }
+        else
+        {
+            // Se não houver Renderer, defina o campo como vazio ou um valor padrão
+            ShortLayerPosInput.text = "";
+        }
         // Armazena as informações temporárias
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
         tempIsIcePlatform = toggleIcePlatform.isOn;
+        tempIsStickyPlatform = toggleStickyPlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
         int.TryParse(ShortLayerPosInput.text, out tempShortLayerPos);
         UpdateTempValues();
@@ -775,7 +810,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
-        //tempIsOneWayPlatform = toggleOneWayPlatform.isOn;
+        tempIsStickyPlatform = toggleStickyPlatform.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
         tempIsIcePlatform = toggleIcePlatform.isOn;
         float.TryParse(zPosInput.text, out tempZPos);
@@ -787,12 +822,11 @@ public class LevelEditorManager : MonoBehaviour
         // Verifica se há um Tilemap selecionado
         if (selectedTilemap != null)
         {
-
             // Aplica as informações temporárias ao Tilemap selecionado
             selectedTilemap.name = tempTilemapName;
 
-            //adicionar colisor ou remover
-            if (tempIsSolid)
+            // Adicionar/Remover Collider2D e CompositeCollider2D
+            if (tempIsSolid || tempIsWallPlatform || tempIsIcePlatform || tempIsStickyPlatform)
             {
                 // Adiciona um Collider2D ao Tilemap se ainda não existir
                 if (selectedTilemap.GetComponent<TilemapCollider2D>() == null)
@@ -852,91 +886,40 @@ public class LevelEditorManager : MonoBehaviour
                 }
                 // Remove o Rigidbody2D se estiver presente
                 Rigidbody2D rigidbody2D = selectedTilemap.GetComponent<Rigidbody2D>();
+
                 if (rigidbody2D != null)
                 {
                     Destroy(rigidbody2D);
                 }
             }
 
-            //adicionar colisor ou remover
+            // Define a camada e a tag do Tilemap
             if (tempIsSolid && !tempIsWallPlatform)
             {
                 SetTilemapLayer(selectedTilemap, groundLayer);
             }
-            if (tempIsSolid && tempIsWallPlatform)
+            else if(tempIsWallPlatform)
             {
                 SetTilemapLayer(selectedTilemap, wallLayer);
             }
-            if (tempIsSolid && tempIsIcePlatform && !tempIsWallPlatform)
-            {
-                selectedTilemap.gameObject.tag = IceTag;
-                SetTilemapLayer(selectedTilemap, groundLayer);
-            }
-            if (tempIsSolid && !tempIsIcePlatform)
-            {
-                selectedTilemap.gameObject.tag = "ground";
-            }
-            if (!tempIsSolid && !tempIsWallPlatform)
+            else
             {
                 SetTilemapLayer(selectedTilemap, defaultLayer);
             }
-            ////Adiciona o Effector2d para o One Way Platform
-            //if(tempIsOneWayPlatform && tempIsSolid)
-            //{
-            //    // Obtém o componente TilemapCollider2D do Tilemap
-            //    TilemapCollider2D tilemapCollider2D = selectedTilemap.GetComponent<TilemapCollider2D>();
-
-            //    // Verifica se o TilemapCollider2D existe
-            //    if (tilemapCollider2D != null)
-            //    {
-            //        // Ativa o "Used by Effector2D" no TilemapCollider2D
-            //        tilemapCollider2D.usedByEffector = true;
-            //    }
-            //    // Adiciona um Effector2D ao Tilemap se ainda não existir
-            //    if (selectedTilemap.GetComponent<PlatformEffector2D>() == null)
-            //    {
-            //        selectedTilemap.gameObject.AddComponent<PlatformEffector2D>();
-            //    }
-
-            //    // Obtém o componente CompositeCollider2D do Tilemap
-            //    CompositeCollider2D compositeCollider2D = selectedTilemap.GetComponent<CompositeCollider2D>();
-
-            //    // Verifica se o CompositeCollider2D existe
-            //    if (compositeCollider2D != null)
-            //    {
-            //        compositeCollider2D.usedByEffector = true;
-            //    }
 
 
-            //}
-            //else
-            //{
-            //    // Obtém o componente TilemapCollider2D do Tilemap
-            //    TilemapCollider2D tilemapCollider2D = selectedTilemap.GetComponent<TilemapCollider2D>();
-
-            //    // Verifica se o TilemapCollider2D existe
-            //    if (tilemapCollider2D != null)
-            //    {
-            //        // Ativa o "Used by Effector2D" no TilemapCollider2D
-            //        tilemapCollider2D.usedByEffector = false;
-            //    }
-            //    // Remove o Effector2D do Tilemap
-            //    PlatformEffector2D platformEffector2D = selectedTilemap.GetComponent<PlatformEffector2D>();
-            //    if (platformEffector2D != null)
-            //    {
-            //        Destroy(platformEffector2D);
-            //    }
-
-            //    // Obtém o componente CompositeCollider2D do Tilemap
-            //    CompositeCollider2D compositeCollider2D = selectedTilemap.GetComponent<CompositeCollider2D>();
-
-            //    // Verifica se o CompositeCollider2D existe
-            //    if (compositeCollider2D != null)
-            //    {
-            //        compositeCollider2D.usedByEffector = false;
-            //    }
-            //}
-
+            if (tempIsIcePlatform)
+            {
+                selectedTilemap.gameObject.tag = IceTag;
+            }
+            else if(tempIsStickyPlatform)
+            {
+                selectedTilemap.gameObject.tag = StickyTag;
+            }
+            else
+            {
+                selectedTilemap.gameObject.tag = "ground";
+            }
 
             // Ajusta o valor de Z-pos
             float zPos;
@@ -945,19 +928,22 @@ public class LevelEditorManager : MonoBehaviour
                 selectedTilemap.transform.position = new Vector3(selectedTilemap.transform.position.x, selectedTilemap.transform.position.y, zPos);
             }
 
-            // Obtém o componente Renderer do Tilemap selecionado
-            objectRenderer = selectedTilemap.GetComponent<TilemapRenderer>();
-
-            // Altera a posição do short layer
+            Renderer objectRenderer = selectedTilemap.GetComponent<TilemapRenderer>();
+            // Altera a posição do sorting layer
             if (objectRenderer != null)
             {
-                objectRenderer.sortingOrder = Mathf.RoundToInt(tempShortLayerPos);
+                int shortLayerPos;
+                if (int.TryParse(ShortLayerPosInput.text, out shortLayerPos))
+                {
+                    objectRenderer.sortingOrder = shortLayerPos;
+                }
             }
         }
 
         // Fecha o painel de opções
         tilemapOptionsPanel.SetActive(false);
     }
+
 
     #endregion
 
@@ -1270,6 +1256,7 @@ public class LevelEditorManager : MonoBehaviour
         PerformGridResize(newWidth, newHeight);
         warnSizeGrid.SetActive(false);
         confirmButton.onClick.RemoveAllListeners();
+        gridPanel.SetActive(false);
     }
     private void PerformGridResize(int newWidth, int newHeight)
     {
@@ -1279,6 +1266,7 @@ public class LevelEditorManager : MonoBehaviour
         DrawGridOutline();
         gridVisualizer.OnGridSizeUpdated();
 
+        gridPanel.SetActive(false);
         LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
@@ -1298,7 +1286,11 @@ public class LevelEditorManager : MonoBehaviour
             Debug.LogWarning("Invalid grid size. Please enter valid integer values for X and Y.");
         }
     }
-
+    public void OpenGridMenu()
+    {
+        infoGridX.text = currentGridWidth.ToString();
+        infoGridY.text = currentGridHeight.ToString();
+    }
     private void OnInputFieldXValueChanged(string newValue)
     {
         // Atualizar o valor de gridSizeX quando o texto do InputField de X é alterado
@@ -1369,6 +1361,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         // Ativa ou desativa o contêiner de decoração com base no estado do botão de alternância
         objectsContainer.SetActive(isOn);
+        nodesLineRendererContainer.SetActive(isOn);
     }
     #endregion
 
@@ -1397,6 +1390,8 @@ public class LevelEditorManager : MonoBehaviour
 
         // Crie um novo setor chamado "Sector1" e preencha seus dados
         SectorData sectorData1 = new SectorData();
+        // Define o nome do setor
+        sectorData1.sectorName = "Sector1"; // Defina o nome do setor
 
 
         // Define o tamanho da grade do setor como 20x20
@@ -1408,6 +1403,8 @@ public class LevelEditorManager : MonoBehaviour
         // Define as preferências do nível, como a música (MusicID)
         sectorData1.levelPreferences = new LevelPreferences();
         sectorData1.levelPreferences.MusicID = 1; // ID da música do nível
+        sectorData1.levelPreferences.BackgroundName = "GreenMountains_01";
+        sectorData1.levelPreferences.BackgroundOffset = 9.5f;
 
 
         // Crie um novo TilemapData vazio para o setor
@@ -1431,6 +1428,7 @@ public class LevelEditorManager : MonoBehaviour
         sectorData1.decorSaveData = new List<DecorSaveData>();
         sectorData1.decor2SaveData = new List<Decor2SaveData>();
         sectorData1.objectSaveData = new List<ObjectSaveData>();
+        sectorData1.movingObjectsaveData = new List<MovingObjectSaveData>();
         sectorData1.gameObjectSaveData = new List<GameObjectSaveData>();
         sectorData1.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
 
@@ -1464,7 +1462,6 @@ public class LevelEditorManager : MonoBehaviour
         // Exibe uma mensagem de log informando que o novo nível foi criado e salvo
         Debug.Log("Novo nível criado e salvo: " + newLevelFilePath);
     }
-
 
     private bool IsLevelNameExists(string levelName)
     {
@@ -1575,8 +1572,8 @@ public class LevelEditorManager : MonoBehaviour
             int WallLayer = LayerMask.NameToLayer("Wall");
             tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer); 
             tilemapData.isIce = tilemap.gameObject.CompareTag(IceTag);
+            tilemapData.isSticky = tilemap.gameObject.CompareTag(StickyTag);
 
-            //tilemapData.isOneWayPlatform = tilemap.GetComponent<TilemapCollider2D>() != null;
             tilemapData.isSolid = tilemap.GetComponent<TilemapCollider2D>() != null;
             tilemapData.shortLayerPos = tilemap.GetComponent<TilemapRenderer>().sortingOrder;
             tilemapData.zPos = tilemap.transform.position.z;
@@ -1744,31 +1741,71 @@ public class LevelEditorManager : MonoBehaviour
             objectData.position = objectPosition;
             objectData.objectType = objectType;
 
-            // Preenche os dados relacionados ao movimento apenas para objetos do tipo "Moving"
-            if (objectType == ObjectType.Moving)
-            {
-                PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                if (movementComponent != null)
-                {
-                    objectData.isCircular = movementComponent.isCircular;
-                    objectData.isPingPong = movementComponent.isPingPong;
-                    objectData.id = movementComponent.id;
-
-                    objectData.node = new List<MovementNodeData>();
-                    for (int i = 0; i < movementComponent.nodes.Length; i++)
-                    {
-                        MovementNodeData nodeData = new MovementNodeData();
-                        nodeData.position = movementComponent.nodes[i].position;
-                        nodeData.nodeTime = movementComponent.nodeTransitionTimes[i];
-                        objectData.node.Add(nodeData);
-                    }
-                }
-            }
-
             objectList.Add(objectData);
         }
 
 
+        List<MovingObjectSaveData> movingObjectList = new List<MovingObjectSaveData>();
+        GameObject[] objectMovingPlatform = GameObject.FindGameObjectsWithTag("MovingPlatform");
+        foreach (GameObject objectMP in objectMovingPlatform)
+        {
+            PlatformController movementComponent = objectMP.GetComponent<PlatformController>();
+
+            if (movementComponent != null)
+            {
+                string objectName = movementComponent.thisPlatformNameSaveEditor;
+
+                Vector3 objectPosition = objectMP.transform.position;
+
+                // Obtém o tipo do objeto a partir do ScriptableObjectData
+                ObjectType objectType = GetObjectType(objectName);
+
+                MovingObjectSaveData movingObjectData = new MovingObjectSaveData();
+                movingObjectData.name = objectName;
+                movingObjectData.position = objectPosition;
+                movingObjectData.objectType = objectType;
+                movingObjectData.initialStart = movementComponent.initialStart;
+                movingObjectData.rightStart = movementComponent.rightStart;
+                movingObjectData.speed = movementComponent.moveSpeed;
+                movingObjectData.stopDistance = movementComponent.stopDistance;
+                movingObjectData.id = movementComponent.platformMoveid;
+
+                // Preenche os dados relacionados ao movimento apenas para objetos do tipo "Moving"
+                if (objectType == ObjectType.Moving)
+                {
+                    if (movementComponent.behaviorType == WaypointBehaviorType.PingPong)
+                    {
+                        movingObjectData.isPingPong = true;
+                    }
+                    else
+                    {
+                        movingObjectData.isPingPong = false;
+                    }
+                    if (movementComponent.pathType == WaypointPathType.Closed)
+                    {
+                        movingObjectData.isClosed = true;
+                    }
+                    else
+                    {
+                        movingObjectData.isClosed = false;
+                    }
+
+                    List<MovementNodeData> nodeData = new List<MovementNodeData>();
+                    foreach (Vector3 waypointPosition in movementComponent.waypoints)
+                    {
+                        MovementNodeData node = new MovementNodeData();
+                        node.position = waypointPosition;
+                        nodeData.Add(node);
+                    }
+
+                    movingObjectData.node = nodeData;
+
+
+                }
+
+                movingObjectList.Add(movingObjectData);
+            }
+        }
         #endregion
 
         foreach (GameObjectSaveData gameObjectData in gameObjectList)
@@ -1824,11 +1861,14 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.levelPreferences = new LevelPreferences();
 
             currentSectorData.levelPreferences.MusicID = 1; // ID da música do nível
+            currentSectorData.levelPreferences.BackgroundName = "GreenMountains_01";
+            currentSectorData.levelPreferences.BackgroundOffset = 9.5f;
 
             currentSectorData.enemySaveData = new List<EnemySaveData>();
             currentSectorData.decorSaveData = new List<DecorSaveData>();
             currentSectorData.decor2SaveData = new List<Decor2SaveData>();
             currentSectorData.objectSaveData = new List<ObjectSaveData>();
+            currentSectorData.movingObjectsaveData = new List<MovingObjectSaveData>();
             currentSectorData.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
             currentSectorData.particlesSaveData = new List<ParticlesSaveData>() ;
             currentSectorData.gameObjectSaveData = new List<GameObjectSaveData>();
@@ -1857,6 +1897,8 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.gridSizeData = gridSizeData; // Preencha com os dados apropriados
             currentSectorData.levelPreferences = new LevelPreferences(); // Preencha com os dados apropriados
             currentSectorData.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
+            currentSectorData.levelPreferences.BackgroundName = LevelSettings.instance.BackgroundToSave;
+            currentSectorData.levelPreferences.BackgroundOffset = LevelSettings.instance.BackgroundOffsetToSave;
 
             currentSectorData.tilemapDataList = tilemapDataList; // Preencha com os dados apropriados
             currentSectorData.enemySaveData = enemyList; // Preencha com os dados apropriados
@@ -1866,6 +1908,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.decorSaveData = decorList; // Preencha com os dados apropriados
             currentSectorData.decor2SaveData = decor2List; // Preencha com os dados apropriados
             currentSectorData.objectSaveData = objectList; // Preencha com os dados apropriados
+            currentSectorData.movingObjectsaveData = movingObjectList;
         }
 
 
@@ -1928,8 +1971,6 @@ public class LevelEditorManager : MonoBehaviour
 
     public void LoadLevel(string worldName, string level, string sectorName)
     {
-
-
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
 
@@ -1989,11 +2030,19 @@ public class LevelEditorManager : MonoBehaviour
                     List<DecorSaveData> decorList = sectorData.decorSaveData;
                     List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
                     List<ObjectSaveData> objectList = sectorData.objectSaveData;
+                    List<MovingObjectSaveData> movingObjectList = sectorData.movingObjectsaveData;
 
                     // Limpa os Tilemaps existentes
                     ClearTilemaps();
 
                     LevelSettings.instance.SetMusicID(sectorData.levelPreferences.MusicID);
+                    
+                    // Carregar dados do background
+                    string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
+                    float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
+
+                    // Chame a função de atualização do background
+                    LevelSettings.instance.UpdateBackground(backgroundName, backgroundOffset);
 
                     LevelSettings.instance.UpdateValues();
                     // Restaura o tamanho do grid
@@ -2208,32 +2257,7 @@ public class LevelEditorManager : MonoBehaviour
 
                             ObjectType objectType = objectData.objectType;
 
-                            // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
-                            if (objectType == ObjectType.Moving)
-                            {
-                                PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                                if (movementComponent != null)
-                                {
-                                    movementComponent.isCircular = objectData.isCircular;
-                                    movementComponent.isPingPong = objectData.isPingPong;
-                                    movementComponent.id = objectData.id;
-
-                                    movementComponent.nodes = new Transform[objectData.node.Count];
-                                    movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
-
-                                    for (int i = 0; i < objectData.node.Count; i++)
-                                    {
-                                        // Instancie o prefab dos nodes em vez de criar um novo Transform vazio
-                                        GameObject nodePrefab = NodeObjectPrefab; // Obtenha o prefab dos nodes da variável NodeObjectPrefab
-                                        GameObject newNodeObject = Instantiate(nodePrefab, objectData.node[i].position, Quaternion.identity);
-                                        newNodeObject.name = "Node " + i; // Defina o nome do objeto do node para identificação
-
-                                        Transform nodeTransform = newNodeObject.transform;
-                                        movementComponent.nodes[i] = nodeTransform;
-                                        movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
-                                    }
-                                }
-                            }
+                            
                         }
                         else
                         {
@@ -2241,6 +2265,80 @@ public class LevelEditorManager : MonoBehaviour
                         }
                     }
 
+                    foreach (MovingObjectSaveData movingObjectSaveData in movingObjectList)
+                    {
+                        GameObject objectPrefab = null;
+                        foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                        {
+                            foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                            {
+                                if (objectInfo.ObjectName == movingObjectSaveData.name)
+                                {
+                                    objectPrefab = objectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (objectPrefab != null)
+                                break;
+                        }
+
+                        if (objectPrefab != null)
+                        {
+                            // Crie um novo objeto com base no prefab e defina o nome e a posição
+                            GameObject movingObjectObject = Instantiate(objectPrefab, movingObjectSaveData.position, Quaternion.identity);
+                            movingObjectObject.transform.SetParent(objectsContainer.transform);
+                            // Gere um ID exclusivo usando System.Guid
+                            string uniqueID = System.Guid.NewGuid().ToString();
+
+                            // Use o ID exclusivo para nomear o objeto instanciado
+                            movingObjectObject.name = movingObjectSaveData.name + "_" + uniqueID; // Defina o nome no objeto instanciado
+
+                            ObjectType objectType = movingObjectSaveData.objectType;
+                           
+                            if (objectType == ObjectType.Moving)
+                            {
+                                PlatformController movementComponent = movingObjectObject.GetComponent<PlatformController>();
+
+                                if (movementComponent != null)
+                                {
+                                    movementComponent.initialStart = movingObjectSaveData.initialStart;
+                                    movementComponent.moveSpeed = movingObjectSaveData.speed;
+                                    movementComponent.stopDistance = movingObjectSaveData.stopDistance;
+                                    movementComponent.rightStart = movingObjectSaveData.rightStart;
+                                    if (movingObjectSaveData.isPingPong)
+                                    {
+                                        movementComponent.behaviorType = WaypointBehaviorType.PingPong;
+                                    }
+                                    else
+                                    {
+                                        movementComponent.behaviorType = WaypointBehaviorType.Loop;
+                                    }
+                                    if(movingObjectSaveData.isClosed)
+                                    {
+                                        movementComponent.pathType = WaypointPathType.Closed;
+                                    }
+                                    else
+                                    {
+                                        movementComponent.pathType = WaypointPathType.Open;
+                                    }
+                                    movementComponent.platformMoveid = movingObjectSaveData.id;
+
+                                    movementComponent.waypoints = new List<Vector3>();
+
+                                    foreach (MovementNodeData nodeData in movingObjectSaveData.node)
+                                    {
+                                        movementComponent.waypoints.Add(nodeData.position);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for object: " + movingObjectSaveData.name);
+                        }
+                    }
+
+                    PlatformNodeEditor.instance.ObtainCreateAllNodes();
 
                     // Carrega os decorativos salvos
                     foreach (DecorSaveData decorData in decorList)
@@ -2405,13 +2503,21 @@ public class LevelEditorManager : MonoBehaviour
                             {
                                 SetTilemapLayer(newTilemap, groundLayer);
                             }
-                            else if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                            else if (tilemapData.isWallPlatform)
                             {
                                 SetTilemapLayer(newTilemap, wallLayer);
                             }
-                            else if (tilemapData.isSolid && tilemapData.isIce)
+                            if (tilemapData.isIce)
                             {
                                 newTilemap.gameObject.tag = IceTag;
+                            }
+                            else if(tilemapData.isSticky)
+                            {
+                                newTilemap.gameObject.tag = StickyTag;
+                            }
+                            else
+                            {
+                                newTilemap.gameObject.tag = "ground";
                             }
                         }
                         else
@@ -2487,6 +2593,7 @@ public class LevelEditorManager : MonoBehaviour
                         List<DecorSaveData> decorList = sectorData.decorSaveData;
                         List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
                         List<ObjectSaveData> objectList = sectorData.objectSaveData;
+                        List<MovingObjectSaveData> movingObjectList = sectorData.movingObjectsaveData;
 
                         // Limpa os Tilemaps existentes
                         ClearTilemaps();
@@ -2604,32 +2711,6 @@ public class LevelEditorManager : MonoBehaviour
 
                                 ObjectType objectType = objectData.objectType;
 
-                                // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
-                                if (objectType == ObjectType.Moving)
-                                {
-                                    PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                                    if (movementComponent != null)
-                                    {
-                                        movementComponent.isCircular = objectData.isCircular;
-                                        movementComponent.isPingPong = objectData.isPingPong;
-                                        movementComponent.id = objectData.id;
-
-                                        movementComponent.nodes = new Transform[objectData.node.Count];
-                                        movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
-
-                                        for (int i = 0; i < objectData.node.Count; i++)
-                                        {
-                                            // Instancie o prefab dos nodes em vez de criar um novo Transform vazio
-                                            GameObject nodePrefab = NodeObjectPrefab; // Obtenha o prefab dos nodes da variável NodeObjectPrefab
-                                            GameObject newNodeObject = Instantiate(nodePrefab, objectData.node[i].position, Quaternion.identity);
-                                            newNodeObject.name = "Node " + i; // Defina o nome do objeto do node para identificação
-
-                                            Transform nodeTransform = newNodeObject.transform;
-                                            movementComponent.nodes[i] = nodeTransform;
-                                            movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
-                                        }
-                                    }
-                                }
                             }
                             else
                             {
@@ -2637,6 +2718,80 @@ public class LevelEditorManager : MonoBehaviour
                             }
                         }
 
+                        foreach (MovingObjectSaveData movingObjectSaveData in movingObjectList)
+                        {
+                            GameObject objectPrefab = null;
+                            foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                            {
+                                foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                                {
+                                    if (objectInfo.ObjectName == movingObjectSaveData.name)
+                                    {
+                                        objectPrefab = objectInfo.prefab;
+                                        break;
+                                    }
+                                }
+                                if (objectPrefab != null)
+                                    break;
+                            }
+
+                            if (objectPrefab != null)
+                            {
+                                // Crie um novo objeto com base no prefab e defina o nome e a posição
+                                GameObject movingObjectObject = Instantiate(objectPrefab, movingObjectSaveData.position, Quaternion.identity);
+                                movingObjectObject.transform.SetParent(objectsContainer.transform);
+                                // Gere um ID exclusivo usando System.Guid
+                                string uniqueID = System.Guid.NewGuid().ToString();
+
+                                // Use o ID exclusivo para nomear o objeto instanciado
+                                movingObjectObject.name = movingObjectSaveData.name + "_" + uniqueID; // Defina o nome no objeto instanciado
+
+                                ObjectType objectType = movingObjectSaveData.objectType;
+
+                                if (objectType == ObjectType.Moving)
+                                {
+                                    PlatformController movementComponent = movingObjectObject.GetComponent<PlatformController>();
+
+                                    if (movementComponent != null)
+                                    {
+                                        movementComponent.initialStart = movingObjectSaveData.initialStart;
+                                        movementComponent.moveSpeed = movingObjectSaveData.speed;
+                                        movementComponent.stopDistance = movingObjectSaveData.stopDistance;
+                                        movementComponent.rightStart = movingObjectSaveData.rightStart;
+                                        if (movingObjectSaveData.isPingPong)
+                                        {
+                                            movementComponent.behaviorType = WaypointBehaviorType.PingPong;
+                                        }
+                                        else
+                                        {
+                                            movementComponent.behaviorType = WaypointBehaviorType.Loop;
+                                        }
+                                        if (movingObjectSaveData.isClosed)
+                                        {
+                                            movementComponent.pathType = WaypointPathType.Closed;
+                                        }
+                                        else
+                                        {
+                                            movementComponent.pathType = WaypointPathType.Open;
+                                        }
+                                        movementComponent.platformMoveid = movingObjectSaveData.id;
+
+                                        movementComponent.waypoints = new List<Vector3>();
+
+                                        foreach (MovementNodeData nodeData in movingObjectSaveData.node)
+                                        {
+                                            movementComponent.waypoints.Add(nodeData.position);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Prefab not found for object: " + movingObjectSaveData.name);
+                            }
+                        }
+
+                        PlatformNodeEditor.instance.ObtainCreateAllNodes();
 
                         // Carrega os decorativos salvos
                         foreach (DecorSaveData decorData in decorList)
@@ -2667,6 +2822,7 @@ public class LevelEditorManager : MonoBehaviour
                                 Debug.LogWarning("Prefab not found for decor: " + decorData.name);
                             }
                         }
+
 
                         // Carrega os decorativos salvos
                         foreach (Decor2SaveData decor2Data in decor2List)
@@ -2801,9 +2957,21 @@ public class LevelEditorManager : MonoBehaviour
                                 {
                                     SetTilemapLayer(newTilemap, groundLayer);
                                 }
-                                if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                                else if (tilemapData.isWallPlatform)
                                 {
                                     SetTilemapLayer(newTilemap, wallLayer);
+                                }
+                                if (tilemapData.isIce)
+                                {
+                                    newTilemap.gameObject.tag = IceTag;
+                                }
+                                else if (tilemapData.isSticky)
+                                {
+                                    newTilemap.gameObject.tag = StickyTag;
+                                }
+                                else
+                                {
+                                    newTilemap.gameObject.tag = "ground";
                                 }
                             }
                             else
@@ -2811,34 +2979,6 @@ public class LevelEditorManager : MonoBehaviour
                                 // Define a layer do Tilemap para a layer "Default"
                                 SetTilemapLayer(newTilemap, defaultLayer);
                             }
-
-                            //Configura a propriedade "isOneWayPlatform" do Tilemap
-                            //if(tilemapData.isOneWayPlatform && tilemapData.isSolid)
-                            //{
-                            //    // Obtém o componente TilemapCollider2D do Tilemap
-                            //    TilemapCollider2D tilemapCollider2D = newTilemap.GetComponent<TilemapCollider2D>();
-
-                            //    // Verifica se o TilemapCollider2D existe
-                            //    if (tilemapCollider2D != null)
-                            //    {
-                            //        // Ativa o "Used by Effector2D" no TilemapCollider2D
-                            //        tilemapCollider2D.usedByEffector = true;
-                            //    }
-                            //    // Adiciona um Effector2D ao Tilemap se ainda não existir
-                            //    if (newTilemap.GetComponent<PlatformEffector2D>() == null)
-                            //    {
-                            //        newTilemap.gameObject.AddComponent<PlatformEffector2D>();
-                            //    }
-
-                            //    // Obtém o componente CompositeCollider2D do Tilemap
-                            //    CompositeCollider2D compositeCollider2D = newTilemap.GetComponent<CompositeCollider2D>();
-
-                            //    // Verifica se o CompositeCollider2D existe
-                            //    if (compositeCollider2D != null)
-                            //    {
-                            //        compositeCollider2D.usedByEffector = true;
-                            //    }
-                            //}
 
                             // Percorre os TileData do TilemapData
                             foreach (TileData tileData in tilemapData.tiles)
@@ -3246,15 +3386,8 @@ public class LevelEditorManager : MonoBehaviour
                             }
                         }
 
-                        //adicionar colisor ou remover
-                        if (tilemapData.isSolid && !tilemapData.isWallPlatform)
-                        {
-                            SetTilemapLayer(newTilemap, groundLayer);
-                        }
-                        if (tilemapData.isSolid && tilemapData.isWallPlatform)
-                        {
-                            SetTilemapLayer(newTilemap, wallLayer);
-                        }
+                        SetTilemapLayer(newTilemap, groundLayer);
+                        
                     }
                     else
                     {
@@ -3320,21 +3453,30 @@ public class LevelEditorManager : MonoBehaviour
     }
     private TileBase GetTileByName(string tileName)
     {
-        // Percorre todas as categorias de telhas
-        foreach (var category in tileCategories)
+        TileBase tile = null;
+
+        // Percorre todas as categorias de telhas, da última para a primeira
+        for (int i = tileCategories.Count - 1; i >= 0; i--)
         {
             // Procura o tile pelo nome na categoria atual
-            foreach (var tile in category.tiles)
+            foreach (var tileInCategory in tileCategories[i].tiles)
             {
-                if (tile.name == tileName)
+                if (tileInCategory.name == tileName)
                 {
-                    return tile;
+                    tile = tileInCategory;
+                    break; // Encontrou a telha, saia do loop interno
                 }
+            }
+
+            if (tile != null)
+            {
+                break; // Encontrou a telha, saia do loop externo
             }
         }
 
-        return null; // Retorna null se o tile não for encontrado
+        return tile; // Retorna a telha encontrada (ou null se não encontrada)
     }
+
     public void ClearTilemaps()
     {
         // Destroi todos os Tilemaps na cena
@@ -3417,6 +3559,10 @@ public class LevelEditorManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        foreach (Transform child in nodesLineRendererContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void ClearDecor()
@@ -3434,7 +3580,7 @@ public class LevelEditorManager : MonoBehaviour
     private void ClearNodes()
     {
         // Remove todos os elementos que possuem a tag "Node"
-        GameObject[] nodes = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] nodes = GameObject.FindGameObjectsWithTag("WayPoint");
         foreach (GameObject node in nodes)
         {
             Destroy(node);
@@ -3565,6 +3711,7 @@ public class TilemapData
     public int tilemapIndex;
     public bool isSolid;
     public bool isIce;
+    public bool isSticky;
     public bool isWallPlatform;
     public int shortLayerPos;
     public float zPos;
@@ -3590,7 +3737,8 @@ public class GridSizeData
 public class LevelPreferences
 {
     public int MusicID;
-    public string BackGroundName;
+    public string BackgroundName;
+    public float BackgroundOffset;
     public string WeatherName;
     public string TimeWeather;
 }
@@ -3641,17 +3789,27 @@ public class ObjectSaveData
     public string name;
     public Vector3 position;
     public ObjectType objectType; // Enum do código anterior
-    public List<MovementNodeData> node; // Lista de nós de movimento
-    public bool isCircular;
-    public bool isPingPong;
     public string id;
 }
-
+[System.Serializable]
+public class MovingObjectSaveData
+{
+    public string name;
+    public bool initialStart;
+    public bool rightStart;
+    public float speed;
+    public float stopDistance;
+    public Vector3 position;
+    public ObjectType objectType; // Enum do código anterior
+    public List<MovementNodeData> node; // Lista de nós de movimento
+    public bool isPingPong;
+    public bool isClosed;
+    public string id;
+}
 [System.Serializable]
 public class MovementNodeData
 {
     public Vector3 position;
-    public float nodeTime;
 }
 
 [System.Serializable]
@@ -3703,6 +3861,7 @@ public class SectorData
     public List<DecorSaveData> decorSaveData;
     public List<Decor2SaveData> decor2SaveData;
     public List<ObjectSaveData> objectSaveData;
+    public List<MovingObjectSaveData> movingObjectsaveData;
     public List<LevelDotData> levelDotDataList;
 }
 

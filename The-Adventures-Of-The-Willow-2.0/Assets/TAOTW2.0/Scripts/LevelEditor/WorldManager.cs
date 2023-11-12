@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using System.Diagnostics;
+using System.Collections;
 
 public class WorldManager : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class WorldManager : MonoBehaviour
     public Toggle toggle;
 
 
-    private void Start()
+    private IEnumerator Start()
     {
         if (instance == null)
         {
@@ -63,13 +64,6 @@ public class WorldManager : MonoBehaviour
         // Carrega os mundos disponíveis
         LoadAvailableWorlds();
 
-        if (!string.IsNullOrEmpty(LevelEditorController.instance.AtualLevel) && !string.IsNullOrEmpty(LevelEditorController.instance.AtualWorld))
-        {
-            currentLevelName = LevelEditorController.instance.AtualLevel;
-            currentWorldName = LevelEditorController.instance.AtualWorld;
-            closeAllPanel.SetActive(false);
-            LoadCurrentWorldAndLevel();
-        }
 
         // Defina o valor inicial do toggle para true
         toggle.isOn = true;
@@ -78,7 +72,27 @@ public class WorldManager : MonoBehaviour
         // Assine o evento OnValueChanged do toggle
         toggle.onValueChanged.AddListener(OnToggleValueChanged);
 
+        if (!string.IsNullOrEmpty(LevelEditorController.instance.AtualLevel) && !string.IsNullOrEmpty(LevelEditorController.instance.AtualWorld))
+        {
+            currentLevelName = LevelEditorController.instance.AtualLevel;
+            currentWorldName = LevelEditorController.instance.AtualWorld;
+            closeAllPanel.SetActive(false);
+            // Aguarde até que o SectorManager esteja pronto
+            yield return WaitUntilSectorManagerIsReady();
+
+            // Aguarde até que o SectorManager esteja pronto
+            LoadCurrentWorldAndLevel();
+        }
+
     }
+    private IEnumerator WaitUntilSectorManagerIsReady()
+    {
+        while (SectorManager.instance == null)
+        {
+            yield return null;
+        }
+    }
+
 
     // Método chamado sempre que o valor do toggle for alterado
     private void OnToggleValueChanged(bool value)
@@ -96,11 +110,16 @@ public class WorldManager : MonoBehaviour
 
     public void LoadCurrentWorldAndLevel()
     {
-        if (!string.IsNullOrEmpty(currentWorldName) && !string.IsNullOrEmpty(currentLevelName))
+        if (!string.IsNullOrEmpty(currentWorldName) && !string.IsNullOrEmpty(currentLevelName) && SectorManager.instance != null)
         {
             // Carrega o mundo atual e o nível atual
             SelectWorld(currentWorldName);
+            SectorManager.instance.currentSectorName = "Sector1";
             LevelEditorManager.instance.LoadLevel(currentWorldName, currentLevelName, "Sector1");
+        }
+        else
+        {
+            UnityEngine.Debug.Log("SectorManager is null");
         }
     }
 
@@ -283,6 +302,7 @@ public class WorldManager : MonoBehaviour
 
     }
 
+    //Called on button
     public void TestGame()
     {
         if (LevelEditorController.instance != null)

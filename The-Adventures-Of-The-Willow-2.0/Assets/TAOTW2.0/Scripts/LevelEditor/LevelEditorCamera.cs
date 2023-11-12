@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class LevelEditorCamera : MonoBehaviour
@@ -10,7 +11,7 @@ public class LevelEditorCamera : MonoBehaviour
     [SerializeField]
     private float boostSpeed = 10f; // Velocidade de movimento da câmera quando a tecla "X" é pressionada
     [SerializeField]
-    private float cameraPadding = 30f; // Espaçamento adicional para os limites da câmera
+    private float cameraPadding = 5f; // Espaçamento adicional para os limites da câmera
 
     private float minX, maxX, minY, maxY; // Limites de movimento da câmera
 
@@ -27,8 +28,6 @@ public class LevelEditorCamera : MonoBehaviour
     private float horizontal;
     private float vertical;
 
-    private bool isZoomingIn = false;
-    private bool isZoomingOut = false;
 
     public void CameraMovement(InputAction.CallbackContext context)
     {
@@ -38,9 +37,13 @@ public class LevelEditorCamera : MonoBehaviour
 
     private void Update()
     {
-        MoveCamera();
-        BoostCameraSpeed();
-        ZoomCamera();
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            // O rato não está sobre a UI
+            MoveCamera();
+            BoostCameraSpeed();
+            ZoomCamera();
+        }
     }
 
     private void CalculateCameraBounds()
@@ -49,10 +52,10 @@ public class LevelEditorCamera : MonoBehaviour
         int gridHeight = LevelEditorManager.instance.currentGridHeight;
         float tileSize = LevelEditorManager.instance.selectedTilemap.cellSize.x;
 
-        float minWorldX = -(gridWidth / 2) * tileSize;
-        float maxWorldX = (gridWidth / 2) * tileSize;
-        float minWorldY = -(gridHeight / 2) * tileSize;
-        float maxWorldY = (gridHeight / 2) * tileSize;
+        float minWorldX = 0; // Começa em 0 na borda esquerda
+        float maxWorldX = gridWidth * tileSize; // Termina no tamanho total da grade na borda direita
+        float minWorldY = 0; // Começa em 0 na borda inferior
+        float maxWorldY = gridHeight * tileSize; // Termina no tamanho total da grade na borda superior
 
         minX = minWorldX - cameraPadding;
         maxX = maxWorldX + cameraPadding;

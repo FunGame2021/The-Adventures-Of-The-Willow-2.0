@@ -22,25 +22,31 @@ public class LoadScenes : MonoBehaviour
 		Application.Quit();
 	}
 	
-	public void EscapeToBack(InputAction.CallbackContext context)
-	{
-        if (context.performed)
-     	{
-			loadSceneEscape(nametoescape);
-		}
-    }
-	/*/old
 	void Update()
-	{
-		if (Input.GetKeyDown("escape"))
-		{
-			loadSceneEscape(name);
-		}
-	}*/
-	
-	public void loadSceneEscape(string nametoescape)
     {
-        SceneManager.LoadScene(nametoescape);
+        if (UserInput.instance.playerMoveAndExtraActions.UI.EscapeMenu.WasPerformedThisFrame())
+        {
+            if (LoadWorldBack.instance != null)
+            {
+                LoadWorldBack.instance.WorldLoadAfterPlay();
+            }
+            else
+            {
+                SceneManager.LoadScene(nametoescape);
+            }
+		}
+	}
+	
+	public void loadSceneEscapeButton()
+    {
+        if (LoadWorldBack.instance != null)
+        {
+            LoadWorldBack.instance.WorldLoadAfterPlay();
+        }
+        else
+        {
+            SceneManager.LoadScene(nametoescape);
+        }
     }
 	
 }

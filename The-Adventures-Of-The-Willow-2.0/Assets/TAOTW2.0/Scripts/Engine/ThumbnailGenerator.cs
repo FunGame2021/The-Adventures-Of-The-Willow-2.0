@@ -5,11 +5,10 @@ public class PrefabThumbnailGenerator : MonoBehaviour
 {
     public GameObject prefabToGenerateThumbnail; // Arraste o prefab aqui na Inspector
     public Camera thumbnailCamera; // Referência à câmera na cena de edição separada
-
+    public int thumbnailSize = 32; // Tamanho da miniatura em pixels
     public void GenerateThumbnail()
     {
-        int thumbnailSize = 32; // Tamanho da miniatura em pixels
-
+        
         if (prefabToGenerateThumbnail != null && thumbnailCamera != null)
         {
             RenderTexture renderTexture = new RenderTexture(thumbnailSize, thumbnailSize, 24);

@@ -15,9 +15,9 @@ MonoBehaviour:
   categories:
   - categoryName: Moving Platforms
     Objects:
-    - ObjectName: Platform
-      objectType: 0
-      prefab: {fileID: 1053994767529580254, guid: 0b3c86d3d18a934458e1b38fc67a3844, type: 3}
+    - ObjectName: MovingPlatform_01
+      objectType: 1
+      prefab: {fileID: 3829826318686692715, guid: 217de3e0077854241aae2b6a35b28696, type: 3}
   - categoryName: Powerups
     Objects:
     - ObjectName: GoldCoin

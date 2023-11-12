@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
+using static System.TimeZoneInfo;
 
 public class ScreenAspectRatio : MonoBehaviour
 {
     public static ScreenAspectRatio instance;
     public bool m_isStarting;
-    public bool isLevelStarting;
+    public bool isLevelStarting = false;
 
     public GameObject m_target;
     public Image m_maskTransition;
@@ -23,10 +24,19 @@ public class ScreenAspectRatio : MonoBehaviour
 
     private Vector3 previousPlayerPosition;
 
+    public Material transitionMaterial;
+    private Vector2 startTransition1;
+    private Vector2 startTransition2;
+    private Vector2 endTransition1;
+    private Vector2 endTransition2;
+    private float transitionDuration = 1.0f; // Duração da transição em segundos
+    private float transitionTime = 0f;
+    private bool isTransitioning = false;
+
+
+
     //LevelInfo
     [SerializeField] private Animator LevelInfoAnimator;
-    [SerializeField] private GameObject TransitionMaterial1;
-    [SerializeField] private GameObject TransitionLevelMaterial1;
 
     private void Awake()
     {
@@ -38,23 +48,20 @@ public class ScreenAspectRatio : MonoBehaviour
     void Start()
     {
         m_target = GameObject.FindGameObjectWithTag("Player");
-        if (m_target != null)
+        if(m_target == null)
         {
-            GetCharacterPosition();
+            m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
         }
+        GetCharacterPosition();
+       
     }
 
     void Update()
     {
-        m_target = GameObject.FindGameObjectWithTag("Player");
-        if (!isLevelStarting)
+        if (isLevelStarting)
         {
             m_counter += Time.deltaTime;
 
-            if (previousPlayerPosition != m_target.transform.position)
-            {
-                GetCharacterPosition();
-            }
             if (m_counter > 0.5)
             {
                 if (m_isStarting)
@@ -75,84 +82,79 @@ public class ScreenAspectRatio : MonoBehaviour
                 }
             }
         }
+        if (isTransitioning)
+        {
+            transitionTime += Time.deltaTime;
+            float t = Mathf.Clamp01(transitionTime / transitionDuration);
+
+            // Interpola os valores suavemente
+            Vector2 currentTransition1 = Vector2.Lerp(startTransition1, endTransition1, t);
+            Vector2 currentTransition2 = Vector2.Lerp(startTransition2, endTransition2, t);
+
+            transitionMaterial.SetVector("_Transition1", currentTransition1);
+            transitionMaterial.SetVector("_Transition2", currentTransition2);
+
+            if (t >= 1.0f)
+            {
+                // A transição está completa
+                isTransitioning = false;
+
+                // Verifique se as transições terminaram com Vector2 (0, 0)
+                if (endTransition1 == new Vector2(0.1f, 0f) && endTransition2 ==  new Vector2(-0.1f, 0.05f))
+                {
+                    // Modifique o canal _Color do material para alpha 0
+                    Color currentColor = transitionMaterial.GetColor("_Color");
+                    currentColor.a = 0f;
+                    transitionMaterial.SetColor("_Color", currentColor);
+                    isLevelStarting = true;
+                }
+            }
+        }
     }
     public void OpenTransition()
     {
-        Debug.Log("Open");
+        if (!isTransitioning)
+        {
+            // Defina os valores iniciais e finais
+            startTransition1 = new Vector2(-0.5f, 0f);
+            startTransition2 = new Vector2(0.5f, 0.05f);
+            endTransition1 = new Vector2(0.1f, 0f);
+            endTransition2 = new Vector2(-0.1f, 0.05f);
 
-        // World
-        Material worldMaterial = TransitionMaterial1.GetComponent<Image>().material;
-        Vector2 worldTransition1Value = new Vector2(-0.5f, 0f);
-        Vector2 worldTransition2Value = new Vector2(0.5f, 0.05f);
-        worldMaterial.SetVector("Transition1", worldTransition1Value);
-        worldMaterial.SetVector("Transition2", worldTransition2Value);
-
-        // Level
-        Material levelMaterial = TransitionLevelMaterial1.GetComponent<Image>().material;
-        Vector2 levelTransition1Value = new Vector2(-0.5f, 0f);
-        Vector2 levelTransition2Value = new Vector2(0.5f, 0.05f);
-        levelMaterial.SetVector("Transition1", levelTransition1Value);
-        levelMaterial.SetVector("Transition2", levelTransition2Value);
+            isTransitioning = true;
+            transitionTime = 0f;
+        }
     }
 
     public void CloseTransition()
     {
-        Debug.Log("Close");
+        if (!isTransitioning)
+        {
+            // Defina os valores iniciais e finais
+            startTransition1 = new Vector2(0f, 0f);
+            startTransition2 = new Vector2(0f, 0.05f);
+            endTransition1 = new Vector2(-0.5f, 0f);
+            endTransition2 = new Vector2(0.5f, 0.05f);
 
-        // World
-        Material worldMaterial = TransitionMaterial1.GetComponent<Image>().material;
-        Vector2 worldTransition1Value = new Vector2(0.07f, 0f);
-        Vector2 worldTransition2Value = new Vector2(-0.07f, 0.05f);
-        worldMaterial.SetVector("Transition1", worldTransition1Value);
-        worldMaterial.SetVector("Transition2", worldTransition2Value);
+            // Modifique o canal _Color do material para alpha 0
+            Color currentColor = transitionMaterial.GetColor("_Color");
+            currentColor.a = 1f;
+            transitionMaterial.SetColor("_Color", currentColor);
 
-        // Level
-        Material levelMaterial = TransitionLevelMaterial1.GetComponent<Image>().material;
-        Vector2 levelTransition1Value = new Vector2(0.07f, 0f);
-        Vector2 levelTransition2Value = new Vector2(-0.07f, 0.05f);
-        levelMaterial.SetVector("Transition1", levelTransition1Value);
-        levelMaterial.SetVector("Transition2", levelTransition2Value);
+            isTransitioning = true;
+            isLevelStarting = false;
+            transitionTime = 0f;
+        }
     }
 
     public void StartTransitionNow()
     {
-        if(isLevelStarting)
+        if (LevelInfoAnimator != null)
         {
-            if (LevelInfoAnimator != null)
-            {
-                LevelInfoAnimator.SetBool("StartedLevel", true);
-            }
-            StartCoroutine(ToAnimation());
+            LevelInfoAnimator.SetBool("StartedLevel", true);
         }
-    }
-    IEnumerator ToAnimation()
-    {
-        if(previousPlayerPosition != m_target.transform.position)
-        {
-            GetCharacterPosition();
-        }
-        m_counter += Time.deltaTime;
+        GetCharacterPosition();
 
-        if (m_counter > 0.5)
-        {
-            if (m_isStarting)
-            {
-                if (m_radius < 1)
-                {
-                    m_radius += Time.deltaTime;
-                    m_maskTransition.material.SetFloat("Radius", m_radius);
-                }
-            }
-            else
-            {
-                if (m_radius > 0)
-                {
-                    m_radius -= Time.deltaTime;
-                    m_maskTransition.material.SetFloat("Radius", m_radius);
-                }
-            }
-        }
-        yield return new WaitForSeconds(3f);
     }
     public void GetCharacterPosition()
     {

@@ -8365,6 +8365,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535772938}
   m_CullTransparentMesh: 1
+--- !u!1 &547933615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 547933617}
+  - component: {fileID: 547933616}
+  m_Layer: 0
+  m_Name: UserInputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &547933616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547933615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d186e791e983279499841b74ed77a0ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveInput: {x: 0, y: 0}
+--- !u!4 &547933617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547933615}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &556678783
 GameObject:
   m_ObjectHideFlags: 0
@@ -23610,6 +23655,27 @@ MonoBehaviour:
       Data3: 1671344564
       Data4: 1316251274
     Path: event:/Ambience/Campfire
+  <EditorRandom>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <MenuMusicA>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <FinishMusic>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   <music>k__BackingField:
     Guid:
       Data1: 354135511
@@ -23638,13 +23704,6 @@ MonoBehaviour:
       Data3: 32629379
       Data4: -1649294826
     Path: event:/Musics/FightMusic
-  <MenuMusic>k__BackingField:
-    Guid:
-      Data1: 1714064592
-      Data2: 1279810553
-      Data3: 1258217874
-      Data4: 1452086045
-    Path: event:/Musics/Menu
   <Invinciblemusic>k__BackingField:
     Guid:
       Data1: 1625357869
@@ -23758,6 +23817,20 @@ MonoBehaviour:
       Data4: 1310658184
     Path: event:/SFX/Objects/CheckPoint
   <Teleport01>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <FallingObject>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <PoofObject>k__BackingField:
     Guid:
       Data1: 0
       Data2: 0
@@ -23954,3 +24027,4 @@ SceneRoots:
   - {fileID: 145108501}
   - {fileID: 509157596}
   - {fileID: 3728037129063084719}
+  - {fileID: 547933617}

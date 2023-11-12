@@ -46,6 +46,13 @@ public class playLevel : MonoBehaviour
     public Transform enemyContainer;
     #endregion
 
+    #region Background
+    [SerializeField] private Transform backgroundLocal;
+    private GameObject currentBackgroundInstance;
+    public BackgroundData backgroundData;
+    private string selectedBackgroundName;
+    #endregion
+
     #region GameObject
     public GameObjectsData ScriptableGameObjectData;
     public Transform GameObjectsContainer;
@@ -68,6 +75,7 @@ public class playLevel : MonoBehaviour
     public LayerMask groundLayer;
     public LayerMask defaultLayer;
     public string IceTag;
+    public string StickyTag;
 
     [SerializeField] private List<TileCategoryData> tileCategories; // Lista de categorias de telhas
 
@@ -75,6 +83,8 @@ public class playLevel : MonoBehaviour
     [SerializeField] public bool StartedLevel;
     private bool canStart;
     [SerializeField] private GameObject PressStartInfo;
+
+    [SerializeField] private GameObject WorldPressStartInfo;
 
     [SerializeField] private GameObject DeathZone;
     public bool isPlayingLevel;
@@ -102,7 +112,10 @@ public class playLevel : MonoBehaviour
         canStart = false;
         isPlayingLevel = false;
 
-        isWorld = PlayWorld.instance.isWorldmap;
+        if (PlayWorld.instance != null )
+        {
+            isWorld = PlayWorld.instance.isWorldmap;
+        }
         
         if(isWorld)
         {
@@ -151,49 +164,52 @@ public class playLevel : MonoBehaviour
 
     private TileBase GetTileByName(string tileName)
     {
-        // Percorre todas as categorias de telhas
-        foreach (var category in tileCategories)
+        TileBase tile = null;
+
+        // Percorre todas as categorias de telhas, da última para a primeira
+        for (int i = tileCategories.Count - 1; i >= 0; i--)
         {
             // Procura o tile pelo nome na categoria atual
-            foreach (var tile in category.tiles)
+            foreach (var tileInCategory in tileCategories[i].tiles)
             {
-                if (tile.name == tileName)
+                if (tileInCategory.name == tileName)
                 {
-                    return tile;
+                    tile = tileInCategory;
+                    break; // Encontrou a telha, saia do loop interno
                 }
+            }
+
+            if (tile != null)
+            {
+                break; // Encontrou a telha, saia do loop externo
             }
         }
 
-        return null; // Retorna null se o tile não for encontrado
+        return tile; // Retorna a telha encontrada (ou null se não encontrada)
     }
 
     void Update()
     {
         if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
         {
-            if (!StartedLevel && canStart)
+            if (!StartedLevel && canStart && !isWorld)
             {
                 isPlayingLevel = true;
                 StartedLevel = true;
                 PlayMusic();
                 LevelTimeManager.instance.Begin(gameLevelTime);
                 GameStates.instance.isLevelStarted = true;
+                ScreenAspectRatio.instance.StartTransitionNow();
+                PressStartInfo.SetActive(false);
             }
-            if (!StartedWorld && canStart)
+            if (!StartedWorld && canStart && isWorld)
             {
                 isPlayingWorld = true;
                 StartedWorld = true;
+                WorldPressStartInfo.SetActive(false);
                 PlayMusic();
+                ScreenAspectRatio.instance.StartTransitionNow();
             }
-        }
-
-        if (StartedLevel)
-        {
-            ScreenAspectRatio.instance.StartTransitionNow();
-        }
-        if (StartedWorld)
-        {
-            ScreenAspectRatio.instance.StartTransitionNow();
         }
     }
 
@@ -267,10 +283,17 @@ public class playLevel : MonoBehaviour
                     List<DecorSaveData> decorList = sectorData.decorSaveData;
                     List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
                     List<ObjectSaveData> objectList = sectorData.objectSaveData;
+                    List<MovingObjectSaveData> movingObjectList = sectorData.movingObjectsaveData;
 
 
                     MusicID = sectorData.levelPreferences.MusicID;
 
+                    // Carregar dados do background
+                    string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
+                    float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
+
+                    // Chame a função de atualização do background
+                    LoadBackground(backgroundName, backgroundOffset);
 
                     GridWidth = gridSizeData.currentGridWidth;
                     GridHeight = gridSizeData.currentGridHeight;
@@ -345,18 +368,26 @@ public class playLevel : MonoBehaviour
                                     rb.bodyType = RigidbodyType2D.Static;
                                 }
                             }
-                            //adicionar colisor ou remover
+
                             if (tilemapData.isSolid && !tilemapData.isWallPlatform)
                             {
                                 SetTilemapLayer(newTilemap, groundLayer);
                             }
-                            else if (tilemapData.isSolid && tilemapData.isWallPlatform)
+                            else if (tilemapData.isWallPlatform)
                             {
                                 SetTilemapLayer(newTilemap, wallLayer);
                             }
-                            else if (tilemapData.isSolid && tilemapData.isIce)
+                            if (tilemapData.isIce)
                             {
                                 newTilemap.gameObject.tag = IceTag;
+                            }
+                            else if (tilemapData.isSticky)
+                            {
+                                newTilemap.gameObject.tag = StickyTag;
+                            }
+                            else
+                            {
+                                newTilemap.gameObject.tag = "ground";
                             }
                         }
                         else
@@ -515,28 +546,7 @@ public class playLevel : MonoBehaviour
 
                             ObjectType objectType = objectData.objectType;
 
-                            // Restaure os nós de movimento e o tempo de transição para objetos com componente PlatformMovement
-                            if (objectType == ObjectType.Moving)
-                            {
-                                PlatformMovement movementComponent = objectObject.GetComponent<PlatformMovement>();
-                                if (movementComponent != null)
-                                {
-                                    movementComponent.isCircular = objectData.isCircular;
-                                    movementComponent.isPingPong = objectData.isPingPong;
-                                    movementComponent.id = objectData.id;
-
-                                    movementComponent.nodes = new Transform[objectData.node.Count];
-                                    movementComponent.nodeTransitionTimes = new float[objectData.node.Count];
-
-                                    for (int i = 0; i < objectData.node.Count; i++)
-                                    {
-                                        Transform nodeTransform = new GameObject("Node " + i).transform;
-                                        nodeTransform.position = objectData.node[i].position;
-                                        movementComponent.nodes[i] = nodeTransform;
-                                        movementComponent.nodeTransitionTimes[i] = objectData.node[i].nodeTime;
-                                    }
-                                }
-                            }
+                            
                         }
                         else
                         {
@@ -544,6 +554,78 @@ public class playLevel : MonoBehaviour
                         }
                     }
 
+                    foreach (MovingObjectSaveData movingObjectSaveData in movingObjectList)
+                    {
+                        GameObject objectPrefab = null;
+                        foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                        {
+                            foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                            {
+                                if (objectInfo.ObjectName == movingObjectSaveData.name)
+                                {
+                                    objectPrefab = objectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (objectPrefab != null)
+                                break;
+                        }
+
+                        if (objectPrefab != null)
+                        {
+                            // Crie um novo objeto com base no prefab e defina o nome e a posição
+                            GameObject movingObjectObject = Instantiate(objectPrefab, movingObjectSaveData.position, Quaternion.identity);
+                            movingObjectObject.transform.SetParent(objectsContainer.transform);
+                            // Gere um ID exclusivo usando System.Guid
+                            string uniqueID = System.Guid.NewGuid().ToString();
+
+                            // Use o ID exclusivo para nomear o objeto instanciado
+                            movingObjectObject.name = movingObjectSaveData.name + "_" + uniqueID; // Defina o nome no objeto instanciado
+
+                            ObjectType objectType = movingObjectSaveData.objectType;
+
+                            if (objectType == ObjectType.Moving)
+                            {
+                                PlatformController movementComponent = movingObjectObject.GetComponent<PlatformController>();
+
+                                if (movementComponent != null)
+                                {
+                                    movementComponent.initialStart = movingObjectSaveData.initialStart;
+                                    movementComponent.moveSpeed = movingObjectSaveData.speed;
+                                    movementComponent.stopDistance = movingObjectSaveData.stopDistance;
+                                    movementComponent.rightStart = movingObjectSaveData.rightStart;
+                                    if (movingObjectSaveData.isPingPong)
+                                    {
+                                        movementComponent.behaviorType = WaypointBehaviorType.PingPong;
+                                    }
+                                    else
+                                    {
+                                        movementComponent.behaviorType = WaypointBehaviorType.Loop;
+                                    }
+                                    if (movingObjectSaveData.isClosed)
+                                    {
+                                        movementComponent.pathType = WaypointPathType.Closed;
+                                    }
+                                    else
+                                    {
+                                        movementComponent.pathType = WaypointPathType.Open;
+                                    }
+                                    movementComponent.platformMoveid = movingObjectSaveData.id;
+
+                                    movementComponent.waypoints = new List<Vector3>();
+
+                                    foreach (MovementNodeData nodeData in movingObjectSaveData.node)
+                                    {
+                                        movementComponent.waypoints.Add(nodeData.position);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for object: " + movingObjectSaveData.name);
+                        }
+                    }
                     //Carrega os GameObjects, mas se for PlayerPos carrega só a posição salva, para depois o player a obter e começar de lá.
                     //Também pode ser útil se usar particulas para facilitar no level editor os seus prefabs devem ter imagem então isto poderá carregar só
                     //particlas em vez com a imagem.
@@ -710,6 +792,44 @@ public class playLevel : MonoBehaviour
         ScreenAspectRatio.instance.GetCharacterPosition();
     }
 
+    private void LoadBackground(string backgroundName, float offset)
+    {
+        selectedBackgroundName = backgroundName;
+
+        foreach (Transform child in backgroundLocal)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Encontre o prefab do fundo correspondente com base no nome
+        GameObject backgroundPrefab = null;
+        foreach (BackgroundData.BiomeCategory biomeCategory in backgroundData.biomeCategories)
+        {
+            foreach (BackgroundData.Background backgroundInfo in biomeCategory.BackgroundList)
+            {
+                if (backgroundInfo.backgroundName == selectedBackgroundName)
+                {
+                    backgroundPrefab = backgroundInfo.backgroundPrefab;
+                    break;
+                }
+            }
+            if (backgroundPrefab != null)
+                break;
+        }
+
+        if (backgroundPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(backgroundLocal.position.x, offset, backgroundLocal.position.z);
+            currentBackgroundInstance = Instantiate(backgroundPrefab, spawnPosition, Quaternion.identity, backgroundLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for background: " + selectedBackgroundName);
+        }
+
+    }
+
     public void LoadSector(string SectorNameToLoad)
     {
 
@@ -864,7 +984,7 @@ public class playLevel : MonoBehaviour
 
                 foreach (GameObjectSaveData gameObjectData in gameObjectList)
                 {
-                    if (gameObjectData.name == "PlayerPos")
+                    if (gameObjectData.name == "PlayerMapPos")
                     {
                         // Inicie uma Coroutine para esperar um tempo antes de instanciar o jogador.
                         StartCoroutine(ToLoadWorldPlayer(gameObjectData.position));
@@ -987,15 +1107,8 @@ public class playLevel : MonoBehaviour
                             }
                         }
 
-                        //adicionar colisor ou remover
-                        if (tilemapData.isSolid && !tilemapData.isWallPlatform)
-                        {
-                            SetTilemapLayer(newTilemap, groundLayer);
-                        }
-                        if (tilemapData.isSolid && tilemapData.isWallPlatform)
-                        {
-                            SetTilemapLayer(newTilemap, wallLayer);
-                        }
+                        SetTilemapLayer(newTilemap, groundLayer);
+                        
                     }
                     else
                     {
@@ -1041,10 +1154,11 @@ public class playLevel : MonoBehaviour
         // Espere por um determinado período de tempo antes de instanciar o jogador.
         yield return new WaitForSeconds(5f); // Exemplo: espera por 2 segundos.
 
-        PressStartInfo.SetActive(true);
+        WorldPressStartInfo.SetActive(true);
         canStart = true;
         // Após o tempo de espera, instancie o jogador na posição especificada.
         WorldPlayerPrefab = Instantiate(WorldPlayerPrefab, playerPosition, Quaternion.identity);
+        ScreenAspectRatio.instance.m_target = WorldPlayerPrefab;
         ScreenAspectRatio.instance.GetCharacterPosition();
     }
 }

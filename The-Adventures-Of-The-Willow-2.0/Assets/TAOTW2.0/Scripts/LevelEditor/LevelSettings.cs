@@ -21,7 +21,7 @@ public class LevelSettings : MonoBehaviour
 
     // Referência ao botão de música selecionado
     private Button selectedMusicButton;
-
+    private Button lastSelectedBiomeButton;
     [SerializeField] private Button buttonPrefab;
 
     private int selectedMusicID;
@@ -42,6 +42,26 @@ public class LevelSettings : MonoBehaviour
     public int newLevelTime;
     [SerializeField] private TMP_InputField TimeInput;
     [SerializeField] private TextMeshProUGUI currentSavedTime;
+    #endregion
+
+    #region Background
+    public BackgroundData backgroundData;
+    [SerializeField] private Transform biomeBackgroundButtonContainer; // Container para os botões de Biomas
+    [SerializeField] private Transform backgroundButtonContainer; // Container para os botões de músicas
+    private Button selectedBackgroundBiomeButton;
+    private Button selectedBackgroundButton;
+    [SerializeField] private Button buttonBackgroundPrefab;
+    private string selectedBackgroundName;
+    private Sprite selectedBackgroundBiomeSprite;
+    private Button lastSelectedBackgroundBiomeButton;
+    [SerializeField] private TMP_InputField offsetInput;
+
+    public string BackgroundToSave;
+    public float BackgroundOffsetToSave = 1.07f;
+
+    public Transform backgroundLocal;
+    private GameObject currentBackgroundInstance;
+
     #endregion
 
     private void Awake()
@@ -99,7 +119,7 @@ public class LevelSettings : MonoBehaviour
             }
 
             // Configurar a sprite da música no botão (se você deseja adicionar sprites ou ícones específicos às músicas)
-            Image buttonImage = musicButton.GetComponent<Image>();
+            Image buttonImage = musicButton.GetComponentInChildren<Image>();
             if (buttonImage != null)
             {
                 buttonImage.sprite = music.musicSprite;
@@ -124,17 +144,21 @@ public class LevelSettings : MonoBehaviour
     // Função chamada quando um botão de Bioma é clicado
     public void OnBiomeButtonClicked(Button biomeButton, MusicData.BiomeCategory biome)
     {
-        // Se já tiver um Bioma selecionado, desmarcar o botão
-        if (selectedBiomeButton != null)
+        // Desmarcar o último bioma selecionado, se houver um
+        if (lastSelectedBiomeButton != null)
         {
-            // Resetar a cor do botão selecionado anteriormente
-            var colors = selectedBiomeButton.colors;
-            colors.normalColor = Color.white; // Defina a cor normal do botão (sem seleção)
-            selectedBiomeButton.colors = colors;
+            // Resetar a cor do botão anterior
+            var colors = lastSelectedBiomeButton.colors;
+            colors.normalColor = Color.white;
+            lastSelectedBiomeButton.colors = colors;
+            // Tornar o último botão de bioma selecionado iterativo novamente
+            lastSelectedBiomeButton.interactable = true;
         }
 
-        // Marcar o botão do Bioma selecionado
+        // Marcar o botão do bioma selecionado
         selectedBiomeButton = biomeButton;
+        lastSelectedBiomeButton = selectedBiomeButton; // Atualizar a referência para o último bioma selecionado
+
         selectedBiomeButton.interactable = false;
 
         // Armazenar o sprite do bioma selecionado
@@ -179,7 +203,7 @@ public class LevelSettings : MonoBehaviour
         Button button = Instantiate<Button>(buttonPrefab, container);
 
         // Configurar a imagem do botão com o sprite fornecido
-        Image buttonImage = button.GetComponent<Image>();
+        Image buttonImage = button.GetComponentInChildren<Image>();
         if (buttonImage != null)
         {
             buttonImage.sprite = buttonSprite;
@@ -281,5 +305,224 @@ public class LevelSettings : MonoBehaviour
             Debug.LogWarning("Invalid integer input!");
         }
     }
+    #endregion
+
+    #region Background
+
+    public void CreateBackgroundBiomeButtons()
+    {
+        // Limpar os botões de Biomas de fundo existentes
+        foreach (Transform child in biomeBackgroundButtonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Instanciar os botões para cada Bioma de fundo
+        foreach (BackgroundData.BiomeCategory biome in backgroundData.biomeCategories)
+        {
+            Button biomeButton = InstantiateButton(biome.biomeSprite, biomeBackgroundButtonContainer);
+            biomeButton.onClick.AddListener(() => OnBiomeBackgroundButtonClicked(biomeButton, biome));
+
+            Image buttonImage = biomeButton.GetComponentInChildren<Image>();
+
+            // Verificar se o nome do bioma atual corresponde ao selectedBackgroundName
+            if (biome.biomeName == selectedBackgroundName)
+            {
+                // Marcar o botão como selecionado
+                selectedBackgroundBiomeButton = biomeButton;
+                if (buttonImage != null)
+                {
+                    buttonImage.sprite = biome.biomeSprite;
+                    buttonImage.color = Color.red;
+                }
+            }
+            else
+            {
+                if (buttonImage != null)
+                {
+                    buttonImage.sprite = biome.biomeSprite;
+                    buttonImage.color = Color.white;
+                }
+            }
+        }
+    }
+
+    public void CreateBackgroundButtons(BackgroundData.BiomeCategory biome)
+    {
+        // Limpar os botões de fundo existentes
+        foreach (Transform child in backgroundButtonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Instanciar os botões para cada fundo do Bioma de fundo
+        foreach (BackgroundData.Background background in biome.BackgroundList)
+        {
+            Button backgroundButton = InstantiateButton(background.backgroundSprite, backgroundButtonContainer);
+            backgroundButton.onClick.AddListener(() => OnBackgroundButtonClicked(backgroundButton, background));
+
+            Image buttonImage = backgroundButton.GetComponentInChildren<Image>();
+            // Verificar se o botão atual corresponde ao botão de fundo selecionado
+            if (background.backgroundName == selectedBackgroundName)
+            {
+                // Marcar o botão como selecionado
+                selectedBackgroundButton = backgroundButton;
+                if (buttonImage != null)
+                {
+                    buttonImage.sprite = background.backgroundSprite;
+                    buttonImage.color = Color.red;
+                }
+            }
+            else
+            {
+                if (buttonImage != null)
+                {
+                    buttonImage.sprite = background.backgroundSprite;
+                    buttonImage.color = Color.white;
+                }
+            }
+        }
+    }
+    public void OnBiomeBackgroundButtonClicked(Button biomeButton, BackgroundData.BiomeCategory biome)
+    {
+        // Desmarcar o último bioma de background selecionado, se houver um
+        if (lastSelectedBackgroundBiomeButton != null)
+        {
+            // Resetar a cor do botão anterior
+            var colors = lastSelectedBackgroundBiomeButton.colors;
+            colors.normalColor = Color.white;
+            lastSelectedBackgroundBiomeButton.colors = colors;
+            lastSelectedBackgroundBiomeButton.interactable = true;
+        }
+
+        // Marcar o botão do bioma de background selecionado
+        selectedBackgroundBiomeButton = biomeButton;
+        lastSelectedBackgroundBiomeButton = selectedBackgroundBiomeButton; // Atualizar a referência para o último bioma de background selecionado
+
+        selectedBackgroundBiomeButton.interactable = false;
+
+        // Armazenar o sprite do Bioma de fundo selecionado
+        selectedBackgroundBiomeSprite = biome.biomeSprite;
+
+        // Criar e exibir o subpainel de fundos para o Bioma de fundo selecionado
+        CreateBackgroundButtons(biome);
+    }
+    public void OnBackgroundButtonClicked(Button backgroundButton, BackgroundData.Background background)
+    {
+        UpdateOffset();
+        // Atualize o nome do fundo selecionado
+        selectedBackgroundName = background.backgroundName;
+
+        // Salve os detalhes do fundo, se necessário
+        BackgroundToSave = selectedBackgroundName;
+
+        // Verifique se há um prefab de fundo associado ao BackgroundData
+        if (background.backgroundPrefab != null)
+        {
+            // Apague todos os filhos de backgroundLocal, se houver algum
+            foreach (Transform child in backgroundLocal)
+            {
+                Destroy(child.gameObject);
+            }
+
+            // Encontre o prefab do fundo correspondente com base no nome
+            GameObject backgroundPrefab = null;
+            foreach (BackgroundData.BiomeCategory biomeCategory in backgroundData.biomeCategories)
+            {
+                foreach (BackgroundData.Background backgroundInfo in biomeCategory.BackgroundList)
+                {
+                    if (backgroundInfo.backgroundName == selectedBackgroundName)
+                    {
+                        backgroundPrefab = backgroundInfo.backgroundPrefab;
+                        break;
+                    }
+                }
+                if (backgroundPrefab != null)
+                    break;
+            }
+
+            if (backgroundPrefab != null)
+            {
+                // Instancie o novo prefab de fundo no local com base no offset
+                float offset = BackgroundOffsetToSave; // Supondo que BackgroundOffsetToSave foi definido previamente
+                Vector3 spawnPosition = new Vector3(backgroundLocal.position.x, offset, backgroundLocal.position.z);
+                currentBackgroundInstance = Instantiate(backgroundPrefab, spawnPosition, Quaternion.identity, backgroundLocal);
+            }
+            else
+            {
+                Debug.LogWarning("Prefab not found for background: " + selectedBackgroundName);
+            }
+        }
+    }
+    public void UpdateOffset()
+    {
+        // Verifique se o campo de entrada de texto não está vazio
+        if (!string.IsNullOrEmpty(offsetInput.text))
+        {
+            // Tente converter o texto para um valor float
+            if (float.TryParse(offsetInput.text, out float offset))
+            {
+                // A conversão foi bem-sucedida, atualize BackgroundOffsetToSave
+                BackgroundOffsetToSave = offset;
+
+                // Verifique se o backgroundLocal tem pelo menos um filho
+                if (backgroundLocal.childCount > 0)
+                {
+                    // Obtenha o primeiro filho
+                    Transform firstChild = backgroundLocal.GetChild(0);
+
+                    // Atualize a posição Y do primeiro filho com o novo offset
+                    Vector3 newPosition = firstChild.transform.position;
+                    newPosition.y = offset;
+                    firstChild.transform.position = newPosition;
+                }
+            }
+            else
+            {
+                // A conversão falhou, você pode lidar com isso de acordo com suas necessidades (exemplo: exibir uma mensagem de erro).
+                Debug.LogError("Erro na conversão do valor de offsetInput para float.");
+            }
+        }
+    }
+
+    public void UpdateBackground(string backgroundName, float offset)
+    {
+        selectedBackgroundName = backgroundName;
+        BackgroundToSave = selectedBackgroundName;
+        BackgroundOffsetToSave = offset;
+        foreach (Transform child in backgroundLocal)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Encontre o prefab do fundo correspondente com base no nome
+        GameObject backgroundPrefab = null;
+        foreach (BackgroundData.BiomeCategory biomeCategory in backgroundData.biomeCategories)
+        {
+            foreach (BackgroundData.Background backgroundInfo in biomeCategory.BackgroundList)
+            {
+                if (backgroundInfo.backgroundName == selectedBackgroundName)
+                {
+                    backgroundPrefab = backgroundInfo.backgroundPrefab;
+                    break;
+                }
+            }
+            if (backgroundPrefab != null)
+                break;
+        }
+
+        if (backgroundPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(backgroundLocal.position.x, offset, backgroundLocal.position.z);
+            currentBackgroundInstance = Instantiate(backgroundPrefab, spawnPosition, Quaternion.identity, backgroundLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for background: " + selectedBackgroundName);
+        }
+
+    }
+
     #endregion
 }

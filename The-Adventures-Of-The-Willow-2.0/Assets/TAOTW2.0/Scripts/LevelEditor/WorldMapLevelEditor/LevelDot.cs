@@ -29,6 +29,8 @@ public class LevelDot : MonoBehaviour
     private bool isExiting = false;
     public Image levelImage;
 
+    private bool isOnDot;
+
     private void Start()
     {
         // Verifica se worldName e levelName já foram definidos antes de criar o caminho do nível
@@ -57,7 +59,23 @@ public class LevelDot : MonoBehaviour
         LevelPath = Path.Combine(pathParts);
     }
 
-
+    private void Update()
+    {
+        if(PlayWorld.instance != null)
+        {
+            if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
+            {
+                if(isOnDot)
+                {
+                    PlayWorld.instance.selectedLevelName = levelName;
+                    PlayWorld.instance.selectedWorldName = worldName;
+                    PlayWorld.instance.lastisWorldmap = true;
+                    PlayWorld.instance.isWorldmap = false;
+                    SceneManager.LoadScene("PlayLevel");
+                }
+            }
+        }
+    }
     public string GetLevelPath()
     {
         return LevelPath;
@@ -212,9 +230,16 @@ public class LevelDot : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             InstantiateCanvasWorldUI();
+            isOnDot = true;
         }
     }
-
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            isOnDot = true;
+        }
+    }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -224,6 +249,7 @@ public class LevelDot : MonoBehaviour
                 isExiting = true;
                 CanvasUIAnim.SetTrigger("ExitDot");
                 StartCoroutine(DestroyCanvasWithDelay());
+                isOnDot = false;
             }
         }
     }

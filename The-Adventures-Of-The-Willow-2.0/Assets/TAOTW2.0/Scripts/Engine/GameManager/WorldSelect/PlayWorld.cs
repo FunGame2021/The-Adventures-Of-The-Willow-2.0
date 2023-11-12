@@ -9,6 +9,7 @@ public class PlayWorld : MonoBehaviour
     public string selectedWorldName;
     public string selectedLevelName;
     public bool isWorldmap;
+    public bool lastisWorldmap;
 
     //Game and extra levels game
     public bool isExtraLevels;

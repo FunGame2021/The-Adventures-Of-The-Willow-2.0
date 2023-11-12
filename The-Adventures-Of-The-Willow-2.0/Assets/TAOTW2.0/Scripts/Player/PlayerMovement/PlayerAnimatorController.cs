@@ -72,7 +72,9 @@ public class PlayerAnimatorController : MonoBehaviour
             animationPlayer.SetBool("JumpingV", false);
             animationPlayer.SetBool("FallingV", false);
             animationPlayer.SetBool("JumpingH", false);
-            animationPlayer.SetBool("FallingH", false); 
+            animationPlayer.SetBool("FallingH", false);
+            animationPlayer.SetBool("Climbing", false);
+            animationPlayer.SetBool("ClimbingIdle", false);
             isIdle = false;
             animationPlayer.SetBool("Walking", true);
         }
@@ -85,6 +87,8 @@ public class PlayerAnimatorController : MonoBehaviour
                 animationPlayer.SetBool("FallingV", false);
                 animationPlayer.SetBool("JumpingH", false);
                 animationPlayer.SetBool("FallingH", false);
+                animationPlayer.SetBool("Climbing", false);
+                animationPlayer.SetBool("ClimbingIdle", false);
 
                 //andar movimento
                 if (PlayerController.instance.RB.velocity.x != 0
@@ -102,7 +106,7 @@ public class PlayerAnimatorController : MonoBehaviour
             else //se não estiver no chão vai saltar
             {
                 //Se velocidade for igual a 0 salta normal verticar.
-                if (PlayerController.instance.RB.velocity.x == 0)
+                if (PlayerController.instance.RB.velocity.x == 0 && !PlayerController.instance.isOnLadder)
                 {
                     animationPlayer.SetBool("Walking", false);
 
@@ -113,6 +117,8 @@ public class PlayerAnimatorController : MonoBehaviour
                         animationPlayer.SetBool("FallingV", false);
                         animationPlayer.SetBool("JumpingH", false);
                         animationPlayer.SetBool("FallingH", false);
+                        animationPlayer.SetBool("Climbing", false);
+                        animationPlayer.SetBool("ClimbingIdle", false);
                     }
                     if (PlayerController.instance.RB.velocity.y < 0)
                     {
@@ -121,10 +127,12 @@ public class PlayerAnimatorController : MonoBehaviour
                         animationPlayer.SetBool("FallingV", true);
                         animationPlayer.SetBool("JumpingH", false);
                         animationPlayer.SetBool("FallingH", false);
+                        animationPlayer.SetBool("Climbing", false);
+                        animationPlayer.SetBool("ClimbingIdle", false);
                     }
                 }
 
-                else //Else velocidade for diferente a 0 salta na horizontal.
+                else if (PlayerController.instance.RB.velocity.x != 0 && !PlayerController.instance.isOnLadder)
                 {
                     if (PlayerController.instance.RB.velocity.y > 0)
                     {
@@ -133,6 +141,8 @@ public class PlayerAnimatorController : MonoBehaviour
                         animationPlayer.SetBool("FallingV", false);
                         animationPlayer.SetBool("JumpingH", true);
                         animationPlayer.SetBool("FallingH", false);
+                        animationPlayer.SetBool("Climbing", false);
+                        animationPlayer.SetBool("ClimbingIdle", false);
                     }
                     if (PlayerController.instance.RB.velocity.y < 0)
                     {
@@ -141,7 +151,40 @@ public class PlayerAnimatorController : MonoBehaviour
                         animationPlayer.SetBool("FallingV", false);
                         animationPlayer.SetBool("JumpingH", false);
                         animationPlayer.SetBool("FallingH", true);
+                        animationPlayer.SetBool("Climbing", false);
+                        animationPlayer.SetBool("ClimbingIdle", false);
                     }
+                }
+                
+                else if(PlayerController.instance.isClimbing)
+                {
+                    if (PlayerController.instance.moveInputUp != 0)
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("Climbing", true);
+                        animationPlayer.SetBool("JumpingV", false);
+                        animationPlayer.SetBool("FallingV", false);
+                        animationPlayer.SetBool("JumpingH", false);
+                        animationPlayer.SetBool("FallingH", false);
+                        animationPlayer.SetBool("Walking", false);
+                        animationPlayer.SetBool("ClimbingIdle", false);
+                    }
+                    else
+                    {
+                        isIdle = false;
+                        animationPlayer.SetBool("JumpingV", false);
+                        animationPlayer.SetBool("FallingV", false);
+                        animationPlayer.SetBool("JumpingH", false);
+                        animationPlayer.SetBool("FallingH", false);
+                        animationPlayer.SetBool("Walking", false);
+                        animationPlayer.SetBool("Climbing", false);
+                        animationPlayer.SetBool("ClimbingIdle", true);
+                    }
+                }
+                else
+                {
+                    animationPlayer.SetBool("Climbing", false);
+                    animationPlayer.SetBool("ClimbingIdle", false);
                 }
             }
         }

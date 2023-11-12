@@ -8,18 +8,18 @@ using Unity.VisualScripting;
 
 public class TriggerObjectSelector : MonoBehaviour
 {
-    public TMP_Dropdown typeDropdown;
-    [SerializeField] private Button[] buttons;
-    public GameObject selectedObject;
-    public TriggerObject triggerObjectScript;
+    [SerializeField] private TMP_Dropdown typeDropdown;
+    private Button[] buttons;
+    private GameObject selectedObject;
+    private TriggerObject triggerObjectScript;
     [SerializeField] private GameObject panelPrefab;
-    public GameObject panelInstance;
+    private GameObject panelInstance;
     [SerializeField] private TMP_InputField scriptInputField;
-    public string scriptWritted;
+    [SerializeField] private string scriptWritted;
     [SerializeField] private Transform panelLocalization;
     private bool isOpened = false;
-    public Button backButton;
-    public Button okButton;
+    private Button backButton;
+    private Button okButton;
     // Declare a list for typeOptions
     private List<string> typeOptions;
 
@@ -68,7 +68,6 @@ public class TriggerObjectSelector : MonoBehaviour
                             if (button.name == "BackButton")
                             {
                                 backButton = button;
-                                break;
                             }
                             else if (button.name == "OKButton")
                             {

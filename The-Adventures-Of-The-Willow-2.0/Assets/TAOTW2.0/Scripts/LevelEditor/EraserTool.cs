@@ -30,7 +30,7 @@ public class EraserTool : MonoBehaviour
             return;
         }
 
-        if (isActiveEraserTile && Mouse.current.leftButton.isPressed)
+        if (isActiveEraserTile && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(mouseWorldPos);
@@ -39,7 +39,7 @@ public class EraserTool : MonoBehaviour
             LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, null);
         }
 
-        if (isActiveEraserEnemy && Mouse.current.leftButton.isPressed)
+        if (isActiveEraserEnemy && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
@@ -51,10 +51,14 @@ public class EraserTool : MonoBehaviour
 
                 // Verifique se o objeto atingido é um sprite
                 if (hitObject.CompareTag("Enemy") || hitObject.CompareTag("LevelDot") || hitObject.CompareTag("GameObject")
-                    || hitObject.CompareTag("ObjectObject"))
+                    || hitObject.CompareTag("ObjectObject") || hitObject.CompareTag("MovingPlatform"))
                 {
                     selectedEnemySprite = hitObject.transform;
-                    if (hitObject.CompareTag("LevelDot"))
+                    if(hitObject.CompareTag("MovingPlatform"))
+                    {
+                        PlatformNodeEditor.instance.DeleteThisPlatform(hitObject);
+                    }
+                    else if (hitObject.CompareTag("LevelDot"))
                     {
                         enemyParent = hitObject.transform;
                     }
@@ -70,9 +74,11 @@ public class EraserTool : MonoBehaviour
                     {
                         enemyParent = GetEnemyParent(selectedEnemySprite);
                     }
-
-                    // Remove o objeto e seu conteúdo
-                    Destroy(enemyParent.gameObject);
+                    if(enemyParent !=null)
+                    {
+                        // Remove o objeto e seu conteúdo
+                        Destroy(enemyParent.gameObject);
+                    }
                 }
             }
         }
