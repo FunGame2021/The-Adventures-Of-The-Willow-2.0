@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FinishPoint : MonoBehaviour
 {
@@ -14,6 +13,7 @@ public class FinishPoint : MonoBehaviour
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float elapsedTime;
     public bool isFinished;
+
 
     void Start()
     {
@@ -62,5 +62,9 @@ public class FinishPoint : MonoBehaviour
         CameraZoom.instance.zoomfinish = false;
         FinishPole.instance.StopFireworksEffect();
         isStarted = false;
+        //Load back
+        GameObject objectwithscript = GameObject.Find("SceneManager");
+        LoadScenes loadscenesScript = objectwithscript.GetComponent<LoadScenes>();
+        loadscenesScript.loadSceneEscapeButton();
     }
 }

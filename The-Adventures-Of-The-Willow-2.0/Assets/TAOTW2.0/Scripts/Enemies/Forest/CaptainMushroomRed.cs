@@ -33,6 +33,8 @@ public class CaptainMushroomRed : MonoBehaviour
     private Animator animator;
     private bool enemyStopped;
 
+    private bool incremented;
+
     private void Awake()
     {
         //Stop enemy
@@ -83,7 +85,11 @@ public class CaptainMushroomRed : MonoBehaviour
         }
         if(PlayerManager.instance != null)
         {
-            PlayerManager.instance.IncrementEnemiesKilled();
+            if (!incremented)
+            {
+                PlayerManager.instance.IncrementEnemiesKilled();
+                incremented = true;
+            }
         }
     }
     public void DestroyGameObject()

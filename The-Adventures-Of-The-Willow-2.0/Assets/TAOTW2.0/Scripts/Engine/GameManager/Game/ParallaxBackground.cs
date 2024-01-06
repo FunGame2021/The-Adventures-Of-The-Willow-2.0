@@ -32,6 +32,28 @@ public class ParallaxBackground : MonoBehaviour
             Debug.LogError("Main camera not found with tag 'MainCamera'. Make sure the main camera has this tag.");
         }
     }
+    public void EditorUpdatePos()
+    {
+        // Encontre a câmera principal pelo nome da tag
+        cam = GameObject.FindWithTag("MainCamera");
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        lengthX = spriteRenderer.bounds.size.x;
+        lengthY = spriteRenderer.bounds.size.y;
+
+        startposX = transform.position.x;
+        startposY = transform.position.y;
+
+        // Calcula o deslocamento inicial na coordenada Y entre a câmera e o plano de fundo.
+        if (cam != null)
+        {
+            startYOffset = cam.transform.position.y - startposY;
+        }
+        else
+        {
+            Debug.LogError("Main camera not found with tag 'MainCamera'. Make sure the main camera has this tag.");
+        }
+    }
 
     private void FixedUpdate()
     {

@@ -475,6 +475,23 @@ public class LevelSettings : MonoBehaviour
                     Vector3 newPosition = firstChild.transform.position;
                     newPosition.y = offset;
                     firstChild.transform.position = newPosition;
+
+                    // Encontre o script dentro do prefab
+                    ParallaxBackground[] parallaxBackgroundScript = firstChild.GetComponentsInChildren<ParallaxBackground>();
+
+                    // Verifique se pelo menos um script foi encontrado
+                    if (parallaxBackgroundScript != null && parallaxBackgroundScript.Length > 0)
+                    {
+                        // Chame o método EditorUpdatePos() em cada script ParallaxBackground
+                        foreach (ParallaxBackground script in parallaxBackgroundScript)
+                        {
+                            script.EditorUpdatePos();
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("ParallaxBackground script not found on the prefab.");
+                    }
                 }
             }
             else
@@ -516,6 +533,23 @@ public class LevelSettings : MonoBehaviour
             // Instancie o novo prefab de fundo no local com base no offset
             Vector3 spawnPosition = new Vector3(backgroundLocal.position.x, offset, backgroundLocal.position.z);
             currentBackgroundInstance = Instantiate(backgroundPrefab, spawnPosition, Quaternion.identity, backgroundLocal);
+
+            // Encontre o script ParallaxBackground no prefab
+            ParallaxBackground[] backgroundScript = backgroundPrefab.GetComponentsInChildren<ParallaxBackground>();
+
+            // Verifique se pelo menos um script foi encontrado
+            if (backgroundScript != null && backgroundScript.Length > 0)
+            {
+                // Chame o método EditorUpdatePos() em cada script ParallaxBackground
+                foreach (ParallaxBackground script in backgroundScript)
+                {
+                    script.EditorUpdatePos();
+                }
+            }
+            else
+            {
+                Debug.LogError("ParallaxBackground script not found on the prefab.");
+            }
         }
         else
         {

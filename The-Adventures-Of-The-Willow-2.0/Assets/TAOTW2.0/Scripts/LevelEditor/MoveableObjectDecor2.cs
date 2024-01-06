@@ -68,7 +68,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
             if (renderer is SpriteRenderer spriteRenderer)
             {
                 // Define a ordem de classificação (sorting order) do SpriteRenderer com o valor de ShortLayer
-                spriteRenderer.sortingOrder = ShortLayer;
+                //spriteRenderer.sortingOrder = ShortLayer;
 
                 // Atualiza o nome do sorting layer do SpriteRenderer
                 spriteRenderer.sortingLayerName = ShortLayerName;

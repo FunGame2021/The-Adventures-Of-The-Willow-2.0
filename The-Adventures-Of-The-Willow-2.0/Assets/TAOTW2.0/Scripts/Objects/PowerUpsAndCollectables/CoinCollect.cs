@@ -23,7 +23,11 @@ public class CoinCollect : MonoBehaviour
 	{
 		TXTCoins.text = coin.ToString();
 	}
-
+    public void SaveChangeCoin(int coinValue)
+    {
+        coin = coinValue;
+        TXTCoins.text = coin.ToString();
+    }
     public void ChangeCoin(int coinValue)
     {
         coin += coinValue;

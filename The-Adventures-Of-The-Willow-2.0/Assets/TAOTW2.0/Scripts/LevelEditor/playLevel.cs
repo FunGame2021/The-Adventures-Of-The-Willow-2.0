@@ -956,7 +956,6 @@ public class playLevel : MonoBehaviour
         // Verifica se o arquivo JSON existe
         if (File.Exists(loadPath))
         {
-
             // Lê o conteúdo do arquivo JSON
             string json = File.ReadAllText(loadPath);
             //Verifica se o arquivo não está vazio
@@ -987,7 +986,21 @@ public class playLevel : MonoBehaviour
                     if (gameObjectData.name == "PlayerMapPos")
                     {
                         // Inicie uma Coroutine para esperar um tempo antes de instanciar o jogador.
-                        StartCoroutine(ToLoadWorldPlayer(gameObjectData.position));
+                        if(SaveGameManager.instance != null)
+                        {
+                            if(SaveGameManager.instance.asWorldData)
+                            {
+                                StartCoroutine(ToLoadWorldPlayer(SaveGameManager.instance.loadedPlayerWorldPosition));
+                            }
+                            else
+                            {
+                                StartCoroutine(ToLoadWorldPlayer(gameObjectData.position));
+                            }
+                        }
+                        else
+                        {
+                            StartCoroutine(ToLoadWorldPlayer(gameObjectData.position));
+                        }
                         // Se o GameObject salvo for o "PlayerPos", ajuste apenas a posição do objeto PlayerPrefab.
                         //// Ao invés de ajustar a posição diretamente, vamos instanciar o PlayerPrefab na posição correta.
                         //PlayerPrefab = Instantiate(PlayerPrefab, gameObjectData.position, Quaternion.identity);

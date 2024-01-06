@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
     public bool stopPlayer = false;
     public float autoMoveSpeed = 5f; // Velocidade do movimento automático
 
+    [SerializeField] public PhysicsMaterial2D withFriction2;
     [SerializeField] public PhysicsMaterial2D withFriction;
     [SerializeField] public PhysicsMaterial2D noFriction;
 
@@ -247,6 +248,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(IsCollidingWithNormalWall())
+        {
+            AddPlayerFriction2();
+        }
+        else
+        {
+            AddPlayerFriction();
+        }
 
         //fix player rotation on platform rotation
         if (!Swimming)
@@ -700,6 +709,22 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    public void AddPlayerFriction2()
+    {
+        RB.sharedMaterial = withFriction2;
+        footCollider.sharedMaterial = withFriction2;
+        footCollider2.sharedMaterial = withFriction2;
+        foreach (Collider2D collider in BigColliders)
+        {
+            collider.sharedMaterial = withFriction2;
+        }
+
+        foreach (Collider2D collider in SmallColliders)
+        {
+            collider.sharedMaterial = withFriction2;
+        }
+    }
+
     public void AddPlayerFriction()
     {
         RB.sharedMaterial = withFriction;
@@ -748,7 +773,10 @@ public class PlayerController : MonoBehaviour
     {
         return Physics2D.OverlapCircle(wallCheck.position, rayDistance, whatIsWall);
     }
-
+    private bool IsCollidingWithNormalWall()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, rayDistance, whatIsGround);
+    }
     private void WallJump()
     {
         if (IsCollidingWithWall())

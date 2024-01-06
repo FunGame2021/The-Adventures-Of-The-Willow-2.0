@@ -1,24 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance;
-
     public int enemiesKilled;
     public int deaths;
     public float completionTime;
     public int coinsCollected;
 
+    //Info Texts
+    [SerializeField] private GameObject infoPanel;
+    [SerializeField] private TextMeshProUGUI enemiesKilledTXT;
+    [SerializeField] private TextMeshProUGUI deathsTXT;
+    [SerializeField] private TextMeshProUGUI coinsCollectedTXT;
+    [SerializeField] private TextMeshProUGUI completionTimeTXT;
+
     void Awake()
     {
-       if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
     }
-
     // Chame este método quando o jogador completar o nível
     public void FinishLevelSave()
     {
@@ -32,10 +38,19 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void UpdateFinishLevelInfoTXT()
+    {
+        infoPanel.SetActive(true);
+        enemiesKilledTXT.text = enemiesKilled.ToString();
+        coinsCollectedTXT.text = coinsCollected.ToString();
+        deathsTXT.text = deaths.ToString();
+        completionTimeTXT.text = completionTime.ToString();
+    }
+
     // Chame este método quando o jogador matar um inimigo
     public void IncrementEnemiesKilled()
     {
-        enemiesKilled++;
+        enemiesKilled +=1;
     }
 
     // Chame este método quando o jogador morrer
@@ -45,9 +60,9 @@ public class PlayerManager : MonoBehaviour
     }
 
     // Chame este método quando o jogador coletar uma moeda
-    public void IncrementCoinsCollected()
+    public void IncrementCoinsCollected(int coinValue)
     {
-        coinsCollected++;
+        coinsCollected += coinValue;
     }
 
 

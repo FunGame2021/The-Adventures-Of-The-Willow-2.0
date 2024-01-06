@@ -125,6 +125,11 @@ public class MoveAndSelectTool : MonoBehaviour
             // Verifica se o clique foi realizado em um elemento do UI
             if (EventSystem.current.IsPointerOverGameObject())
             {
+                selectedEnemySprite = null;
+                selectedObjectSprite = null;
+                selectedGameObjectSprite = null;
+                selectedDecorObject = null;
+                selectedDecor2Object = null;
                 return; // Sai da função se o clique foi no UI
             }
 
@@ -259,6 +264,7 @@ public class MoveAndSelectTool : MonoBehaviour
             else
             {
                 selectedDecorObject = null;
+                currentMoveableObject = null;
             }
 
             if (isDecor2)
@@ -289,6 +295,7 @@ public class MoveAndSelectTool : MonoBehaviour
             else
             {
                 selectedDecor2Object = null;
+                currentMoveable2Object = null;
             }
         }
         else
@@ -345,7 +352,6 @@ public class MoveAndSelectTool : MonoBehaviour
                 selectedDecor2Object = null;
             }
         }
-
 
     }
 
@@ -692,6 +698,15 @@ public class MoveAndSelectTool : MonoBehaviour
 
     public void OnDropdownValueChanged(int value)
     {
+        // Limpar todos os objetos selecionados
+        selectedEnemySprite = null;
+        selectedObjectSprite = null;
+        selectedGameObjectSprite = null;
+        selectedDecorObject = null;
+        selectedDecor2Object = null;
+        currentMoveableObject = null;
+        currentMoveable2Object = null;
+
         switch (value)
         {
             case 0: // Valor da Opção 1 selecionada

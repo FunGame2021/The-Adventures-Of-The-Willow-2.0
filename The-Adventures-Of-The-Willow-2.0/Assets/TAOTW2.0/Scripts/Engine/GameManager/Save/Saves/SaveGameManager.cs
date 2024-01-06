@@ -2,8 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System;
-using TMPro;
 
 //current
 #region Save data level and world classes
@@ -41,6 +39,7 @@ public class SaveLevelData
 public class SavePlayerData
 {
     public int coins;
+    public int stars;
     public Vector2 position;
 }
 
@@ -70,17 +69,17 @@ public class SaveGameManager : MonoBehaviour
     public string currentWorldName; // Nome atual do mundo
     public string currentLevelName; // Nome atual do nível
 
+    [HideInInspector] public bool asWorldData;
+    [HideInInspector] public Vector3 loadedPlayerWorldPosition;
+    private Vector3 currentPlayerOnWorldPos;
+    public int TotalCoins;
+    [SerializeField] private bool isWorldmapPlayed;
 
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 
@@ -90,9 +89,22 @@ public class SaveGameManager : MonoBehaviour
         {
             SetCurrentWorldAndLevel(PlayWorld.instance.selectedWorldName, PlayWorld.instance.selectedLevelName);
         }
+        CoinCollect coinCollect = FindObjectOfType<CoinCollect>();
+        if (coinCollect != null)
+        {
+            CoinCollect.instance = coinCollect;
+        }
         LoadGame();
-    }
 
+    }
+    void Update()
+    {
+        GameObject PlayerObject = GameObject.FindGameObjectWithTag("Player");
+        if (PlayerObject != null)
+        {
+            currentPlayerOnWorldPos = PlayerObject.transform.position;
+        }
+    }
     public void SetCurrentWorldAndLevel(string worldName, string levelName)
     {
         currentWorldName = worldName;
@@ -116,6 +128,7 @@ public class SaveGameManager : MonoBehaviour
         }
     }
 
+
     public void SaveGame()
     {
         // Procurar o mundo atual no saveData
@@ -128,35 +141,44 @@ public class SaveGameManager : MonoBehaviour
             saveData.worlds.Add(currentWorld);
         }
 
-        // Verificar se o nível atual já existe na lista de níveis do mundo atual
-        SaveLevelData currentLevel = currentWorld.levels.Find(level => level.levelName == currentLevelName);
-
-        if (currentLevel == null)
+        // Verificar se um nível está ativo antes de salvá-lo
+        if (!isWorldmapPlayed)
         {
-            // Se o nível atual não existir, crie-o
-            currentLevel = new SaveLevelData
+            // Verificar se o nível atual já existe na lista de níveis do mundo atual
+            SaveLevelData currentLevel = currentWorld.levels.Find(level => level.levelName == currentLevelName);
+
+            if (currentLevel == null)
             {
-                levelName = currentLevelName
-            };
-            currentWorld.levels.Add(currentLevel);
+                // Se o nível atual não existir, crie-o
+                currentLevel = new SaveLevelData
+                {
+                    levelName = currentLevelName
+                };
+                currentWorld.levels.Add(currentLevel);
+
+                Debug.Log("New SaveLevelData created.");
+            }
+
+            // Atualize os dados do nível atual
+            currentLevel.solved = currentSaveLevelData.currentLevelsolved;
+            currentLevel.coinsCollected = currentSaveLevelData.currentLevelCoinsCollected;
+            currentLevel.deaths = currentSaveLevelData.currentLevelDeaths;
+            currentLevel.enemiesKilled = currentSaveLevelData.currentLevelEnemiesKilled;
+            currentLevel.completionTime = currentSaveLevelData.currentLevelCompletionTime;
+
         }
-
-        // Atualize os dados do nível atual
-        currentLevel.solved = true;
-        currentLevel.coinsCollected = currentSaveLevelData.currentLevelCoinsCollected;
-        currentLevel.deaths = currentSaveLevelData.currentLevelDeaths;
-        currentLevel.enemiesKilled = currentSaveLevelData.currentLevelEnemiesKilled;
-        currentLevel.completionTime = currentSaveLevelData.currentLevelCompletionTime;
-
+        else
+        {
+            // Se estiver no mapa do mundo, atualize a posição do jogador
+            saveData.player.position = currentPlayerOnWorldPos;
+        }
         // Atualize os dados do jogador
-        saveData.player.coins = CoinCollect.instance.coin;
-        //saveData.player.position = PlayerManager.instance.playerPosition;
+        saveData.player.coins = TotalCoins;
 
         // Agora, você pode salvar o jogo no arquivo correspondente
         string jsonToSave = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(GetSavePath(), jsonToSave);
     }
-
     private string GetSavePath()
     {
         // Caminho completo para o arquivo de salvamento
@@ -177,19 +199,18 @@ public class SaveGameManager : MonoBehaviour
             string json = File.ReadAllText(savePath);
             saveData = JsonUtility.FromJson<SaveGameData>(json);
 
-            if(CoinCollect.instance != null)
-            {
-                // Carregue as informações do jogador
-                CoinCollect.instance.coin = saveData.player.coins;
-                //PlayerManager.instance.playerPosition = saveData.player.position;
-            }
-
             // Encontre o mundo atual
             SaveWorldData currentWorld = saveData.worlds.Find(world => world.worldName == currentWorldName);
 
+            TotalCoins = saveData.player.coins;
+            CoinCollect.instance.SaveChangeCoin(saveData.player.coins);
+            // Carregue as informações do jogador
+            loadedPlayerWorldPosition = saveData.player.position;
+            asWorldData = true;
+
             if (currentWorld != null)
             {
-                // Encontre o mundo atual e carregue seus níveis
+                // Encontre o mundo atual e carregue todos os seus níveis
                 currentSaveWorldData.worldName = currentWorld.worldName;
                 currentSaveWorldData.levels = currentWorld.levels.Select(level => new CurrentSaveLevelData
                 {
@@ -203,7 +224,7 @@ public class SaveGameManager : MonoBehaviour
             }
         }
     }
-   
+
     public void LevelCompleted()
     {
         // Define os valores finais do nível atual
@@ -213,7 +234,49 @@ public class SaveGameManager : MonoBehaviour
         currentSaveLevelData.currentLevelEnemiesKilled = PlayerManager.instance.enemiesKilled;
         currentSaveLevelData.currentLevelCompletionTime = LevelTimeManager.instance.elapsedTime;
 
+        TotalCoins = CoinCollect.instance.coin;
+
+        // Encontre o nível atual na lista de níveis do mundo atual
+        CurrentSaveLevelData currentLevel = currentSaveWorldData.levels.Find(level => level.CurrentLevelName == currentLevelName);
+
+        if (currentLevel != null)
+        {
+            // Se o nível atual já existir na lista, atualize suas estatísticas
+            currentLevel.currentLevelsolved = currentSaveLevelData.currentLevelsolved;
+            currentLevel.currentLevelCoinsCollected = currentSaveLevelData.currentLevelCoinsCollected;
+            currentLevel.currentLevelDeaths = currentSaveLevelData.currentLevelDeaths;
+            currentLevel.currentLevelEnemiesKilled = currentSaveLevelData.currentLevelEnemiesKilled;
+            currentLevel.currentLevelCompletionTime = currentSaveLevelData.currentLevelCompletionTime;
+        }
+        else
+        {
+            // Se o nível atual não existir na lista, adicione-o
+            currentSaveWorldData.levels.Add(currentSaveLevelData);
+        }
+
         // Salva o jogo após a conclusão do nível
         SaveGame();
     }
+    public bool IsLevelSolved(string worldName, string levelName)
+    {
+        // Encontre o mundo atual
+        CurrentSaveWorldData currentWorld = currentSaveWorldData;
+
+        // Verifique se o mundo atual existe
+        if (currentWorld != null && currentWorld.worldName == worldName)
+        {
+            // Encontre o nível atual no mundo atual
+            CurrentSaveLevelData currentLevel = currentWorld.levels.Find(level => level.CurrentLevelName == levelName);
+
+            // Se o nível atual existir, retorne se foi concluído ou não
+            if (currentLevel != null)
+            {
+                return currentLevel.currentLevelsolved;
+            }
+        }
+
+        // Se o mundo ou o nível não foram encontrados, retorne false
+        return false;
+    }
+
 }

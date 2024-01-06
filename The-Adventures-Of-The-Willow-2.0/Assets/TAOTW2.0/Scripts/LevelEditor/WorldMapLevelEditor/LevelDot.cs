@@ -9,15 +9,18 @@ using UnityEngine.UI;
 
 public class LevelDot : MonoBehaviour
 {
-    private Renderer myRenderer;
+    private SpriteRenderer levelDotSpriteRenderer;
     private Color defaultColor;
     public Color selectedColor;
+    [SerializeField] private Sprite solvedSprite;
+    [SerializeField] private Sprite UnsolvedSprite;
 
     public string levelName;
     public string worldName;
     public string LevelPath;
     public bool isFirstLevel;
     private Vector3 dotPosition;
+    private int starsNeedToUnlock;
 
     //UI Canvas
     [SerializeField] private Transform spawnLocalUI;
@@ -44,9 +47,7 @@ public class LevelDot : MonoBehaviour
             LevelPath = Path.Combine(pathParts);
         }
 
-        myRenderer = GetComponent<Renderer>();
-        defaultColor = myRenderer.material.color;
-
+        levelDotSpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void SetLevelPath(string setWorldName, string setLevelName)
@@ -63,16 +64,29 @@ public class LevelDot : MonoBehaviour
     {
         if(PlayWorld.instance != null)
         {
-            if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
+            if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame())
             {
                 if(isOnDot)
                 {
+                    if(SaveGameManager.instance != null)
+                    {
+                        SaveGameManager.instance.SaveGame();
+                    }
                     PlayWorld.instance.selectedLevelName = levelName;
                     PlayWorld.instance.selectedWorldName = worldName;
                     PlayWorld.instance.lastisWorldmap = true;
                     PlayWorld.instance.isWorldmap = false;
                     SceneManager.LoadScene("PlayLevel");
                 }
+            }
+            // Antes de carregar o nível, verifique se o nível foi concluído
+            if (SaveGameManager.instance != null && SaveGameManager.instance.IsLevelSolved(worldName, levelName))
+            {
+                levelDotSpriteRenderer.sprite = solvedSprite;
+            }
+            else
+            {
+                levelDotSpriteRenderer.sprite = UnsolvedSprite;
             }
         }
     }

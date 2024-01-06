@@ -29,6 +29,8 @@ public class CameraZoom : MonoBehaviour
     private float _currentZoomVelocity;
     [SerializeField] public GameObject playerObject;
 
+    [SerializeField] private bool isWorldmap;
+
     private void Start()
     {
         if (instance == null)
@@ -43,7 +45,16 @@ public class CameraZoom : MonoBehaviour
         confiner.m_BoundingShape2D = ignoreCollider;
 
         float targetZoom = 55;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, 1);
+        float targetZoomWorld = 90;
+
+        if (isWorldmap)
+        {
+            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, 1);
+        }
+        else
+        {
+            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, 1);
+        }
     }
 
 
@@ -91,8 +102,17 @@ public class CameraZoom : MonoBehaviour
 
     public void ZoomIn()
     {
-        float targetZoom = 55;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        float targetZoom = 55; 
+        float targetZoomWorld = 90;
+
+        if (isWorldmap)
+        {
+            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, smoothTime);
+        }
+        else
+        {
+            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        }
     }
 
     public void ZoomOut()

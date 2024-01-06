@@ -69,6 +69,7 @@ public class FinishPole : MonoBehaviour
         if(PlayerManager.instance != null)
         {
             PlayerManager.instance.FinishLevelSave();
+            PlayerManager.instance.UpdateFinishLevelInfoTXT();
         }
         if(LevelTimeManager.instance != null)
         {

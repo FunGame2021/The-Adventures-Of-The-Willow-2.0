@@ -3442,6 +3442,14 @@ public class LevelEditorManager : MonoBehaviour
                 string defaultJson = JsonUtility.ToJson(defaultWorldData);
                 File.WriteAllText(loadPath, defaultJson);
 
+                // Limpa os inimigos existentes
+                ClearEnemies();
+                // Limpa os objetos existentes
+                ClearObjects();
+                ClearGameObjects();
+                // Limpa os elementos decorativos existentes
+                ClearDecor();
+                ClearNodes();
                 // Carrega o mundo recém-criado
                 //LoadSelectedWorld(defaultWorldData);
             }
@@ -3614,6 +3622,18 @@ public class LevelEditorManager : MonoBehaviour
             layer++;
         }
         return layer - 1;
+    }
+
+    public void ClearAllScene()
+    {
+        // Limpa os inimigos existentes
+        ClearEnemies();
+        // Limpa os objetos existentes
+        ClearObjects();
+        ClearGameObjects();
+        // Limpa os elementos decorativos existentes
+        ClearDecor();
+        ClearNodes();
     }
     public void DeleteCurrentLevel(string worldName)
     {

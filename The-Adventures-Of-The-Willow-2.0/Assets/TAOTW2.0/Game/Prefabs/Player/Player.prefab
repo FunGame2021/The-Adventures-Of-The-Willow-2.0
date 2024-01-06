@@ -304,21 +304,25 @@ MonoBehaviour:
   sameGravityPlayer: 2
   stopPlayer: 1
   autoMoveSpeed: 1.5
+  withFriction2: {fileID: 6200000, guid: 595eda60619f16a44bcfbfd5835da178, type: 2}
   withFriction: {fileID: 6200000, guid: 7524e06eb6bccd4419520e0c475e6243, type: 2}
   noFriction: {fileID: 6200000, guid: 7cd774f1cab18954ab27d36691ceb528, type: 2}
   wallCheck: {fileID: 3536767284115880431}
   whatIsWall:
     serializedVersion: 2
     m_Bits: 536870912
-  rayDistance: 1
+  rayDistance: 0.2
   isWallSliding: 0
-  wallSlidingSpeed: 1
+  wallSlidingSpeed: 0.7
   isWallJumping: 0
   wallJumpingDirection: 0
-  wallJumpingTime: 0.2
-  wallJumpingCounter: -114.71074
-  wallJumpingDuration: 0.2
+  wallJumpingTime: 0.1
+  wallJumpingCounter: 0
+  wallJumpingDuration: 0.1
   upSpeed: 3
+  moveInputUp: 0
+  isOnLadder: 0
+  isClimbing: 0
   waterCheck: {fileID: 8522897643443992576}
   whatIsWater:
     serializedVersion: 2
@@ -359,7 +363,7 @@ MonoBehaviour:
   iceSlideMaxSpeed: 5
   iceSlideAccelAmount: 4
   iceSlipFactor: 0.1
-  stickyPlatformSlowdownFactor: 0
+  stickyPlatformSlowdownFactor: 0.2
   Bubble: {fileID: 0}
   WindParticles: {fileID: 0}
   WaterParticles: {fileID: 0}
@@ -815,7 +819,7 @@ Transform:
   m_GameObject: {fileID: 4935928302805226443}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.676, y: -0.248, z: 0}
+  m_LocalPosition: {x: 0.676, y: -0.105, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

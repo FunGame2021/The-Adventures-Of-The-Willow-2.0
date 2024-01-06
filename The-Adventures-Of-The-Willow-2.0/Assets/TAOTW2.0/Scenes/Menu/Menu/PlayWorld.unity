@@ -762,6 +762,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347396441}
   m_CullTransparentMesh: 1
+--- !u!1 &354268339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 354268341}
+  - component: {fileID: 354268340}
+  m_Layer: 0
+  m_Name: SaveGameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &354268340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354268339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00683a65a81ff3e4ba8f7472993bae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveData:
+    actualPlayerWorldName: 
+    player:
+      coins: 0
+      stars: 0
+      position: {x: 0, y: 0}
+    worlds: []
+  currentSaveLevelData:
+    CurrentLevelName: 
+    currentLevelsolved: 0
+    currentLevelCoinsCollected: 0
+    currentLevelDeaths: 0
+    currentLevelEnemiesKilled: 0
+    currentLevelCompletionTime: 0
+  currentSaveWorldData:
+    worldName: 
+    levels: []
+  currentWorldName: 
+  currentLevelName: 
+  asWorldData: 0
+  loadedPlayerWorldPosition: {x: 0, y: 0, z: 0}
+  TotalCoins: 0
+  isWorldmapPlayed: 1
+--- !u!4 &354268341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354268339}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &368257854
 GameObject:
   m_ObjectHideFlags: 0
@@ -4342,6 +4409,7 @@ MonoBehaviour:
   zoomSpeedFinish: 0
   smoothTime: 4
   playerObject: {fileID: 0}
+  isWorldmap: 1
 --- !u!114 &2059424394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4390,7 +4458,7 @@ Transform:
   m_GameObject: {fileID: 2059424391}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4484,6 +4552,7 @@ SceneRoots:
   - {fileID: 1042261523}
   - {fileID: 1695600111}
   - {fileID: 843510090}
+  - {fileID: 354268341}
   - {fileID: 709568605}
   - {fileID: 384434400}
   - {fileID: 987035380}

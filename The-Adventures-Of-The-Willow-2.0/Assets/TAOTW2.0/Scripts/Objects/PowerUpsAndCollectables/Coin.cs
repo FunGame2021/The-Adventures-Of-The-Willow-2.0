@@ -29,7 +29,7 @@ public class Coin : MonoBehaviour
         CoinCollect.instance.ChangeCoin(coinValue);
         if(PlayerManager.instance != null)
         {
-            PlayerManager.instance.IncrementCoinsCollected();
+            PlayerManager.instance.IncrementCoinsCollected(coinValue);
         }
     }
 }
