@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEditor.Tilemaps;
 public class PlatformNodeEditor : MonoBehaviour
 {
     public static PlatformNodeEditor instance;
@@ -158,8 +159,17 @@ public class PlatformNodeEditor : MonoBehaviour
             // Desselecione a plataforma se outra coisa for clicada
             DeselectPlatform();
         }
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            // Verifica se o clique foi realizado em um elemento do UI
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                isNodeEditor = false;
+                UpdateButtonSprite();
+                return; // Sai da função se o clique foi no UI
+            }
+        }
     }
-
     private void LateUpdate()
     {
         Vector3 mousePosition = Mouse.current.position.ReadValue();

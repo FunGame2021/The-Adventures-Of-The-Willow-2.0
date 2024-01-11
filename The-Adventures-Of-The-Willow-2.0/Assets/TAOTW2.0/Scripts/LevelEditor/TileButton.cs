@@ -191,15 +191,6 @@ public class TileButton : MonoBehaviour
     private void SelectTile(TileBase tile)
     {
         selectedTile = tile;
-        // Verifica se a telha selecionada é a telha de borracha
-        if (selectedTile == null)
-        {
-            Debug.Log("Selected Tool: Eraser");
-        }
-        else
-        {
-            Debug.Log("Selected Tile: " + selectedTile.name);
-        }
     }
 
     private void SelectCategory(int categoryIndex)

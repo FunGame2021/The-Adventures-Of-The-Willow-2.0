@@ -797,6 +797,11 @@ MonoBehaviour:
       coins: 0
       stars: 0
       position: {x: 0, y: 0}
+      isBig: 0
+      isSmall: 0
+      isFirePower: 0
+      isAirPower: 0
+      isBubblePower: 0
     worlds: []
   currentSaveLevelData:
     CurrentLevelName: 
@@ -814,6 +819,11 @@ MonoBehaviour:
   loadedPlayerWorldPosition: {x: 0, y: 0, z: 0}
   TotalCoins: 0
   isWorldmapPlayed: 1
+  isSaveBig: 0
+  isSaveSmall: 0
+  isSaveFirePower: 0
+  isSaveAirPower: 0
+  isSaveBubblePower: 0
 --- !u!4 &354268341
 Transform:
   m_ObjectHideFlags: 0
@@ -2266,6 +2276,7 @@ MonoBehaviour:
   WorldPressStartInfo: {fileID: 190290279}
   DeathZone: {fileID: 0}
   isPlayingLevel: 0
+  scriptableParticleTypesData: {fileID: 11400000, guid: 56f35e8199fd9b149a83c33584fafc49, type: 2}
   levelDotPrefab: {fileID: 7109911152652461386, guid: d3873de5d571d6042ab46528b29aa663, type: 3}
 --- !u!114 &1042261525
 MonoBehaviour:

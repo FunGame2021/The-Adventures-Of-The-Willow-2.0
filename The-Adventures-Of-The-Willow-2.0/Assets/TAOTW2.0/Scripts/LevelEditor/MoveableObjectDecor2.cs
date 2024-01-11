@@ -8,6 +8,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
     // Propriedades adicionadas
     public int ShortLayer;
     public string ShortLayerName;
+    public float ZPos;
 
 
     private void Start()
@@ -17,6 +18,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
         // Definir a opção inicial como o short layer atual do primeiro SpriteRenderer
         ShortLayerName = GetShortLayerName(myRenderers[0].sortingLayerID);
         ShortLayer = myRenderers[0].sortingOrder;
+        ZPos = this.gameObject.transform.position.z;
     }
 
     void CheckForClick2()
@@ -32,6 +34,8 @@ public class MoveableObjectDecor2 : MonoBehaviour
             ShortLayerName = GetShortLayerName(myRenderers[0].sortingLayerID);
             // Obtenha o ShortLayer do primeiro SpriteRenderer
             ShortLayer = myRenderers[0].sortingOrder;
+
+            ZPos = this.gameObject.transform.position.z;
         }
     }
 
@@ -72,6 +76,11 @@ public class MoveableObjectDecor2 : MonoBehaviour
 
                 // Atualiza o nome do sorting layer do SpriteRenderer
                 spriteRenderer.sortingLayerName = ShortLayerName;
+
+                // Atualiza a posição Z do objeto
+                Vector3 newPosition = transform.position;
+                newPosition.z = ZPos;
+                transform.position = newPosition;
             }
         }
     }

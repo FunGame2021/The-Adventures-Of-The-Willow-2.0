@@ -1449,6 +1449,7 @@ MonoBehaviour:
   PressStartInfo: {fileID: 1901415463}
   DeathZone: {fileID: 149098929}
   isPlayingLevel: 0
+  scriptableParticleTypesData: {fileID: 11400000, guid: 56f35e8199fd9b149a83c33584fafc49, type: 2}
 --- !u!4 &919967683
 Transform:
   m_ObjectHideFlags: 0
@@ -2115,6 +2116,7 @@ MonoBehaviour:
   zoomSpeedFinish: 0
   smoothTime: 4
   playerObject: {fileID: 0}
+  isWorldmap: 0
 --- !u!114 &1419800378
 MonoBehaviour:
   m_ObjectHideFlags: 0

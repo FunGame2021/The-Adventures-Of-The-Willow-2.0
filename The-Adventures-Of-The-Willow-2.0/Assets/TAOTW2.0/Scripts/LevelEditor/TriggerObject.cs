@@ -7,7 +7,9 @@ public class TriggerObject : MonoBehaviour
     public Vector2 thisScale;
     public string thisTriggerType; // Armazena o tipo selecionado como uma string
     public string customScript;
-    
+    public float timeToPlayTrigger;
+    public bool wasTriggerWaitTime;
+
 
     private void Update()
     {

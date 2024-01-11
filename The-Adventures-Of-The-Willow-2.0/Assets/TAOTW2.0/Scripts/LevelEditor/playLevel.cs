@@ -88,8 +88,14 @@ public class playLevel : MonoBehaviour
 
     [SerializeField] private GameObject DeathZone;
     public bool isPlayingLevel;
+
+
+    #region particles
+    [SerializeField] private ParticleTypes scriptableParticleTypesData;
     #endregion
 
+    #endregion
+    
     #region Load World
     private bool isPlayingWorld;
     private bool StartedWorld;
@@ -489,36 +495,6 @@ public class playLevel : MonoBehaviour
                             Debug.LogWarning("Prefab not found for decor: " + decor2Data.name);
                         }
                     }
-                    // Carrega os inimigos salvos
-                    foreach (EnemySaveData enemyData in enemyList)
-                    {
-                        // Encontre o prefab do inimigo com base no nome do inimigo
-                        GameObject enemyPrefab = null;
-                        foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
-                        {
-                            foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
-                            {
-                                if (enemyInfo.enemyName == enemyData.name)
-                                {
-                                    enemyPrefab = enemyInfo.prefab;
-                                    break;
-                                }
-                            }
-                            if (enemyPrefab != null)
-                                break;
-                        }
-
-                        if (enemyPrefab != null)
-                        {
-                            // Crie um objeto do inimigo e defina o nome e a posição
-                            GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
-                            enemyObject.transform.SetParent(enemyContainer.transform);
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
-                        }
-                    }
 
                     // Carrega os objetos salvos
                     foreach (ObjectSaveData objectData in objectList)
@@ -710,6 +686,8 @@ public class playLevel : MonoBehaviour
                                 ParticlesController playParticlesScript = gameObjectObject.AddComponent<ParticlesController>();
                                 playParticlesScript.isToPlay = true;
                                 playParticlesScript.particleIDName = triggerData.customScript;
+                                playParticlesScript.wasWaitTime = triggerData.wasWaitTime;
+                                playParticlesScript.timeToPlay = triggerData.timeToPlay;
                             }
                             if (triggerData.type == "Stop Particles")
                             {
@@ -717,6 +695,8 @@ public class playLevel : MonoBehaviour
                                 ParticlesController playParticlesScript = gameObjectObject.AddComponent<ParticlesController>();
                                 playParticlesScript.isToPlay = false;
                                 playParticlesScript.particleIDName = triggerData.customScript;
+                                playParticlesScript.wasWaitTime = triggerData.wasWaitTime;
+                                playParticlesScript.timeToPlay = triggerData.timeToPlay;
                             }
                         }
                         else
@@ -726,15 +706,14 @@ public class playLevel : MonoBehaviour
                     }
                     foreach (ParticlesSaveData particleData in particlesList)
                     {
-                        // Encontre o prefab do objeto Trigger
                         GameObject gameObjectPrefab = null;
-                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        foreach (ParticleTypes.ParticleTypesCategory category in scriptableParticleTypesData.categories)
                         {
-                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            foreach (ParticleTypes.ParticleTypesInfo particleTypeInfo in category.ParticleTypes)
                             {
-                                if (gameObjectInfo.GameObjectName == particleData.nameID)
+                                if (particleTypeInfo.ParticleTypesName == particleData.particleType)
                                 {
-                                    gameObjectPrefab = gameObjectInfo.prefab;
+                                    gameObjectPrefab = particleTypeInfo.prefab;
                                     break;
                                 }
                             }
@@ -766,8 +745,40 @@ public class playLevel : MonoBehaviour
                             }
                             else
                             {
-                                Debug.LogWarning("ParticleSystem component not found on GameObject: " + particleData.nameID);
+                                Debug.LogWarning("ParticleSystem component not found on GameObject: " + particleData.particleType);
                             }
+                        }
+                    }
+
+
+                    // Carrega os inimigos salvos
+                    foreach (EnemySaveData enemyData in enemyList)
+                    {
+                        // Encontre o prefab do inimigo com base no nome do inimigo
+                        GameObject enemyPrefab = null;
+                        foreach (EnemyData.EnemyCategory category in ScriptableEnemyData.categories)
+                        {
+                            foreach (EnemyData.EnemyInfo enemyInfo in category.enemies)
+                            {
+                                if (enemyInfo.enemyName == enemyData.name)
+                                {
+                                    enemyPrefab = enemyInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (enemyPrefab != null)
+                                break;
+                        }
+
+                        if (enemyPrefab != null)
+                        {
+                            // Crie um objeto do inimigo e defina o nome e a posição
+                            GameObject enemyObject = Instantiate(enemyPrefab, enemyData.position, Quaternion.identity);
+                            enemyObject.transform.SetParent(enemyContainer.transform);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for enemy: " + enemyData.name);
                         }
                     }
                 }

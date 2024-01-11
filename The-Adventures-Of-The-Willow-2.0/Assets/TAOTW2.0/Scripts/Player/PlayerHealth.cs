@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -33,6 +31,8 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float knockbackDuration = 0.3f;
     [SerializeField] private float knockbackUpForce = 1f;
 
+
+
     void Start()
     {
         originalColor = playerRenderer.color;
@@ -60,7 +60,9 @@ public class PlayerHealth : MonoBehaviour
                 TakeDamage();
             }
         }
+
     }
+
     private void FixedUpdate()
     {
         // Atualize o temporizador de invulnerabilidade se o jogador estiver invulnerável
@@ -322,4 +324,6 @@ public class PlayerHealth : MonoBehaviour
         }
     }
     #endregion
+
+    
 }

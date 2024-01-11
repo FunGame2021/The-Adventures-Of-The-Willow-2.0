@@ -338,18 +338,17 @@ public class PlayerController : MonoBehaviour
         moveInputUp = UserInput.instance.moveInput.y;
         // Verifica se o jogador está colidindo com uma parede
         IsCollidingWithWall();
-        if (!isWallJumping)
+        if (!isWallJumping && !stopPlayer)
         {
             if (moveInput < 0)
             {
-                Turn();
+                Turn(true); // Vire para a esquerda
             }
             else if (moveInput > 0)
             {
-                Turn();
+                Turn(false); // Vire para a direita
             }
         }
-
         
         if (isGrounded)
         {
@@ -612,12 +611,14 @@ public class PlayerController : MonoBehaviour
             //FinishPoint
             if (FinishPoint.instance.isFinished && stopPlayer)
             {
-                if (FinishPole.instance.enterRight)
+                if (FinishPole.instance.isFinishPoleRightEnter)
                 {
+                    Turn(false); // Vire para a direita
                     RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
                 }
                 else
                 {
+                    Turn(true); // Vire para a esquerda
                     RB.velocity = new Vector2(-autoMoveSpeed, RB.velocity.y);
                 }
             }
@@ -688,13 +689,13 @@ public class PlayerController : MonoBehaviour
         RB.velocity += Vector2.up * knockbackUpForce;
     }
 
-    public void Turn()
+    public void Turn(bool faceRight)
     {
-        if ((moveInput < 0 && !facingRight) || (moveInput > 0 && facingRight))
+        if (facingRight != faceRight)
         {
             // Flips the player along the x-axis
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            facingRight = !facingRight;
+            facingRight = faceRight;
         }
     }
 

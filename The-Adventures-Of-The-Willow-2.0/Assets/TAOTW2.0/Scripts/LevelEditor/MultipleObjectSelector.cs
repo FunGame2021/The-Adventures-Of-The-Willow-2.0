@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,8 +22,9 @@ public class MultipleObjectSelector : MonoBehaviour
     [SerializeField] private GameObject panelPrefab;
     private GameObject panelInstance;
 
-    private TMP_InputField scriptInputField;
-     private string scriptWritted;
+    private TMP_InputField particleNameInputField;
+    private string particleType;
+    private string particleName;
     private Toggle[] toggles;
     private Toggle isLoop;
     private Toggle isInitialStarted;
@@ -30,6 +32,15 @@ public class MultipleObjectSelector : MonoBehaviour
     private bool isOpened = false;
     private Button backButton;
     private Button okButton;
+    private Button particleTypeButton;
+    [SerializeField] private ParticleTypes particleTypesData;
+    //UI
+    [SerializeField] private GameObject ParticleTypePanel;
+    [SerializeField] private TextMeshProUGUI particleTypeText;
+    [SerializeField] private GameObject particleButtonPrefab;
+    [SerializeField] private Transform buttonParticleContainer;
+    private List<Button> particleButtons = new List<Button>(); // Corrigido para usar List<Button> ao invés de Button[]
+
     #endregion
 
 
@@ -93,7 +104,8 @@ public class MultipleObjectSelector : MonoBehaviour
                             }
                         }
 
-                        scriptInputField = panelInstance.GetComponentInChildren<TMP_InputField>();
+                        particleNameInputField = panelInstance.GetComponentInChildren<TMP_InputField>();
+
                         buttons = panelInstance.GetComponentsInChildren<Button>();
                         foreach (Button button in buttons)
                         {
@@ -104,6 +116,10 @@ public class MultipleObjectSelector : MonoBehaviour
                             else if (button.name == "OKButton")
                             {
                                 okButton = button;
+                            }
+                            else if (button.name == "PaticleTypeButton")
+                            {
+                                particleTypeButton = button;
                             }
                         }
 
@@ -116,13 +132,22 @@ public class MultipleObjectSelector : MonoBehaviour
 
                         okButton.onClick.AddListener(() =>
                         {
-                            particleObjectScript.particleType = scriptWritted; 
+                            particleObjectScript.particleType = particleType;
+                            particleObjectScript.particleName = particleName;
                             particleObjectScript.isLoop = isLoop.isOn;
                             particleObjectScript.initialStarted = isInitialStarted.isOn;
 
                             isOpened = false;
                             Destroy(panelInstance);
                         });
+
+
+                        particleTypeButton.onClick.AddListener(() =>
+                        {
+                            ParticleTypePanel.SetActive(true);
+                            InitializeParticleTypeButtons();
+                        });
+
                         UpdateUIValues();
                     }
                 }
@@ -243,9 +268,9 @@ public class MultipleObjectSelector : MonoBehaviour
         {
             if (panelInstance != null)
             {
-                if (scriptInputField != null)
+                if (particleNameInputField != null)
                 {
-                    scriptWritted = scriptInputField.text;
+                    particleName = particleNameInputField.text;
                 }
             }
         }
@@ -288,15 +313,68 @@ public class MultipleObjectSelector : MonoBehaviour
     #region particles
     void UpdateUIValues()
     {
-
         if (particleObjectScript != null)
         {
-            scriptWritted = particleObjectScript.particleType;
-            scriptInputField.text = scriptWritted;
+            particleType = particleObjectScript.particleType;
+            particleName = particleObjectScript.particleName;
+            particleNameInputField.text = particleName;
             isLoop.isOn = particleObjectScript.isLoop;
             isInitialStarted.isOn = particleObjectScript.initialStarted;
+            
         }
     }
+
+    void InitializeParticleTypeButtons()
+    {
+        // Limpa a lista de botões antes de criar novos
+        ClearParticleTypeButtons();
+
+        // Cria um botão para cada tipo de partícula
+        foreach (var category in particleTypesData.categories)
+        {
+            foreach (var particleType in category.ParticleTypes)
+            {
+                CreateParticleTypeButton(particleType.ParticleTypesName);
+            }
+        }
+    }
+
+    void ClearParticleTypeButtons()
+    {
+        // Verifica se a lista de botões está inicializada
+        if (particleButtons != null)
+        {
+            // Destroi cada botão na lista
+            foreach (Button button in particleButtons)
+            {
+                Destroy(button.gameObject);
+            }
+
+            // Limpa a lista de botões
+            particleButtons.Clear();
+        }
+    }
+    void CreateParticleTypeButton(string typeName)
+    {
+        // Use o prefab específico para os botões de partículas
+        GameObject buttonparticle = Instantiate(particleButtonPrefab);
+        Button particleButton = buttonparticle.GetComponent<Button>();
+        particleButton.onClick.AddListener(() => OnParticleTypeButtonClicked(typeName));
+
+        TextMeshProUGUI buttonText = buttonparticle.GetComponentInChildren<TextMeshProUGUI>();
+        buttonText.text = typeName;
+
+        buttonparticle.transform.SetParent(buttonParticleContainer);
+        particleButtons.Add(particleButton); // Adiciona o botão à lista
+    }
+
+    void OnParticleTypeButtonClicked(string typeName)
+    {
+        particleType = typeName;
+        // Atualiza o componente TextMeshPro para mostrar o tipo de partícula selecionado
+        particleTypeText.text = "Selected Particle Type: " + particleType;
+    }
+
     #endregion
 
     #region Moving Platform

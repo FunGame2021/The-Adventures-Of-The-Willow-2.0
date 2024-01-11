@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2206b12fc6bcd4997a969f0b37b869, type: 3}
+  m_Name: ParticleTypesData
+  m_EditorClassIdentifier: 
+  categories:
+  - particleTypesCategoryName: NormalParticles
+    ParticleTypes:
+    - ParticleTypesName: Fireflies
+      prefab: {fileID: 1417746469369478, guid: e7b5634792dcf594f8d739e25eab2fd4, type: 3}
+    - ParticleTypesName: LightBugs
+      prefab: {fileID: 7292004703136640019, guid: 5cc217f6363d87b45a48c3fc5adf7747, type: 3}
+    - ParticleTypesName: HoneyFalls
+      prefab: {fileID: 3907736016316032715, guid: 2e8ef17644978a1419ca3a1dbb46ab48, type: 3}
+    - ParticleTypesName: Birds01
+      prefab: {fileID: 8219424949054107052, guid: e65b8d9a3e1a23e4eb459a31cc708c09, type: 3}

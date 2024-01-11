@@ -52,12 +52,6 @@ public class MoveAndSelectTool : MonoBehaviour
     public bool isDecor;
     public bool isDecor2;
 
-    //dropdown image choose
-    public Sprite imageOption1;
-    public Sprite imageOption2;
-    public Sprite imageOption3;
-    public Sprite imageOption4;
-    public Sprite imageOption5;
 
     // Change z-pos and shortLayer
     public GameObject PanelToHideValues;
@@ -68,12 +62,13 @@ public class MoveAndSelectTool : MonoBehaviour
     public TMP_InputField shortLayerPosInput;
     public TMP_Dropdown dropdownShortLayerList;
 
-    public TMP_Text zPosInfo;
-    public TMP_Text shortLayerPosInfo;
-    public TMP_Text shortLayerListInfo;
 
     //For level editor info
     public string stringInfo;
+
+    //Hide option decor shortlayer pos
+    [SerializeField] private GameObject shortLayerPosUI;
+    [SerializeField] private GameObject shortLayerPosTextUI;
 
     private void Start()
     {
@@ -82,30 +77,8 @@ public class MoveAndSelectTool : MonoBehaviour
             instance = this;
         }
 
+        // Adiciona um listener para o evento onValueChanged
         dropdownSelectType.onValueChanged.AddListener(OnDropdownValueChanged);
-
-        // Criação das opções do Dropdown
-        TMP_Dropdown.OptionData option1 = new TMP_Dropdown.OptionData("Option 1", imageOption1);
-        TMP_Dropdown.OptionData option2 = new TMP_Dropdown.OptionData("Option 2", imageOption2);
-        TMP_Dropdown.OptionData option3 = new TMP_Dropdown.OptionData("Option 3", imageOption3);
-        TMP_Dropdown.OptionData option4 = new TMP_Dropdown.OptionData("Option 4", imageOption4);
-        TMP_Dropdown.OptionData option5 = new TMP_Dropdown.OptionData("Option 5", imageOption5);
-
-        // Limpar as opções existentes no Dropdown (se houver)
-        dropdownSelectType.ClearOptions();
-
-        // Adicionar as opções ao Dropdown
-        dropdownSelectType.options.Add(option1);
-        dropdownSelectType.options.Add(option2);
-        dropdownSelectType.options.Add(option3);
-        dropdownSelectType.options.Add(option4);
-        dropdownSelectType.options.Add(option5);
-
-        dropdownSelectType.value = 0; // Seleciona o primeiro item da lista
-        OnDropdownValueChanged(0); // Ativa o tipo correspondente à opção selecionada
-
-        // Atualizar o Dropdown para refletir as mudanças
-        dropdownSelectType.RefreshShownValue();
 
     }
 
@@ -249,6 +222,7 @@ public class MoveAndSelectTool : MonoBehaviour
                     {
                         DecorOffset = selectedDecorObject.transform.position - mousePosition;
                         stringInfo = selectedDecorObject.name;
+                        UpdateUIWithSelectedObjectData();
                     }
                 }
                 else if (OnMouseClick != null && Mouse.current.leftButton.isPressed)
@@ -258,6 +232,7 @@ public class MoveAndSelectTool : MonoBehaviour
                         Vector3 newPosition = mousePosition + DecorOffset;
                         newPosition.z = selectedDecorObject.transform.position.z; // Mantém o valor do ZPos
                         selectedDecorObject.transform.position = newPosition;
+                        UpdateUIWithSelectedObjectData();
                     }
                 }
             }
@@ -276,6 +251,7 @@ public class MoveAndSelectTool : MonoBehaviour
                     {
                         Decor2Offset = selectedDecor2Object.transform.position - mousePosition;
                         stringInfo = selectedDecor2Object.name;
+                        UpdateUIWithSelectedObjectData2();
                     }
                 }
                 else if (OnMouseClick2 != null && Mouse.current.leftButton.isPressed)
@@ -285,6 +261,7 @@ public class MoveAndSelectTool : MonoBehaviour
                         Vector3 newPosition = mousePosition + Decor2Offset;
                         newPosition.z = selectedDecor2Object.transform.position.z; // Mantém o valor do ZPos
                         selectedDecor2Object.transform.position = newPosition;
+                        UpdateUIWithSelectedObjectData2();
                     }
                 }
                 if(OnMouseClick2 != null && Mouse.current.rightButton.wasPressedThisFrame)
@@ -433,7 +410,6 @@ public class MoveAndSelectTool : MonoBehaviour
                 // Obtém o componente MoveableObject do objeto selecionado
                 MoveableObject moveableObject = selectedDecorObject.GetComponent<MoveableObject>();
 
-                UpdateUIWithSelectedObjectData();
                 // Verifica se o componente MoveableObject existe no objeto selecionado
                 if (moveableObject != null)
                 {
@@ -441,6 +417,8 @@ public class MoveAndSelectTool : MonoBehaviour
                     moveableObject.ZPos = newPosition.z;
                     moveableObject.ShortLayer = selectedDecorObject.GetComponent<SpriteRenderer>().sortingOrder;
                 }
+
+                UpdateUIWithSelectedObjectData();
             }
         }
 
@@ -459,6 +437,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 // Verifica se o componente MoveableObject existe no objeto selecionado
                 if (moveableObject2 != null)
                 {
+                    moveableObject2.ZPos = newPosition.z;
                     moveableObject2.ShortLayer = moveableObject2.GetComponentInChildren<SpriteRenderer>().sortingOrder;
                 }
             }
@@ -527,6 +506,8 @@ public class MoveAndSelectTool : MonoBehaviour
     {
         if (selectedDecorObject != null)
         {
+            shortLayerPosUI.SetActive(true);
+            shortLayerPosTextUI.SetActive(true);
             // Desabilitar a interação com os campos de entrada
             zPosInput.interactable = true;
             shortLayerPosInput.interactable = true;
@@ -554,9 +535,6 @@ public class MoveAndSelectTool : MonoBehaviour
             // Atualiza o valor do Dropdown para corresponder ao shortLayer atual
             dropdownShortLayerList.value = shortLayer;
 
-            // Atualiza o texto informativo
-            shortLayerListInfo.text = dropdownShortLayerList.options[shortLayer].text;
-
 
             // Obtém o componente MoveableObject do objeto selecionado
             MoveableObject moveableObject = selectedDecorObject.GetComponent<MoveableObject>();
@@ -571,7 +549,6 @@ public class MoveAndSelectTool : MonoBehaviour
                 // Atualiza os campos de entrada de texto e o Dropdown com as informações obtidas
                 zPosInput.text = moveableObject.ZPos.ToString("F2");
                 shortLayerPosInput.text = moveableObject.ShortLayer.ToString();
-                shortLayerListInfo.text = moveableObject.ShortLayerName;
             }
         }
         else
@@ -581,19 +558,21 @@ public class MoveAndSelectTool : MonoBehaviour
             dropdownShortLayerList.value = 0;
             zPosInput.text = "";
             shortLayerPosInput.text = "";
-            shortLayerListInfo.text = "";
         }
     }
     private void UpdateUIWithSelectedObjectData2()
     {
         if (selectedDecor2Object != null)
         {
+            shortLayerPosUI.SetActive(false);
+            shortLayerPosTextUI.SetActive(false);
+
             // Desabilitar a interação com os campos de entrada
-            zPosInput.interactable = false;
+            zPosInput.interactable = true;
             shortLayerPosInput.interactable = false;
 
             // Desabilitar a edição do texto
-            zPosInput.textComponent.raycastTarget = false;
+            zPosInput.textComponent.raycastTarget = true;
             shortLayerPosInput.textComponent.raycastTarget = false;
 
             //sprite Renderer Decor
@@ -616,8 +595,6 @@ public class MoveAndSelectTool : MonoBehaviour
             // Atualiza o valor do Dropdown para corresponder ao shortLayer atual
             dropdownShortLayerList.value = shortLayer;
 
-            // Atualiza o texto informativo
-            shortLayerListInfo.text = dropdownShortLayerList.options[shortLayer].text;
 
 
             // Obtém o componente MoveableObject do objeto selecionado
@@ -630,8 +607,8 @@ public class MoveAndSelectTool : MonoBehaviour
             {
                 dropdownShortLayerList.value = GetDropdownIndex(moveableObject2.ShortLayerName);
 
-                // Atualiza os campos de entrada de texto e o Dropdown com as informações obtidas
-                shortLayerListInfo.text = moveableObject2.ShortLayerName;
+                zPosInput.text = moveableObject2.ZPos.ToString("F2");
+
             }
         }
         else
@@ -641,7 +618,6 @@ public class MoveAndSelectTool : MonoBehaviour
             dropdownShortLayerList.value = 0;
             zPosInput.text = "";
             shortLayerPosInput.text = "";
-            shortLayerListInfo.text = "";
         }
     }
     private int GetDropdownIndex(string shortLayerName)
@@ -679,20 +655,20 @@ public class MoveAndSelectTool : MonoBehaviour
 
             currentMoveableObject.ApplyChanges();
 
-            // Atualizar os textos informativos
-            zPosInfo.text = currentMoveableObject.ZPos.ToString("F2");
-            shortLayerPosInfo.text = currentMoveableObject.ShortLayer.ToString("F0");
-            shortLayerListInfo.text = currentMoveableObject.ShortLayerName;
         }
 
         if (currentMoveable2Object != null)
         {
+
+            float zPos;
+            if (!string.IsNullOrEmpty(zPosInput.text) && float.TryParse(zPosInput.text, out zPos))
+            {
+                currentMoveable2Object.ZPos = zPos;
+            }
             currentMoveable2Object.ShortLayerName = dropdownShortLayerList.options[dropdownShortLayerList.value].text;
 
             currentMoveable2Object.ApplyChanges();
 
-            // Atualizar os textos informativos
-            shortLayerListInfo.text = currentMoveableObject.ShortLayerName;
         }
     }
 

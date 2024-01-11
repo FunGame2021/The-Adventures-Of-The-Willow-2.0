@@ -32,6 +32,15 @@ public class PlayerStates : MonoBehaviour
         {
             instance = this;
         }
+        if(SaveGameManager.instance != null)
+        {
+            isBig = SaveGameManager.instance.isSaveBig;
+            isSmall = SaveGameManager.instance.isSaveSmall;
+            isFirePower = SaveGameManager.instance.isSaveFirePower;
+            isAirPower = SaveGameManager.instance.isSaveAirPower;
+            isBubblePower = SaveGameManager.instance.isSaveBubblePower;
+            UpdateAnimatorStates();
+        }
     }
 
     void Update()
@@ -75,7 +84,7 @@ public class PlayerStates : MonoBehaviour
             isFirePower = true;
             isAirPower = false;
 
-            OnFirePowerStateChanged?.Invoke(isFirePower); // Corrigido aqui
+            OnFirePowerStateChanged?.Invoke(isFirePower);
             UpdateAnimatorStates();
         }
     }
@@ -89,7 +98,7 @@ public class PlayerStates : MonoBehaviour
             isFirePower = false;
             isAirPower = true;
 
-            OnAirPowerStateChanged?.Invoke(isAirPower); // Corrigido aqui
+            OnAirPowerStateChanged?.Invoke(isAirPower);
             UpdateAnimatorStates();
         }
     }
@@ -103,7 +112,7 @@ public class PlayerStates : MonoBehaviour
             isAirPower = false;
             isBubblePower = true;
 
-            OnBubblePowerStateChanged?.Invoke(isBubblePower); // Corrigido aqui
+            OnBubblePowerStateChanged?.Invoke(isBubblePower);
             UpdateAnimatorStates();
         }
     }

@@ -35,12 +35,21 @@ public class CaptainMushroomRed : MonoBehaviour
 
     private bool incremented;
 
+    [SerializeField] private LayerMask groundLayer; // Configure no Inspector para incluir a layer do chão.
+    [SerializeField] private float overlapRadius = 0.2f; // Raio de sobreposição para verificar colisões.
+
+
+    [SerializeField] private Transform leftObjectCheck;
+    [SerializeField] private Transform rightObjectCheck;
+    [SerializeField] private Transform castObjectPos;
+    [SerializeField] private LayerMask colliderObjectsLayer; // Configure no Inspector para incluir a layer do chão.
+
     private void Awake()
     {
         //Stop enemy
-        if(GameStates.instance != null)
+        if (GameStates.instance != null)
         {
-            if(!GameStates.instance.isLevelStarted)
+            if (!GameStates.instance.isLevelStarted)
             {
                 moveSpeed = 0f;
                 rb2d.bodyType = RigidbodyType2D.Static;
@@ -56,6 +65,17 @@ public class CaptainMushroomRed : MonoBehaviour
         facingDirection = LEFT;
         audioPlayed = false;
         stompEnemy = GetComponentInChildren<StompEnemy>();
+
+        //Stop enemy
+        if (GameStates.instance != null)
+        {
+            if (!GameStates.instance.isLevelStarted)
+            {
+                moveSpeed = 0f;
+                rb2d.bodyType = RigidbodyType2D.Static;
+                enemyStopped = true;
+            }
+        }
     }
     private void Update()
     {
@@ -69,11 +89,31 @@ public class CaptainMushroomRed : MonoBehaviour
             }
             else
             {
-                moveSpeed = moveSpeedTemp;
-                rb2d.bodyType = RigidbodyType2D.Dynamic;
-                enemyStopped = false;
+                StartCoroutine(ToStartEnemy());
             }
         }
+        // Verificar se o ponto central do jogador está dentro de algum colisor de chão
+        if (IsInsideGround() || IsBetweenObjects() && !enemyStopped)
+        {
+            DestroyGameObject();
+            if (PlayerManager.instance != null)
+            {
+                if (!incremented)
+                {
+                    PlayerManager.instance.IncrementEnemiesKilled();
+                    incremented = true;
+                }
+            }
+        }
+    }
+    IEnumerator ToStartEnemy()
+    {
+        yield return new WaitForSeconds(2);
+        moveSpeed = moveSpeedTemp;
+        rb2d.bodyType = RigidbodyType2D.Dynamic;
+        enemyStopped = false;
+        rb2d.mass = 10f;
+        rb2d.gravityScale = 1f;
     }
     private void StompNow()
     {
@@ -91,6 +131,23 @@ public class CaptainMushroomRed : MonoBehaviour
                 incremented = true;
             }
         }
+    }
+    bool IsInsideGround()
+    {
+        // Verificar se há algum colisor de chão dentro do raio de sobreposição
+        Collider2D overlap = Physics2D.OverlapCircle(transform.position, overlapRadius, groundLayer);
+
+        return overlap != null;
+    }
+    bool IsBetweenObjects()
+    {
+        // Verificar se está atingindo um objeto à esquerda
+        bool hittingLeftObject = Physics2D.Linecast(leftObjectCheck.position, castObjectPos.position, colliderObjectsLayer);
+
+        // Verificar se está atingindo um objeto à direita
+        bool hittingRightObject = Physics2D.Linecast(rightObjectCheck.position, castObjectPos.position, colliderObjectsLayer);
+
+        return hittingLeftObject && hittingRightObject;
     }
     public void DestroyGameObject()
     {
@@ -183,7 +240,18 @@ public class CaptainMushroomRed : MonoBehaviour
 
 
         Debug.DrawLine(castPos.position, targetPos, Color.blue);
+
+
+        // Desenhar uma esfera gizmo para representar a área de sobreposição
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, overlapRadius);
+
+        // Desenhar as linhas de verificação para objetos à esquerda e à direita
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(leftObjectCheck.position, castObjectPos.position);
+        Gizmos.DrawLine(rightObjectCheck.position, castObjectPos.position);
+
     }
 
-    
+
 }

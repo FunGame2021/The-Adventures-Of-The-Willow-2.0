@@ -7,10 +7,41 @@ public class ParticlesController : MonoBehaviour
     [SerializeField] private ParticleSystem particles;
     public string particleIDName;
     public bool isToPlay;
+    public float timeToPlay;
+    private float timeToPlayAgain;
+    private bool playied;
+    public bool wasWaitTime;
+
+    private void Update()
+    {
+        if (wasWaitTime)
+        {
+            if (timeToPlayAgain <= 0)
+            {
+                playied = false;
+            }
+            else
+            {
+                playied = true;
+            }
+            if (timeToPlayAgain >= 0)
+            {
+                timeToPlayAgain -= Time.deltaTime;
+            }
+            if (timeToPlayAgain <= 0)
+            {
+                timeToPlayAgain = 0;
+            }
+        }
+        else
+        {
+            playied = false;
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !playied)
         {
             // Encontre todos os objetos com a tag "Particles"
             GameObject[] objectsWithMatchingTag = GameObject.FindGameObjectsWithTag("Particles");
@@ -20,13 +51,18 @@ public class ParticlesController : MonoBehaviour
                 ParticleSystem particleSystem = obj.GetComponent<ParticleSystem>();
                 if (particleSystem != null)
                 {
-                    string objectName = obj.name.Replace("(Clone)", "");
+                    // Obtenha as informações do sistema de partículas
+                    ParticlesInfo particlesInfo = obj.GetComponent<ParticlesInfo>();
 
                     // Verifique o nome do objeto
-                    if (objectName == particleIDName)
+                    if (particlesInfo != null && particlesInfo.thisParticleName == particleIDName)
                     {
                         if (isToPlay)
                         {
+                            if (wasWaitTime)
+                            {
+                                timeToPlayAgain = timeToPlay;
+                            }
                             // Reproduza o sistema de partículas
                             particleSystem.Play();
                         }

@@ -14,9 +14,14 @@ public class TriggerObjectSelector : MonoBehaviour
     private TriggerObject triggerObjectScript;
     [SerializeField] private GameObject panelPrefab;
     private GameObject panelInstance;
-    [SerializeField] private TMP_InputField scriptInputField;
+    private TMP_InputField[] inputFields;
     [SerializeField] private string scriptWritted;
     [SerializeField] private Transform panelLocalization;
+    private Toggle wasWaitTimeToggle;
+    private TMP_InputField scriptInputField;
+    private TMP_InputField timeToPlayInputField;
+    [SerializeField] private float timeToPlay;
+
     private bool isOpened = false;
     private Button backButton;
     private Button okButton;
@@ -61,7 +66,19 @@ public class TriggerObjectSelector : MonoBehaviour
                             typeDropdown.AddOptions(typeOptions);
 
                         }
-                        scriptInputField = panelInstance.GetComponentInChildren<TMP_InputField>();
+                        inputFields = panelInstance.GetComponentsInChildren<TMP_InputField>();
+                        foreach (TMP_InputField inputField in inputFields)
+                        {
+                            if(inputField.name == "timeToPlayInputField")
+                            {
+                                timeToPlayInputField = inputField;
+                            }
+                            else if(inputField.name == "scriptInputField")
+                            {
+                                scriptInputField = inputField;
+                            }
+                        }
+                        wasWaitTimeToggle = panelInstance.GetComponentInChildren<Toggle>();
                         buttons = panelInstance.GetComponentsInChildren<Button>();
                         foreach (Button button in buttons)
                         {
@@ -85,6 +102,18 @@ public class TriggerObjectSelector : MonoBehaviour
                         {
                             triggerObjectScript.thisTriggerType = typeDropdown.options[typeDropdown.value].text;
                             triggerObjectScript.customScript = scriptWritted;
+                            triggerObjectScript.wasTriggerWaitTime = wasWaitTimeToggle.isOn;
+                            // Converte a string para float e atribui a timeToPlay
+                            if (float.TryParse(timeToPlayInputField.text, out float parsedTime))
+                            {
+                                timeToPlay = parsedTime;
+                            }
+                            else
+                            {
+                                Debug.LogError("Failed to parse timeToPlay.");
+                            }
+
+                            triggerObjectScript.timeToPlayTrigger = timeToPlay;
                             isOpened = false;
                             Destroy(panelInstance);
                         });
@@ -124,6 +153,10 @@ public class TriggerObjectSelector : MonoBehaviour
             }
             scriptWritted = triggerObjectScript.customScript;
             scriptInputField.text = scriptWritted;
+            wasWaitTimeToggle.isOn = triggerObjectScript.wasTriggerWaitTime;
+            timeToPlayInputField.text = timeToPlay.ToString();
+            timeToPlay = triggerObjectScript.timeToPlayTrigger;
+            timeToPlayInputField.text = timeToPlay.ToString();
         }
     }
 }

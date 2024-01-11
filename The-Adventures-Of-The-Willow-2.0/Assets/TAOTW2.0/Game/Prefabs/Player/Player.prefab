@@ -445,6 +445,9 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.3
   knockbackUpForce: 1
+  timeToDieAfterBadLocal: 3
+  nowTimeToDieAfterBadLocal: 0
+  isInsideGround: 0
 --- !u!114 &3668697172349177264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,8 +460,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092303a8484acbc4f9f2ce0b8906c920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toStop: 7
-  toStopWalking: 4
+  toStop: 13
+  toStopWalking: 8
   jumpForce: 5
   elapsedTime: 0
   isFinished: 0

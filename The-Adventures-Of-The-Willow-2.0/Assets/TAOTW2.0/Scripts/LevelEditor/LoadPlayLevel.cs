@@ -81,6 +81,12 @@ public class LoadPlayLevel : MonoBehaviour
     [SerializeField] private GameObject DeathZone;
     public bool isPlayingLevel;
 
+    #region particles
+
+    [SerializeField] private ParticleTypes scriptableParticleTypesData;
+
+    #endregion
+
     private void Awake()
     {
         if (instance == null)
@@ -635,6 +641,8 @@ public class LoadPlayLevel : MonoBehaviour
                                 ParticlesController playParticlesScript = gameObjectObject.AddComponent<ParticlesController>();
                                 playParticlesScript.isToPlay = true;
                                 playParticlesScript.particleIDName = triggerData.customScript;
+                                playParticlesScript.wasWaitTime = triggerData.wasWaitTime;
+                                playParticlesScript.timeToPlay = triggerData.timeToPlay;
                             }
                             if (triggerData.type == "Stop Particles")
                             {
@@ -642,6 +650,8 @@ public class LoadPlayLevel : MonoBehaviour
                                 ParticlesController playParticlesScript = gameObjectObject.AddComponent<ParticlesController>();
                                 playParticlesScript.isToPlay = false;
                                 playParticlesScript.particleIDName = triggerData.customScript;
+                                playParticlesScript.wasWaitTime = triggerData.wasWaitTime;
+                                playParticlesScript.timeToPlay = triggerData.timeToPlay;
                             }
                         }
                         else
@@ -651,15 +661,14 @@ public class LoadPlayLevel : MonoBehaviour
                     }
                     foreach (ParticlesSaveData particleData in particlesList)
                     {
-                        // Encontre o prefab do objeto Trigger
                         GameObject gameObjectPrefab = null;
-                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        foreach (ParticleTypes.ParticleTypesCategory category in scriptableParticleTypesData.categories)
                         {
-                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            foreach (ParticleTypes.ParticleTypesInfo particleTypeInfo in category.ParticleTypes)
                             {
-                                if (gameObjectInfo.GameObjectName == particleData.nameID)
+                                if (particleTypeInfo.ParticleTypesName == particleData.particleType)
                                 {
-                                    gameObjectPrefab = gameObjectInfo.prefab;
+                                    gameObjectPrefab = particleTypeInfo.prefab;
                                     break;
                                 }
                             }
@@ -673,7 +682,11 @@ public class LoadPlayLevel : MonoBehaviour
 
                             // Verifique se o objeto tem um componente ParticleSystem
                             ParticleSystem particleSystem = gameObjectObject.GetComponent<ParticleSystem>();
-
+                            ParticlesInfo particlesInfoScript = gameObjectObject.GetComponent<ParticlesInfo>();
+                            if(particlesInfoScript != null)
+                            {
+                                particlesInfoScript.thisParticleName = particleData.particleName;
+                            }
                             if (particleSystem != null)
                             {
                                 if (particleData.initialStarted)
@@ -691,7 +704,7 @@ public class LoadPlayLevel : MonoBehaviour
                             }
                             else
                             {
-                                Debug.LogWarning("ParticleSystem component not found on GameObject: " + particleData.nameID);
+                                Debug.LogWarning("ParticleSystem component not found on GameObject: " + particleData.particleType);
                             }
                         }
                     }

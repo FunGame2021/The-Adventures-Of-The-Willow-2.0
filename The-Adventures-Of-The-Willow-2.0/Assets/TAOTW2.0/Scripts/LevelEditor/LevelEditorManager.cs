@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -168,12 +169,20 @@ public class LevelEditorManager : MonoBehaviour
     //Info Level Edito Object selected to intantiate
     public string selectedStringInfo;
 
+    [SerializeField] private GameObject SaveSuccessfullPanel;
+    [SerializeField] private GameObject WarnExitSavePanel;
+    public float autoSaveTime;
+    private bool shouldAutoSave = true; // Adicione esta variável
+    public bool CoroutineCalled;
+    private Coroutine autoSaveCoroutine;
+
     private void Start()
     {
         if (instance == null)
         {
             instance = this;
         }
+        shouldAutoSave = false;
 
         mainCamera = Camera.main;
 
@@ -1365,8 +1374,84 @@ public class LevelEditorManager : MonoBehaviour
     }
     #endregion
 
-    #region Save Data
 
+
+    #region Save Data
+    public void EnableAutoSave()
+    {
+        shouldAutoSave = true;
+    }
+    public void DisableAutoSave()
+    {
+        shouldAutoSave = false;
+        if (autoSaveCoroutine != null)
+        {
+            StopCoroutine(autoSaveCoroutine);
+            autoSaveCoroutine = null;
+        }
+        CoroutineCalled = false;
+    }
+
+    public void StartAutoSaveCoroutine()
+    {
+        if (AutoSaveManager.instance != null && AutoSaveManager.instance.autoSave && !CoroutineCalled && shouldAutoSave)
+        {
+            CoroutineCalled = true;
+            autoSaveTime = AutoSaveManager.instance.GetAutoSaveInterval();
+
+            // Inicia a rotina de salvamento automático apenas se ainda não estiver em execução
+            if (autoSaveCoroutine == null)
+            {
+                autoSaveCoroutine = StartCoroutine(AutoSaveRoutine());
+            }
+        }
+    }
+
+    private IEnumerator AutoSaveRoutine()
+    {
+        while (shouldAutoSave)
+        {
+            yield return new WaitForSeconds(autoSaveTime);
+
+            //for (int countdown = (int)autoSaveTime; countdown > 0; countdown--)
+            //{
+            //    Debug.Log($"Próximo salvamento automático em {countdown} segundos");
+            //    yield return new WaitForSeconds(1f);
+            //}
+
+            // Chama a função de salvamento automático
+            Save();
+        }
+    }
+    public void SaveBeforeExit()
+    {
+        StartCoroutine(SaveAndExit());
+    }
+    public void SaveBeforeTest()
+    {
+        StartCoroutine(SaveAndTest());
+    }
+    private IEnumerator SaveAndTest()
+    {
+        // Chama a função SaveLevel e aguarda até que ela termine
+        yield return StartCoroutine(SaveLevel());
+
+        // Após o término de SaveLevel
+        WorldManager.instance.TestGame();
+    }
+    private IEnumerator SaveAndExit()
+    {
+        // Chama a função SaveLevel e aguarda até que ela termine
+        yield return StartCoroutine(SaveLevel());
+
+        // Após o término de SaveLevel, chama ToExitLevelEditor
+        ToExitLevelEditor();
+    }
+    private void ToExitLevelEditor()
+    {
+        WarnExitSavePanel.SetActive(false);
+        SaveSuccessfullPanel.SetActive(true);
+    }
     public void CreateNewLevel()
     {
         // Obtém o nome do nível e o autor dos campos de entrada
@@ -1492,14 +1577,14 @@ public class LevelEditorManager : MonoBehaviour
     {
         if (isWorldMapEditor)
         {
-            SaveWorld();
+            StartCoroutine(SaveWorld());
         }
         else
         {
-            SaveLevel();
+            StartCoroutine(SaveLevel());
         }
     }
-    public void SaveLevel()
+    public IEnumerator SaveLevel()
     {
         // Obtém o nome do nível e autor dos campos de entrada
         string levelName = levelNameInput.text;
@@ -1644,6 +1729,8 @@ public class LevelEditorManager : MonoBehaviour
                     triggerData.type = triggerType;
                     triggerData.scale = triggerScale;
                     triggerData.customScript = triggerObjectScript.customScript;
+                    triggerData.timeToPlay = triggerObjectScript.timeToPlayTrigger;
+                    triggerData.wasWaitTime = triggerObjectScript.wasTriggerWaitTime;
                     // Adicione o objeto TriggerGameObjectSaveData à lista de objetos Trigger
                     triggerList.Add(triggerData);
                 }
@@ -1660,11 +1747,13 @@ public class LevelEditorManager : MonoBehaviour
                     // Crie um objeto TriggerGameObjectSaveData
                     ParticlesSaveData particlesData = new ParticlesSaveData();
                     string particleType = particlesObjectScript.particleType;
+                    string particleName = particlesObjectScript.particleName;
                     bool initialStarted = particlesObjectScript.initialStarted;
                     bool isLoop = particlesObjectScript.isLoop;
 
                     particlesData.name = gameObjectName;
-                    particlesData.nameID = particleType;
+                    particlesData.particleType = particleType;
+                    particlesData.particleName = particleName;
                     particlesData.initialStarted = initialStarted;
                     particlesData.isLoop = isLoop;
                     particlesData.position = gameObjectPosition;
@@ -1930,7 +2019,8 @@ public class LevelEditorManager : MonoBehaviour
 
         // Salva o JSON em um arquivo
         File.WriteAllText(savePath, json);
-
+        // Indica o término da operação de salvamento
+        yield return null;
         Debug.Log("Tilemap data saved to " + savePath);
     }
 
@@ -1971,6 +2061,9 @@ public class LevelEditorManager : MonoBehaviour
 
     public void LoadLevel(string worldName, string level, string sectorName)
     {
+        EnableAutoSave();
+        StartAutoSaveCoroutine();
+
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
 
@@ -2145,6 +2238,8 @@ public class LevelEditorManager : MonoBehaviour
                             {
                                 triggerScript.thisTriggerType = triggerData.type;
                                 triggerScript.customScript = triggerData.customScript;
+                                triggerScript.timeToPlayTrigger = triggerData.timeToPlay;
+                                triggerScript.wasTriggerWaitTime = triggerData.wasWaitTime;
                             }
                             else
                             {
@@ -2184,7 +2279,8 @@ public class LevelEditorManager : MonoBehaviour
                             ParticlesObject particlesScript = gameObjectObject.GetComponentInChildren<ParticlesObject>();
                             if (particlesScript != null)
                             {
-                                particlesScript.particleType = particleData.nameID;
+                                particlesScript.particleType = particleData.particleType;
+                                particlesScript.particleName = particleData.particleName;
                                 particlesScript.initialStarted = particleData.initialStarted;
                                 particlesScript.isLoop = particleData.isLoop;
                             }
@@ -3072,7 +3168,7 @@ public class LevelEditorManager : MonoBehaviour
         }
     }
 
-    public void SaveWorld()
+    public IEnumerator SaveWorld()
     {
         // Cria um objeto LevelData para salvar os dados do nível
         LevelDataWrapper levelDataWrapper = new LevelDataWrapper();
@@ -3199,11 +3295,16 @@ public class LevelEditorManager : MonoBehaviour
         // Salva o JSON em um arquivo
         File.WriteAllText(savePath, json);
 
+        // Indica o término da operação de salvamento
+        yield return null;
         Debug.Log("Tilemap data saved to " + savePath);
     }
 
     public void LoadWorld(string worldName)
     {
+        EnableAutoSave();
+        StartAutoSaveCoroutine();
+
         // Obtém o caminho completo para a pasta do mundo
         string worldFolderPath = Path.Combine(WorldManager.instance.levelEditorPath, worldName);
 
@@ -3785,6 +3886,8 @@ public class TriggerGameObjectSaveData
     public string type; // Campo para o tipo do objeto
     public Vector2 scale; // Campo para a escala do objeto
     public string customScript;
+    public float timeToPlay;
+    public bool wasWaitTime;
 }
 
 
@@ -3843,7 +3946,8 @@ public class LevelData
 public class ParticlesSaveData
 {
     public string name;
-    public string nameID;
+    public string particleType;
+    public string particleName;
     public bool initialStarted;
     public bool isLoop;
     public Vector3 position;

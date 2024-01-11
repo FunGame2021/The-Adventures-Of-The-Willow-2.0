@@ -41,6 +41,11 @@ public class SavePlayerData
     public int coins;
     public int stars;
     public Vector2 position;
+    public bool isBig;
+    public bool isSmall;
+    public bool isFirePower;
+    public bool isAirPower;
+    public bool isBubblePower;
 }
 
 [System.Serializable]
@@ -74,6 +79,12 @@ public class SaveGameManager : MonoBehaviour
     private Vector3 currentPlayerOnWorldPos;
     public int TotalCoins;
     [SerializeField] private bool isWorldmapPlayed;
+
+    [HideInInspector] public bool isSaveBig;
+    [HideInInspector] public bool isSaveSmall;
+    [HideInInspector] public bool isSaveFirePower;
+    [HideInInspector] public bool isSaveAirPower;
+    [HideInInspector] public bool isSaveBubblePower;
 
     private void Awake()
     {
@@ -172,8 +183,16 @@ public class SaveGameManager : MonoBehaviour
             // Se estiver no mapa do mundo, atualize a posição do jogador
             saveData.player.position = currentPlayerOnWorldPos;
         }
-        // Atualize os dados do jogador
-        saveData.player.coins = TotalCoins;
+        if (PlayerStates.instance != null)
+        {
+            // Atualize os dados do jogador
+            saveData.player.coins = TotalCoins;
+            saveData.player.isSmall = PlayerStates.instance.isSmall;
+            saveData.player.isBig = PlayerStates.instance.isBig;
+            saveData.player.isAirPower = PlayerStates.instance.isAirPower;
+            saveData.player.isBubblePower = PlayerStates.instance.isBubblePower;
+            saveData.player.isFirePower = PlayerStates.instance.isFirePower;
+        }
 
         // Agora, você pode salvar o jogo no arquivo correspondente
         string jsonToSave = JsonUtility.ToJson(saveData, true);
@@ -207,6 +226,13 @@ public class SaveGameManager : MonoBehaviour
             // Carregue as informações do jogador
             loadedPlayerWorldPosition = saveData.player.position;
             asWorldData = true;
+
+            isSaveBig = saveData.player.isBig;
+            isSaveSmall = saveData.player.isSmall;
+            isSaveBubblePower = saveData.player.isBubblePower;
+            isSaveFirePower = saveData.player.isFirePower;
+            isSaveAirPower = saveData.player.isAirPower;
+
 
             if (currentWorld != null)
             {
