@@ -61,6 +61,7 @@ public class FMODEvents : MonoBehaviour
 
     [field: Header("Coin SFX, and PowerUps")]
     [field: SerializeField] public EventReference coinCollected { get; private set; }
+    [field: SerializeField] public EventReference emptyBlock { get; private set; }
     [field: SerializeField] public EventReference HealthCollect { get; private set; }
     [field: SerializeField] public EventReference PowerUpCollect { get; private set; }
     [field: SerializeField] public EventReference StarCollect { get; private set; }

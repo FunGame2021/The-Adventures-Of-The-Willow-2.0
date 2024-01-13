@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEditor.Tilemaps;
 public class PlatformNodeEditor : MonoBehaviour
 {
     public static PlatformNodeEditor instance;

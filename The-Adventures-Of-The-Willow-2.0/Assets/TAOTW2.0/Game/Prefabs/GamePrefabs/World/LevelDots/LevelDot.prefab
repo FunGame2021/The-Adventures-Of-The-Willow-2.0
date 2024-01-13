@@ -107,8 +107,8 @@ SpriteRenderer:
   m_SortingLayerID: -105610191
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.14697742, g: 0, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 97a8c10c631d5db4597b746cab870b36, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -150,9 +150,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0034180582, y: -0.0034179986}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.3154283
 --- !u!114 &9151117949082869378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,11 +166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedColor: {r: 1, g: 0.25943398, b: 0.25943398, a: 1}
+  solvedSprite: {fileID: 21300000, guid: 74445c1da2d1be8409ca5bc1a133e248, type: 3}
+  UnsolvedSprite: {fileID: 21300000, guid: 97a8c10c631d5db4597b746cab870b36, type: 3}
   levelName: 
   worldName: 
   LevelPath: 
   isFirstLevel: 0
   spawnLocalUI: {fileID: 1238569552086312150}
-  TXTLevelName: {fileID: 0}
-  CanvasUIAnim: {fileID: 0}
   CanvasWorldUIPrefab: {fileID: 5758368650389452891, guid: e199af123a4d4d54fa32aeaad2a8a27e, type: 3}
+  levelImage: {fileID: 0}

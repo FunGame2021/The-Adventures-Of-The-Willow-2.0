@@ -47,6 +47,7 @@ public class LevelEditorManager : MonoBehaviour
 
 
     public TMP_InputField tilemapNameInput;
+    public Toggle toggleHide;
     public Toggle toggleSolid;
     public Toggle toggleWallPlatform;
     public Toggle toggleIcePlatform;
@@ -66,6 +67,7 @@ public class LevelEditorManager : MonoBehaviour
 
     //Armazenar Info Temporáriamente
     [HideInInspector] public string tempTilemapName;
+    [HideInInspector] public bool tempIsHide;
     [HideInInspector] public bool tempIsSolid;
     [HideInInspector] public bool tempIsWallPlatform;
     [HideInInspector] public bool tempIsIcePlatform;
@@ -110,13 +112,11 @@ public class LevelEditorManager : MonoBehaviour
     #region Enemy
     public EnemyData ScriptableEnemyData;
     public string selectedEnemyName;
-    private bool snapGrid;
     //public event Action<string> OnEnemySelected;
 
     public Transform EnemyContainer; public EraserTool eraserTool;
 
     //drag enemy and objects
-    public Button snapGridButton; // Arraste o botão aqui no Inspector
     public Button selectPointButton; // Botão de ativação/desativação da ferramenta selectpoint
     public bool isActiveSelectPoint = false; // Indica se a ferramenta select point está ativa 
 
@@ -125,9 +125,15 @@ public class LevelEditorManager : MonoBehaviour
 
     #endregion
 
+    #region ObjectsView
+    private GameObject objectTemp;
+
+    #endregion
+
     //Nodes
 
     [SerializeField] private GameObject NodeObjectPrefab;
+
     #region Gride
     public int gridWidth = 10; // Largura inicial da grelha
     public int gridHeight = 10; // Altura inicial da grelha
@@ -149,6 +155,16 @@ public class LevelEditorManager : MonoBehaviour
     public GameObject warnSizeGrid;
     public UnityEngine.UI.Button confirmButton;
     public GameObject gridPanel;
+
+    // Defina os valores desejados do SnapGridSize
+    private float[] snapGridSizes = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
+
+    // Índice atual no array
+    private int currentSnapGridIndex = 0;
+    public float SnapGridSize = 1f;
+
+    public bool snapGrid;
+    public Button snapGridButton; // Arraste o botão aqui no Inspector
     #endregion
 
     public TMP_InputField levelNameInput;
@@ -175,6 +191,16 @@ public class LevelEditorManager : MonoBehaviour
     private bool shouldAutoSave = true; // Adicione esta variável
     public bool CoroutineCalled;
     private Coroutine autoSaveCoroutine;
+    public enum SelectedObjectType
+    {
+        Enemy,
+        Decor1,
+        Decor2,
+        Object,
+        GameObject
+    }
+
+    private SelectedObjectType currentSelectedObjectType;
 
     private void Start()
     {
@@ -250,6 +276,7 @@ public class LevelEditorManager : MonoBehaviour
                 {
                     int index = tilemapButtons.IndexOf(button);
                     OpenTilemapOptions(index);
+                    StopDragTempObject();
                     break;
                 }
             }
@@ -289,44 +316,10 @@ public class LevelEditorManager : MonoBehaviour
                 GameObject enemyPrefab = FindEnemyPrefabByName(selectedEnemyName);
                 selectedStringInfo = selectedEnemyName;
 
-                // Verifica se o prefab do inimigo foi encontrado
                 if (enemyPrefab != null)
                 {
-                    // Converte a posição do mouse para a posição no mundo
-                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-                    // Define a posição Z do inimigo para 0
-                    mousePosition.z = 0f;
-
-                    if (snapGrid)
-                    {
-                        // Define o tamanho do passo da grade (ajuste conforme necessário)
-                        float gridSize = 1.0f; // Tamanho do incremento da grade
-
-                        if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
-
-                        }
-                        else
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
-                        }
-                    }
-
-
-
-                    // Instancia o inimigo no mundo na posição do mouse
-                    GameObject instantiatedEnemy = Instantiate(enemyPrefab, mousePosition, Quaternion.identity);
-
-                    // Define o contêiner como pai do objeto instanciado
-                    instantiatedEnemy.transform.SetParent(enemyContainer.transform);
-
-                    //UndoAndRedo.instance.AddAction(new AddEnemyAction(instantiatedEnemy, enemyContainer, enemyPrefab, mousePosition));
+                    // Adiciona o objeto verdadeiro à cena
+                    AddObjectToScene(enemyPrefab);
                 }
             }
             else if (!string.IsNullOrEmpty(selectedDecorName))
@@ -346,35 +339,7 @@ public class LevelEditorManager : MonoBehaviour
                 // Verifica se o prefab do objeto decorativo foi encontrado
                 if (decorPrefab != null)
                 {
-                    // Converte a posição do mouse para a posição no mundo
-                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-                    // Define a posição Z do objeto decorativo para 0
-                    mousePosition.z = 0f;
-                    if (snapGrid)
-                    {
-                        // Define o tamanho do passo da grade (ajuste conforme necessário)
-                        float gridSize = 1.0f; // Tamanho do incremento da grade
-
-                        // Verifica se a tecla Shift está pressionada
-                        if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
-                        }
-                        else
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
-                        }
-                    }
-                    // Instancia o objeto decorativo no mundo na posição do mouse
-                    GameObject instantiatedDecor = Instantiate(decorPrefab, mousePosition, Quaternion.identity);
-
-                    // Define o contêiner como pai do objeto instanciado
-                    instantiatedDecor.transform.SetParent(decorContainer.transform);
+                    AddObjectToScene(decorPrefab);
 
                     //UndoAndRedo.instance.AddAction(new AddDecorAction(instantiatedDecor, decorContainer, decorPrefab, mousePosition));
                 }
@@ -396,35 +361,7 @@ public class LevelEditorManager : MonoBehaviour
                 // Verifica se o prefab do objeto decorativo foi encontrado
                 if (decor2Prefab != null)
                 {
-                    // Converte a posição do mouse para a posição no mundo
-                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-                    // Define a posição Z do objeto decorativo para 0
-                    mousePosition.z = 0f;
-                    if (snapGrid)
-                    {
-                        // Define o tamanho do passo da grade (ajuste conforme necessário)
-                        float gridSize = 1.0f; // Tamanho do incremento da grade
-
-                        // Verifica se a tecla Shift está pressionada
-                        if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
-                        }
-                        else
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
-                        }
-                    }
-                    // Instancia o objeto decorativo no mundo na posição do mouse
-                    GameObject instantiatedDecor2 = Instantiate(decor2Prefab, mousePosition, Quaternion.identity);
-
-                    // Define o contêiner como pai do objeto instanciado
-                    instantiatedDecor2.transform.SetParent(decor2Container.transform);
+                    AddObjectToScene(decor2Prefab);
 
                     //UndoAndRedo.instance.AddAction(new AddDecorAction(instantiatedDecor2, decor2Container, decor2Prefab, mousePosition));
                 }
@@ -446,47 +383,8 @@ public class LevelEditorManager : MonoBehaviour
                 // Verifica se o prefab do objeto foi encontrado
                 if (objectPrefab != null)
                 {
-                    // Converte a posição do mouse para a posição no mundo
-                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                    AddObjectToScene(objectPrefab);
 
-                    // Define a posição Z do objeto para 0
-                    mousePosition.z = 0f;
-                    if (snapGrid)
-                    {
-                        // Define o tamanho do passo da grade (ajuste conforme necessário)
-                        float gridSize = 1.0f; // Tamanho do incremento da grade
-
-                        // Verifica se a tecla Shift está pressionada
-                        if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
-                        }
-                        else
-                        {
-                            // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                            mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                            mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
-                        }
-                    }
-                    // Instancia o objeto no mundo na posição do mouse
-                    GameObject instantiatedObject = Instantiate(objectPrefab, mousePosition, Quaternion.identity);
-                    // Verifica a tag do objeto e altera o nome conforme necessário
-                    if (instantiatedObject.CompareTag("MovingPlatform"))
-                    {
-                        // Obtém uma lista de objetos com a mesma tag
-                        GameObject[] movingPlatforms = GameObject.FindGameObjectsWithTag("MovingPlatform");
-
-                        // Gere um ID exclusivo usando System.Guid
-                        string uniqueID = System.Guid.NewGuid().ToString();
-
-                        // Use o ID exclusivo para nomear o objeto instanciado
-                        instantiatedObject.name = selectedObjectName + "_" + uniqueID;
-
-                    }
-                    // Define o contêiner como pai do objeto instanciado
-                    instantiatedObject.transform.SetParent(objectsContainer.transform);
 
                     // Adiciona a ação de adicionar objeto ao sistema de Undo/Redo
                     //UndoAndRedo.instance.AddAction(new AddObjectAction(instantiatedObject, objectsContainer, objectPrefab, mousePosition));
@@ -501,7 +399,6 @@ public class LevelEditorManager : MonoBehaviour
                     return;
                 }
 
-
                 // Verifica se o gameObject selecionado é "PlayerPos", se for e ele estiver na cena
                 // move ele para noma posição senão instancia ele.
                 if (selectedGameObjectName == "PlayerPos")
@@ -515,21 +412,19 @@ public class LevelEditorManager : MonoBehaviour
                         mousePosition.z = 0f;
                         if (snapGrid)
                         {
-                            // Define o tamanho do passo da grade (ajuste conforme necessário)
-                            float gridSize = 1.0f; // Tamanho do incremento da grade
 
                             // Verifica se a tecla Shift está pressionada
                             if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
                             {
                                 // Calcula a posição alinhada à grelha
-                                mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                                mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
+                                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
                             }
                             else
                             {
                                 // Calcula a posição alinhada à grelha
-                                mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                                mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
+                                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
                             }
                         }
 
@@ -543,6 +438,8 @@ public class LevelEditorManager : MonoBehaviour
 
                         selectedStringInfo = selectedGameObjectName;
 
+                        selectedStringInfo = selectedGameObjectName;
+
                         if (gameObjectPrefab != null && SectorManager.instance.currentSectorName == "Sector1")
                         {
                             // Converte a posição do mouse para a posição no mundo
@@ -550,21 +447,19 @@ public class LevelEditorManager : MonoBehaviour
                             mousePosition.z = 0f;
                             if (snapGrid)
                             {
-                                // Define o tamanho do passo da grade (ajuste conforme necessário)
-                                float gridSize = 1.0f; // Tamanho do incremento da grade
 
                                 // Verifica se a tecla Shift está pressionada
                                 if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
                                 {
-                                    // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                                    mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                                    mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
+                                    // Calcula a posição alinhada à grelha
+                                    mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                                    mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
                                 }
                                 else
                                 {
-                                    // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                                    mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                                    mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
+                                    // Calcula a posição alinhada à grelha
+                                    mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                                    mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
                                 }
                             }
                             // Instancia o objeto no mundo na posição do mouse
@@ -588,39 +483,37 @@ public class LevelEditorManager : MonoBehaviour
 
                     if (gameObjectPrefab != null)
                     {
-                        // Converte a posição do mouse para a posição no mundo
-                        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-                        mousePosition.z = 0f;
-                        if (snapGrid)
-                        {
-                            // Define o tamanho do passo da grade (ajuste conforme necessário)
-                            float gridSize = 1.0f; // Tamanho do incremento da grade
-
-                            // Verifica se a tecla Shift está pressionada
-                            if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
-                            {
-                                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                                mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 1f;
-                                mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 1f;
-                            }
-                            else
-                            {
-                                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
-                                mousePosition.x = Mathf.Floor(mousePosition.x / gridSize) * gridSize + gridSize / 2f;
-                                mousePosition.y = Mathf.Floor(mousePosition.y / gridSize) * gridSize + gridSize / 2f;
-                            }
-                        }
-                        // Instancia o objeto no mundo na posição do mouse
-                        GameObject instantiatedObject = Instantiate(gameObjectPrefab, mousePosition, Quaternion.identity);
-
-                        // Define o contêiner como pai do objeto instanciado
-                        instantiatedObject.transform.SetParent(GameObjectsContainer.transform);
+                        AddObjectToScene(gameObjectPrefab);
 
                         // Adiciona a ação de adicionar objeto ao sistema de Undo/Redo
                         //UndoAndRedo.instance.AddAction(new AddObjectAction(instantiatedObject, objectsContainer, objectPrefab, mousePosition));
                     }
                 }
             }
+        }
+
+        if (objectTemp != null)
+        {
+            UpdateDragTempObjectPos();
+        }
+
+        if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || PlatformNodeEditor.instance.isNodeEditor || isActiveSelectPoint)
+        {
+            StopDragTempObject();
+        }
+        //Snap Grid Size
+        if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasPressedThisFrame())
+        {
+            // Incrementa o índice (se chegou ao final, reinicia)
+            currentSnapGridIndex = (currentSnapGridIndex + 1) % snapGridSizes.Length;
+
+            // Define o novo valor do SnapGridSize
+            float newSnapGridSize = snapGridSizes[currentSnapGridIndex];
+
+            // Faça o que precisar com o novo valor (por exemplo, atribua à variável SnapGridSize)
+            SnapGridSize = newSnapGridSize;
+
+            gridVisualizer.OnSnapGridSizeUpdated();
         }
         // Atualizar valores temporários das opções do tilemap
         UpdateTempValues();
@@ -659,7 +552,7 @@ public class LevelEditorManager : MonoBehaviour
     }
 
     #region Tilemap
-    
+
     public void AddTilemap()
     {
         // Cria um novo Tilemap no Grid da cena
@@ -750,12 +643,24 @@ public class LevelEditorManager : MonoBehaviour
         toggleStickyPlatform.isOn = hasCollider && tilemap.tag == "StickyPlatform";
         zPosInput.text = tilemap.transform.position.z.ToString();
 
+        if (selectedTilemap.GetComponent<TilemapRenderer>().enabled)
+        {
+            // Se estiver ativo, defina o toggleHide como true
+            toggleHide.isOn = true;
+        }
+        else
+        {
+            // Se não estiver ativo, defina o toggleHide como false
+            toggleHide.isOn = false;
+        }
+
         // Obtenha o componente Renderer do Tilemap
         Renderer objectRenderer = tilemap.GetComponent<TilemapRenderer>();
         if (objectRenderer != null)
         {
             // Defina o valor do Sorting Layer no campo ShortLayerPosInput
             ShortLayerPosInput.text = objectRenderer.sortingOrder.ToString();
+
         }
         else
         {
@@ -765,6 +670,7 @@ public class LevelEditorManager : MonoBehaviour
         // Armazena as informações temporárias
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
+        tempIsHide = toggleHide.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
         tempIsIcePlatform = toggleIcePlatform.isOn;
         tempIsStickyPlatform = toggleStickyPlatform.isOn;
@@ -819,6 +725,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         tempTilemapName = tilemapNameInput.text;
         tempIsSolid = toggleSolid.isOn;
+        tempIsHide = toggleHide.isOn;
         tempIsStickyPlatform = toggleStickyPlatform.isOn;
         tempIsWallPlatform = toggleWallPlatform.isOn;
         tempIsIcePlatform = toggleIcePlatform.isOn;
@@ -907,7 +814,7 @@ public class LevelEditorManager : MonoBehaviour
             {
                 SetTilemapLayer(selectedTilemap, groundLayer);
             }
-            else if(tempIsWallPlatform)
+            else if (tempIsWallPlatform)
             {
                 SetTilemapLayer(selectedTilemap, wallLayer);
             }
@@ -921,7 +828,7 @@ public class LevelEditorManager : MonoBehaviour
             {
                 selectedTilemap.gameObject.tag = IceTag;
             }
-            else if(tempIsStickyPlatform)
+            else if (tempIsStickyPlatform)
             {
                 selectedTilemap.gameObject.tag = StickyTag;
             }
@@ -947,6 +854,14 @@ public class LevelEditorManager : MonoBehaviour
                     objectRenderer.sortingOrder = shortLayerPos;
                 }
             }
+            if (tempIsHide)
+            {
+                selectedTilemap.GetComponent<TilemapRenderer>().enabled = true;
+            }
+            else
+            {
+                selectedTilemap.GetComponent<TilemapRenderer>().enabled = false;
+            }
         }
 
         // Fecha o painel de opções
@@ -970,6 +885,10 @@ public class LevelEditorManager : MonoBehaviour
 
         // Procura o objeto no ObjectsData com base no nome selecionado
         GameObject objectPrefab = FindObjectPrefabByName(selectedObjectName);
+        SetCurrentObjectType(SelectedObjectType.Object);
+        StopDragTempObject();
+        // Verifica se já existe um objeto temporário (objectTemp)
+        StartCoroutine(WaitForTempObject(objectPrefab));
     }
 
 
@@ -1011,6 +930,11 @@ public class LevelEditorManager : MonoBehaviour
 
         // Procura o objeto no ObjectsData com base no nome selecionado
         GameObject gameObjectPrefab = FindGameObjectPrefabByName(selectedGameObjectName);
+
+        SetCurrentObjectType(SelectedObjectType.GameObject);
+        StopDragTempObject();
+        // Verifica se já existe um objeto temporário (objectTemp)
+        StartCoroutine(WaitForTempObject(gameObjectPrefab));
     }
 
 
@@ -1054,6 +978,11 @@ public class LevelEditorManager : MonoBehaviour
         // Procura o inimigo no EnemyData com base no nome selecionado
         GameObject decorPrefab = FindDecorPrefabByName(selectedDecorName);
 
+        SetCurrentObjectType(SelectedObjectType.Decor1);
+        StopDragTempObject();
+        // Verifica se já existe um objeto temporário (objectTemp)
+        StartCoroutine(WaitForTempObject(decorPrefab));
+
     }
     private GameObject FindDecorPrefabByName(string decorName)
     {
@@ -1092,6 +1021,12 @@ public class LevelEditorManager : MonoBehaviour
 
         // Procura o inimigo no EnemyData com base no nome selecionado
         GameObject decor2Prefab = FindDecor2PrefabByName(selectedDecor2Name);
+
+        SetCurrentObjectType(SelectedObjectType.Decor2);
+
+        StopDragTempObject();
+        // Verifica se já existe um objeto temporário (objectTemp)
+        StartCoroutine(WaitForTempObject(decor2Prefab));
 
     }
     private GameObject FindDecor2PrefabByName(string decor2Name)
@@ -1150,9 +1085,24 @@ public class LevelEditorManager : MonoBehaviour
 
         // Procura o inimigo no EnemyData com base no nome selecionado
         GameObject enemyPrefab = FindEnemyPrefabByName(selectedEnemyName);
+        SetCurrentObjectType(SelectedObjectType.Enemy);
+        StopDragTempObject();
+        // Verifica se já existe um objeto temporário (objectTemp)
+        StartCoroutine(WaitForTempObject(enemyPrefab));
 
     }
+    private IEnumerator WaitForTempObject(GameObject gameObjectPrefab)
+    {
+        // Aguarda um frame antes de verificar se objectTemp é nulo
+        yield return null;
 
+        // Verifica se já existe um objeto temporário (objectTemp)
+        if (objectTemp == null)
+        {
+            // Inicia o arraste do objeto temporário apenas se não houver objeto temporário existente
+            StartDragTempObject(gameObjectPrefab);
+        }
+    }
 
     private GameObject FindEnemyPrefabByName(string enemyName)
     {
@@ -1200,11 +1150,131 @@ public class LevelEditorManager : MonoBehaviour
 
     #endregion
 
+    #region ObjectEditorPreview
+    private void StartDragTempObject(GameObject prefab)
+    {
+        // Converte a posição do mouse para a posição no mundo
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        // Define a posição Z do objeto temporário para 0
+        mousePosition.z = 0f;
+
+        if (snapGrid)
+        {
+            // Verifica se a tecla Shift está pressionada
+            if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
+            {
+                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
+                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+            }
+            else
+            {
+                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
+                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+            }
+        }
+
+        // Instancia o objeto temporário no mundo na posição do mouse
+        objectTemp = Instantiate(prefab, mousePosition, Quaternion.identity);
+        objectTemp.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.5f); // Ajuste a transparência conforme necessário
+    }
+
+    private void UpdateDragTempObjectPos()
+    {
+        // Converte a posição do mouse para a posição no mundo
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        // Define a posição Z do objeto temporário para 0
+        mousePosition.z = 0f;
+
+        if (snapGrid)
+        {
+            // Verifica se a tecla Shift está pressionada
+            if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
+            {
+                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
+                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+            }
+            else
+            {
+                // Calcula a posição alinhada à grelha, mantendo o centro do objeto no centro das células da grade
+                mousePosition.x = Mathf.Floor(mousePosition.x / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                mousePosition.y = Mathf.Floor(mousePosition.y / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+            }
+        }
+
+        // Atualiza a posição do objeto temporário
+        objectTemp.transform.position = mousePosition;
+    }
+
+    private void StopDragTempObject()
+    {
+        // Destroi o objeto temporário
+        Destroy(objectTemp);
+    }
+    private void AddObjectToScene(GameObject prefab)
+    {
+        if (objectTemp != null)
+        {
+            // Obtém a posição do objeto temporário
+            Vector3 objectTempPosition = objectTemp.transform.position;
+
+            // Instancia o objeto verdadeiro na posição do objeto temporário
+            GameObject instantiatedObject = Instantiate(prefab, objectTempPosition, Quaternion.identity);
+
+            // Verifica a tag do objeto e altera o nome conforme necessário
+            if (instantiatedObject.CompareTag("MovingPlatform"))
+            {
+                // Obtém uma lista de objetos com a mesma tag
+                GameObject[] movingPlatforms = GameObject.FindGameObjectsWithTag("MovingPlatform");
+
+                // Gere um ID exclusivo usando System.Guid
+                string uniqueID = System.Guid.NewGuid().ToString();
+
+                // Use o ID exclusivo para nomear o objeto instanciado
+                instantiatedObject.name = selectedObjectName + "_" + uniqueID;
+
+            }
+            // Define o contêiner com base no tipo de objeto
+            switch (currentSelectedObjectType)
+            {
+                case SelectedObjectType.Enemy:
+                    instantiatedObject.transform.SetParent(enemyContainer.transform);
+                    break;
+                case SelectedObjectType.Decor1:
+                    instantiatedObject.transform.SetParent(decorContainer.transform);
+                    break;
+                case SelectedObjectType.Decor2:
+                    instantiatedObject.transform.SetParent(decor2Container.transform);
+                    break;
+                case SelectedObjectType.Object:
+                    instantiatedObject.transform.SetParent(objectsContainer.transform);
+                    break;
+                case SelectedObjectType.GameObject:
+                    instantiatedObject.transform.SetParent(GameObjectsContainer.transform);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+    
+    private void SetCurrentObjectType(SelectedObjectType type)
+    {
+        currentSelectedObjectType = type;
+    }
+    #endregion
+
     #region Grid
 
     public void GenerateGrid()
     {
         gridVisualizer.OnGridSizeUpdated();
+        gridVisualizer.OnSnapGridSizeUpdated();
         LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
@@ -1274,7 +1344,7 @@ public class LevelEditorManager : MonoBehaviour
         GenerateGrid();
         DrawGridOutline();
         gridVisualizer.OnGridSizeUpdated();
-
+        gridVisualizer.OnSnapGridSizeUpdated();
         gridPanel.SetActive(false);
         LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
         if (levelEditorCamera != null)
@@ -1315,6 +1385,7 @@ public class LevelEditorManager : MonoBehaviour
     public void DrawGridOutline()
     {
         gridVisualizer.OnGridSizeUpdated();
+        gridVisualizer.OnSnapGridSizeUpdated();
         Vector3 startPoint = selectedTilemap.CellToWorld(new Vector3Int(0, 0, 0)) - new Vector3(0f, 0f, 0f); // Ponto inicial da linha (canto inferior esquerdo)
         Vector3 endPoint = selectedTilemap.CellToWorld(new Vector3Int(currentGridWidth, currentGridHeight, 0)) - new Vector3(0f, 0f, 0f); // Ponto final da linha (canto superior direito)
 
@@ -1655,7 +1726,7 @@ public class LevelEditorManager : MonoBehaviour
             tilemapData.tilemapName = tilemap.name;
             tilemapData.tilemapIndex = tilemap.transform.GetSiblingIndex();
             int WallLayer = LayerMask.NameToLayer("Wall");
-            tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer); 
+            tilemapData.isWallPlatform = (tilemap.gameObject.layer == WallLayer);
             tilemapData.isIce = tilemap.gameObject.CompareTag(IceTag);
             tilemapData.isSticky = tilemap.gameObject.CompareTag(StickyTag);
 
@@ -1739,10 +1810,10 @@ public class LevelEditorManager : MonoBehaviour
                     Debug.LogWarning("TriggerObject script not found on Trigger: " + gameObjectName);
                 }
             }
-            else if(gameObjectName.Contains("Particle"))
+            else if (gameObjectName.Contains("Particle"))
             {
                 ParticlesObject particlesObjectScript = gameObjectObject.GetComponent<ParticlesObject>();
-                if(particlesObjectScript != null)
+                if (particlesObjectScript != null)
                 {
                     // Crie um objeto TriggerGameObjectSaveData
                     ParticlesSaveData particlesData = new ParticlesSaveData();
@@ -1959,7 +2030,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.objectSaveData = new List<ObjectSaveData>();
             currentSectorData.movingObjectsaveData = new List<MovingObjectSaveData>();
             currentSectorData.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
-            currentSectorData.particlesSaveData = new List<ParticlesSaveData>() ;
+            currentSectorData.particlesSaveData = new List<ParticlesSaveData>();
             currentSectorData.gameObjectSaveData = new List<GameObjectSaveData>();
 
             // Crie um novo TilemapData vazio para o setor
@@ -2129,7 +2200,7 @@ public class LevelEditorManager : MonoBehaviour
                     ClearTilemaps();
 
                     LevelSettings.instance.SetMusicID(sectorData.levelPreferences.MusicID);
-                    
+
                     // Carregar dados do background
                     string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
                     float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
@@ -2353,7 +2424,7 @@ public class LevelEditorManager : MonoBehaviour
 
                             ObjectType objectType = objectData.objectType;
 
-                            
+
                         }
                         else
                         {
@@ -2390,7 +2461,7 @@ public class LevelEditorManager : MonoBehaviour
                             movingObjectObject.name = movingObjectSaveData.name + "_" + uniqueID; // Defina o nome no objeto instanciado
 
                             ObjectType objectType = movingObjectSaveData.objectType;
-                           
+
                             if (objectType == ObjectType.Moving)
                             {
                                 PlatformController movementComponent = movingObjectObject.GetComponent<PlatformController>();
@@ -2409,7 +2480,7 @@ public class LevelEditorManager : MonoBehaviour
                                     {
                                         movementComponent.behaviorType = WaypointBehaviorType.Loop;
                                     }
-                                    if(movingObjectSaveData.isClosed)
+                                    if (movingObjectSaveData.isClosed)
                                     {
                                         movementComponent.pathType = WaypointPathType.Closed;
                                     }
@@ -2607,7 +2678,7 @@ public class LevelEditorManager : MonoBehaviour
                             {
                                 newTilemap.gameObject.tag = IceTag;
                             }
-                            else if(tilemapData.isSticky)
+                            else if (tilemapData.isSticky)
                             {
                                 newTilemap.gameObject.tag = StickyTag;
                             }
@@ -3488,7 +3559,7 @@ public class LevelEditorManager : MonoBehaviour
                         }
 
                         SetTilemapLayer(newTilemap, groundLayer);
-                        
+
                     }
                     else
                     {

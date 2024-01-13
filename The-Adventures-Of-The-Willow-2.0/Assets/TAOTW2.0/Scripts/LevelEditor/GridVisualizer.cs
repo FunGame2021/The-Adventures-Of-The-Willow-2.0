@@ -4,6 +4,7 @@ using TMPro;
 
 public class GridVisualizer : MonoBehaviour
 {
+    #region Tile normal Grid
     [SerializeField] private GameObject GridVisualizerObj;
     [SerializeField] private Transform squareTransform; // Referência ao Transform do quad
     [SerializeField] private Material materialWithShader; // Material com o Shader Graph
@@ -45,4 +46,36 @@ public class GridVisualizer : MonoBehaviour
         gridViewButton.colors = colors;
         OnGridSizeUpdated();
     }
+
+    #endregion
+
+    #region snap Object Size 
+    [SerializeField] private GameObject SnapGridVisualizerObj;
+    [SerializeField] private Transform SnapSquareTransform; // Referência ao Transform do quad
+    [SerializeField] private Material SnapMaterialWithShader; // Material com o Shader Graph
+    public void OnSnapGridSizeUpdated()
+    {
+        if (LevelEditorManager.instance.snapGrid)
+        {
+            SnapGridVisualizerObj.SetActive(true);
+
+            // Tamanho total do tilemap
+            Vector3 totalGridSize = new Vector3(LevelEditorManager.instance.currentGridWidth, LevelEditorManager.instance.currentGridHeight, 1f);
+
+            // Escala do quad em relação ao tamanho total do tilemap
+            SnapSquareTransform.localScale = totalGridSize;
+
+            // Valor do TileAmount no Material usando Shader Graph, ajustado para o tamanho do SnapGridSize
+            Vector2 newTileAmountVector = new Vector2(totalGridSize.x / LevelEditorManager.instance.SnapGridSize, totalGridSize.y / LevelEditorManager.instance.SnapGridSize);
+            SnapMaterialWithShader.SetVector("_TileAmount", newTileAmountVector);
+        }
+        else
+        {
+            SnapGridVisualizerObj.SetActive(false);
+        }
+    }
+
+
+    #endregion
+
 }
