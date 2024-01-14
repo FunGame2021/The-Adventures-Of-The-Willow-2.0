@@ -108,7 +108,7 @@ public class CaptainMushroomRed : MonoBehaviour
     }
     IEnumerator ToStartEnemy()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         moveSpeed = moveSpeedTemp;
         rb2d.bodyType = RigidbodyType2D.Dynamic;
         enemyStopped = false;

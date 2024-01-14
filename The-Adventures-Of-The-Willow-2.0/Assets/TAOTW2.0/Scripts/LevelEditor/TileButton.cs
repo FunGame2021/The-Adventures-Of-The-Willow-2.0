@@ -191,6 +191,10 @@ public class TileButton : MonoBehaviour
     private void SelectTile(TileBase tile)
     {
         selectedTile = tile;
+        if(LevelEditorManager.instance != null)
+        {
+            LevelEditorManager.instance.StopDragTempObject();
+        }
     }
 
     private void SelectCategory(int categoryIndex)
@@ -226,6 +230,10 @@ public class TileButton : MonoBehaviour
         {
             if (selectedTile != null && Mouse.current.leftButton.isPressed)
             {
+                if (LevelEditorManager.instance != null)
+                {
+                    LevelEditorManager.instance.StopDragTempObject();
+                }
                 isMouseHeld = true; // Marca o botão do mouse como pressionado
 
                 Vector3 mouseWorldPos = LevelEditorManager.instance.mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -255,6 +263,10 @@ public class TileButton : MonoBehaviour
             // Verifica se o botão do mouse está pressionado continuamente
             if (selectedTile != null && isMouseHeld && Mouse.current.leftButton.isPressed)
             {
+                if (LevelEditorManager.instance != null)
+                {
+                    LevelEditorManager.instance.StopDragTempObject();
+                }
                 Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(mouseWorldPos);
 

@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
+using System.Collections;
 
 public class SectorManager : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class SectorManager : MonoBehaviour
     public GameObject deleteSectorPanelWarn;
     public GameObject deleteSectorPanelWarnSector1;
     public string currentSectorName;
+    public string tempCurrentSectorName;
 
     public void Start()
     {
@@ -72,7 +75,7 @@ public class SectorManager : MonoBehaviour
         sectorNames.Add(newSectorName);
         currentSectorName = newSectorName;
 
-        LevelEditorManager.instance.SaveLevel();
+        LevelEditorManager.instance.Save();
             
     }
 
@@ -169,8 +172,15 @@ public class SectorManager : MonoBehaviour
 
     public void SetCurrentSector(string sectorName)
     {
-        currentSectorName = sectorName;
+        tempCurrentSectorName = sectorName;
+        LevelEditorManager.instance.ToLoadNewSector();
+    }
+    public void LoadNewSector()
+    {
+        currentSectorName = tempCurrentSectorName;
         LevelEditorManager.instance.LoadLevel(WorldManager.instance.currentWorldName, WorldManager.instance.currentLevelName, currentSectorName);
         SectorPanel.SetActive(false);
+        LevelEditorManager.instance.CanPlayLevelTrue();
     }
+
 }

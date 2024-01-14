@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System.Text.RegularExpressions;
 using System.Collections;
+using UnityEngine.Rendering;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -182,6 +183,7 @@ public class LevelEditorManager : MonoBehaviour
     [SerializeField] private GameObject[] PanelLevelEditor;
     [SerializeField] private GameObject[] PanelWorldEditor;
 
+    public bool CanPlayLevel;
     //Info Level Edito Object selected to intantiate
     public string selectedStringInfo;
 
@@ -201,13 +203,21 @@ public class LevelEditorManager : MonoBehaviour
     }
 
     private SelectedObjectType currentSelectedObjectType;
-
+    public void CanPlayLevelFalse()
+    {
+        CanPlayLevel = false;
+    }
+    public void CanPlayLevelTrue()
+    {
+        CanPlayLevel = true;
+    }
     private void Start()
     {
         if (instance == null)
         {
             instance = this;
         }
+        CanPlayLevelTrue();
         shouldAutoSave = false;
 
         mainCamera = Camera.main;
@@ -621,6 +631,7 @@ public class LevelEditorManager : MonoBehaviour
 
     private void OpenTilemapOptions(int index)
     {
+        CanPlayLevel = false;
         tilemapOptionsPanel.SetActive(true);
         // Verifica se o índice está dentro dos limites válidos
         if (index < 0 || index >= tilemapButtons.Count)
@@ -700,6 +711,8 @@ public class LevelEditorManager : MonoBehaviour
             int selectedIndex = tilemapButtons.IndexOf(selectedButton);
             tilemapButtons.Remove(selectedButton);
             Destroy(selectedButton.gameObject);
+
+            CanPlayLevel = true;
 
             // Seleciona outro Tilemap, se houver algum
             if (tilemaps.Count > 0)
@@ -864,6 +877,7 @@ public class LevelEditorManager : MonoBehaviour
             }
         }
 
+        CanPlayLevel = true;
         // Fecha o painel de opções
         tilemapOptionsPanel.SetActive(false);
     }
@@ -1068,7 +1082,7 @@ public class LevelEditorManager : MonoBehaviour
     public void ActivateSnapGrid()
     {
         snapGrid = !snapGrid;
-
+        gridVisualizer.OnSnapGridSizeUpdated();
         // Defina a cor do botão com base no estado do snapGrid
         ColorBlock colors = snapGridButton.colors;
         colors.normalColor = snapGrid ? Color.red : Color.white; // Altera para vermelho se snapGrid estiver ativado
@@ -1216,7 +1230,7 @@ public class LevelEditorManager : MonoBehaviour
         objectTemp.transform.position = mousePosition;
     }
 
-    private void StopDragTempObject()
+    public void StopDragTempObject()
     {
         // Destroi o objeto temporário
         Destroy(objectTemp);
@@ -1454,6 +1468,19 @@ public class LevelEditorManager : MonoBehaviour
 
 
     #region Save Data
+
+    public void ToLoadNewSector()
+    {
+        StartCoroutine(SaveAndLoadNewSector());
+    }
+    private IEnumerator SaveAndLoadNewSector()
+    {
+        // Chama a função SaveLevel e aguarda até que ela termine
+        yield return StartCoroutine(SaveLevel());
+
+        // Após o término de SaveLevel, chama e carrega novo sector
+        SectorManager.instance.LoadNewSector();
+    }
     public void EnableAutoSave()
     {
         shouldAutoSave = true;

@@ -30,14 +30,20 @@ public class LevelEditorController : MonoBehaviour
         // Verifica o input do jogador para alternar entre reprodução e edição
         if (UserInput.instance.playerMoveAndExtraActions.UI.EnterPlayLevelEditor.WasPressedThisFrame())
         {
-            if (isPlaying)
+            if (LevelEditorManager.instance != null)
             {
-                StopGame();
-            }
-            else
-            {
-                //Warn To Save Level After Test Game
-                WarnStartGame();
+                if (LevelEditorManager.instance.CanPlayLevel)
+                {
+                    if (isPlaying)
+                    {
+                        StopGame();
+                    }
+                    else
+                    {
+                        //Warn To Save Level After Test Game
+                        WarnStartGame();
+                    }
+                }
             }
         }
 
