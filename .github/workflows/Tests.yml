@@ -44,13 +44,7 @@ jobs:
             Library-${{ matrix.projectPath }}-windows-
             Library-
 
-      ###########################
-      #  Set Scripting Backend  #
-      ###########################
-      - name: Set Scripting Backend To il2cpp
-        run: |
-          Move-Item -Path "./${{ matrix.targetPlatform }}/The-Adventures-Of-The-Willow-2.0/ProjectSettings/ProjectSettingsIl2cpp.asset" -Destination "./${{ matrix.targetPlatform }}/The-Adventures-Of-The-Willow-2.0/ProjectSettings/ProjectSettings.asset" -Force
-
+      
       ###########################
       #          Build          #
       ###########################
