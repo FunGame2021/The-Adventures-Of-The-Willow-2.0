@@ -4,7 +4,7 @@ on: [push, pull_request]
 jobs:
   buildForWindows32:
     name: Build for Windows 32-bit
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -16,38 +16,38 @@ jobs:
           - StandaloneWindows
     timeout-minutes: 220
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
-
-      - name: Set up Docker
-        uses: game-ci/docker-windows@v1
+      - uses: actions/cache@v3
         with:
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
+            Library-${{ matrix.projectPath }}-
+            Library-
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-
-      - name: Build for Windows 32-bit
-        run: |
-          docker run `
-            -e UNITY_LICENSE="${{ secrets.UNITY_LICENSE }}" `
-            -e UNITY_EMAIL="${{ secrets.UNITY_EMAIL }}" `
-            -e UNITY_PASSWORD="${{ secrets.UNITY_PASSWORD }}" `
-            -e PROJECT_PATH="${{ matrix.projectPath }}" `
-            -e UNITY_VERSION="${{ matrix.unityVersion }}" `
-            -e BUILD_TARGET="${{ matrix.targetPlatform }}" `
-            -e CUSTOM_PARAMETERS="-myParameter myValue -myBoolean -ThirdParameter andItsValue" `
-            unityci/editor:windows-${{ matrix.unityVersion }}-il2cpp-2
-
-      - name: Upload Artifact - Windows 32-bit
-        uses: actions/upload-artifact@v3
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
+      - uses: actions/upload-artifact@v3
         with:
           name: Build_Windows
           path: build
-
+            
   buildForWindows64:
     name: Build for Windows 64-bit
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -59,31 +59,32 @@ jobs:
           - StandaloneWindows64
     timeout-minutes: 220
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
-
-      - name: Set up Docker
-        uses: game-ci/docker-windows@v1
+      - uses: actions/cache@v3
         with:
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
+            Library-${{ matrix.projectPath }}-
+            Library-
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-
-      - name: Build for Windows 64-bit
-        run: |
-          docker run `
-            -e UNITY_LICENSE="${{ secrets.UNITY_LICENSE }}" `
-            -e UNITY_EMAIL="${{ secrets.UNITY_EMAIL }}" `
-            -e UNITY_PASSWORD="${{ secrets.UNITY_PASSWORD }}" `
-            -e PROJECT_PATH="${{ matrix.projectPath }}" `
-            -e UNITY_VERSION="${{ matrix.unityVersion }}" `
-            -e BUILD_TARGET="${{ matrix.targetPlatform }}" `
-            -e CUSTOM_PARAMETERS="-myParameter myValue -myBoolean -ThirdParameter andItsValue" `
-            unityci/editor:windows-${{ matrix.unityVersion }}-il2cpp-2
-
-      - name: Upload Artifact - Windows 64-bit
-        uses: actions/upload-artifact@v3
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
+      - uses: actions/upload-artifact@v3
         with:
           name: Build_Windows64
           path: build
+
