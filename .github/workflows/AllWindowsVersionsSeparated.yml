@@ -16,19 +16,11 @@ jobs:
           - StandaloneWindows
     timeout-minutes: 220
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
-
-      - uses: actions/cache@v3
-        with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
-          restore-keys: |
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
-            Library-${{ matrix.projectPath }}-
-            Library-
 
       - name: Set up Docker
         uses: game-ci/docker-windows@v1
@@ -45,9 +37,10 @@ jobs:
             -e UNITY_VERSION="${{ matrix.unityVersion }}" `
             -e BUILD_TARGET="${{ matrix.targetPlatform }}" `
             -e CUSTOM_PARAMETERS="-myParameter myValue -myBoolean -ThirdParameter andItsValue" `
-            gameci/unity-builder:windows-${{ matrix.unityVersion }}-windows-il2cpp-2
+            unityci/editor:windows-${{ matrix.unityVersion }}-il2cpp-2
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifact - Windows 32-bit
+        uses: actions/upload-artifact@v3
         with:
           name: Build_Windows
           path: build
@@ -66,19 +59,11 @@ jobs:
           - StandaloneWindows64
     timeout-minutes: 220
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
-
-      - uses: actions/cache@v3
-        with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
-          restore-keys: |
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
-            Library-${{ matrix.projectPath }}-
-            Library-
 
       - name: Set up Docker
         uses: game-ci/docker-windows@v1
@@ -95,9 +80,10 @@ jobs:
             -e UNITY_VERSION="${{ matrix.unityVersion }}" `
             -e BUILD_TARGET="${{ matrix.targetPlatform }}" `
             -e CUSTOM_PARAMETERS="-myParameter myValue -myBoolean -ThirdParameter andItsValue" `
-            gameci/unity-builder:windows-${{ matrix.unityVersion }}-windows-il2cpp-2
+            unityci/editor:windows-${{ matrix.unityVersion }}-il2cpp-2
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifact - Windows 64-bit
+        uses: actions/upload-artifact@v3
         with:
           name: Build_Windows64
           path: build
