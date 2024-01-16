@@ -20,7 +20,7 @@ on:
       - 'The-Adventures-Of-The-Willow-2.0/ProjectSettings/**'
   release:
     types:
-      — published
+      - published
   workflow_dispatch:
     inputs:
       release_platform:
@@ -34,20 +34,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout with lfs
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
 
-      - name: Change Working Directory
-        run: cd The-Adventures-Of-The-Willow-2.0
-
       - name: Cache Library
         uses: actions/cache@v3
         with:
-          path: Library
+          path: The-Adventures-Of-The-Willow-2.0/Library
           key: Library-test
           restore-keys: |
             Library-test
@@ -58,4 +54,3 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-
