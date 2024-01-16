@@ -4,9 +4,9 @@ on:
     branches:
       - main
     paths:
-      - 'Assets/**'
-      - 'Packages/**'
-      - 'ProjectSettings/**'
+      - 'The-Adventures-Of-The-Willow-2.0/Assets/**'
+      - 'The-Adventures-Of-The-Willow-2.0/Packages/**'
+      - 'The-Adventures-Of-The-Willow-2.0/ProjectSettings/**'
   pull_request:
     types:
       - opened
@@ -14,9 +14,9 @@ on:
     branches:
       - main
     paths:
-      - 'Assets/**'
-      - 'Packages/**'
-      - 'ProjectSettings/**'
+      - 'The-Adventures-Of-The-Willow-2.0/Assets/**'
+      - 'The-Adventures-Of-The-Willow-2.0/Packages/**'
+      - 'The-Adventures-Of-The-Willow-2.0/ProjectSettings/**'
   release:
     types:
       — published
