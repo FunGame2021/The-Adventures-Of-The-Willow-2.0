@@ -24,7 +24,7 @@ on:
   workflow_dispatch:
     inputs:
       release_platform:
-        description: 'Release to [iOS, WebGL, testFlight]'
+        description: 'Release to [iOS, Windows, Android, Linux]'
         required: false
         default: ''
 
@@ -40,10 +40,13 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Change Working Directory
+        run: cd The-Adventures-Of-The-Willow-2.0
+
       - name: Cache Library
         uses: actions/cache@v3
         with:
-          path: The-Adventures-Of-The-Willow-2.0/Library
+          path: Library
           key: Library-test
           restore-keys: |
             Library-test
