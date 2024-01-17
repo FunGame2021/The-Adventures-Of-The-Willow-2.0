@@ -1,0 +1,50 @@
+name: Create Release
+on:
+  workflow_dispatch:
+
+jobs:
+  createRelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build_Windows
+          path: build/Windows
+
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build_Linux
+          path: build/Linux
+
+      - name: Combine Artifacts
+        run: |
+          mkdir -p build/combined
+          cp -r build/Windows/* build/combined/
+          cp -r build/Linux/* build/combined/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v0.0.1.${{ github.run_number }}
+          release_name: "Release v0.0.1.${{ github.run_number }} Alpha Version"
+          body: |
+            ### The Adventures of the Willow 2.0 - Alpha Version
+
+            This is the alpha version release of The Adventures of the Willow 2.0.
+
+            **Release Notes:**
+            - Added feature X
+            - Fixed issue Y
+
+            ### Assets
+            - [TheAdventuresOfTheWillow2.0_Win64.zip](./build/combined/Build_Windows64.zip) (Windows 64-bit, 114 MB)
+            - [TheAdventuresOfTheWillow2.0_Win32.zip](./build/combined/Build_Windows.zip) (Windows 32-bit, 114 MB)
+            - [TheAdventuresOfTheWillow2.0_Linux.zip](./build/combined/Build_Linux.zip) (Linux, 114 MB)
