@@ -254,12 +254,34 @@ jobs:
             - Fixed problem not being able to exit the level when testing in the level editor, improvements to the main menu.
             - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
-            files:
-            - name: TheAdventuresOfTheWillow2.0_Mac.zip
-              path: ./combined/BuildMac.zip
-            - name: TheAdventuresOfTheWillow2.0_Linux.zip
-              path: ./combined/Build_Linux.zip
-            - name: TheAdventuresOfTheWillow2.0_Win32.zip
-              path: ./combined/Build_Windows.zip
-            - name: TheAdventuresOfTheWillow2.0_Win64.zip
-              path: ./combined/Build_Windows64.zip
+      - name: Upload Mac Artifact
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/Mac/BuildMac.zip
+          asset_name: TheAdventuresOfTheWillow2.0_Mac.zip
+          asset_content_type: application/zip
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/Linux/Build_Linux.zip
+          asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
+          asset_content_type: application/zip
+
+      - name: Upload Windows 32-bit Artifact
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/Windows/Build_Windows.zip
+          asset_name: TheAdventuresOfTheWillow2.0_Win32.zip
+          asset_content_type: application/zip
+
+      - name: Upload Windows 64-bit Artifact
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/Windows64/Build_Windows64.zip
+          asset_name: TheAdventuresOfTheWillow2.0_Win64.zip
+          asset_content_type: application/zip
