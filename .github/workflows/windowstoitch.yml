@@ -102,6 +102,6 @@ jobs:
           sudo mv butler /usr/local/bin/butler
       - name: Deploy to itch.io
         run: |
-          butler push ${{ github.workspace }}/build_Windows FunGame2022/The Adventures Of The Willow:windows
+          butler push ${{ github.workspace }}/build_Windows FunGame2022/the-adventures-of-the-willow:windows
         env:
           ITCHIO_API_KEY: ${{ secrets.ITCHIO_API_KEY }}
