@@ -45,10 +45,51 @@ public class LevelEditorController : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                if (isPlaying)
+                {
+                    StopGame();
+                }
+            }
+            if (UserInput.instance.playerMoveAndExtraActions.UI.EnterPlayLevelEditor.WasPressedThisFrame())
+            {
+                if (LevelEditorManager.instance != null)
+                {
+                    if (LevelEditorManager.instance.CanPlayLevel)
+                    {
+                        if (isPlaying)
+                        {
+                            StopGame();
+                        }
+                        else
+                        {
+                            //Warn To Save Level After Test Game
+                            WarnStartGame();
+                        }
+                    }
+                }
+                else
+                {
+                    if (isPlaying)
+                    {
+                        StopGame();
+                    }
+                }
+            }
+            if (UserInput.instance.playerMoveAndExtraActions.UI.EscapeMenu.WasPressedThisFrame())
+            {
+                if (LevelEditorManager.instance == null)
+                {
+                    if (isPlaying)
+                    {
+                        StopGame();
+                    }
+                }
+            }
+
         }
-
     }
-
     private void WarnStartGame()
     {
         if (WorldManager.instance != null)

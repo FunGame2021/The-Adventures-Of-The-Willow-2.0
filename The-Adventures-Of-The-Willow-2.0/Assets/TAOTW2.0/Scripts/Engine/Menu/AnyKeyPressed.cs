@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class AnyKeyPressed : MonoBehaviour
 {
+    public static AnyKeyPressed instance;
     [SerializeField] private GameObject textPressed;
     [SerializeField] private GameObject Buttons;
     [SerializeField] private Animator Anim;
@@ -14,6 +15,16 @@ public class AnyKeyPressed : MonoBehaviour
 	
     void Awake()
     {
+        if(instance == null)
+        { 
+            instance = this; 
+            DontDestroyOnLoad(gameObject); // Impede que o objeto seja destruído ao carregar uma nova cena
+        }
+        else
+        {
+            Destroy(gameObject); // Destroi objetos adicionais que não são a instância principal
+        }
+
         Time.timeScale = 1;
         if (PlayerPrefs.GetInt(GAME_STARTED_KEY, 0) == 1)
         {
@@ -34,7 +45,7 @@ public class AnyKeyPressed : MonoBehaviour
 
     void Update()
     {
-        if ((Keyboard.current.anyKey.isPressed || Input.touchCount > 0) && !gameStarted)
+        if ((Keyboard.current.anyKey.isPressed || Input.anyKey || Input.touchCount > 0) && !gameStarted)
         {
             textPressed.SetActive(false);
             Buttons.SetActive(true);
