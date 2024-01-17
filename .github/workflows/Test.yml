@@ -13,13 +13,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Build_Windows
-          path: build/Windows
+          path: build
 
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
           name: Build_Linux
-          path: build/Linux
+          path: build
 
       - name: Combine Artifacts
         run: |
