@@ -101,14 +101,15 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Set up WiX Toolset
-        uses: ferventcoder/wixtoolset-action@v2
-        with:
-          wixVersion: '3.11.2'
+      - name: Download and Extract WiX Toolset
+        run: |
+          Invoke-WebRequest -Uri 'https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe' -OutFile 'wix311.exe'
+          Start-Process -Wait -FilePath 'wix311.exe' -ArgumentList '/install /quiet'
+          Remove-Item 'wix311.exe'
 
       - name: Build Installer
         run: candle -o ./output/Installer/ MyInstaller.wxs
-      # You'll need to replace 'MyInstaller.wxs' with the actual name of your WiX XML file.
+      # Você precisará substituir 'MyInstaller.wxs' pelo nome do seu arquivo WiX XML.
 
       - name: Create MSI
         run: light -o ./output/Installer/ ./output/Installer/MyInstaller.wixobj
