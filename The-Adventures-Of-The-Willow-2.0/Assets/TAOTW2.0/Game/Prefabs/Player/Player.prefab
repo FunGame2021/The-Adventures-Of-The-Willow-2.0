@@ -283,9 +283,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveInput: 0
-  moveSpeed: 4
+  moveSpeed: 3.5
   speedChangeSmoothTime: 0.5
-  boostSpeed: 6
+  boostSpeed: 4.4
   isGrounded: 1
   groundCheck: {fileID: 8908717514910039223}
   sizeCapsule: {x: 0.37, y: 0.14}
@@ -293,12 +293,12 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 67109056
-  jumpPower: 7
-  fallMultiplier: 0.1
-  jumpMultiplier: 2
-  jumpTime: 0.4
+  jumpPower: 4
+  fallMultiplier: 1
+  jumpMultiplier: 3
+  jumpTime: 0.5
   normalJumpTime: 0.4
-  boostedJumpTime: 0.7
+  boostedJumpTime: 0.5
   coyoteTime: 0.2
   RB: {fileID: 6915230460424986886}
   sameGravityPlayer: 2
@@ -316,9 +316,11 @@ MonoBehaviour:
   wallSlidingSpeed: 0.7
   isWallJumping: 0
   wallJumpingDirection: 0
-  wallJumpingTime: 0.1
+  wallJumpingTime: 0.5
   wallJumpingCounter: 0
-  wallJumpingDuration: 0.1
+  wallJumpingDuration: 0.5
+  wallJumpingPower: {x: 3000, y: 15}
+  wallJumpingBoostPower: {x: 3000, y: 17}
   upSpeed: 3
   moveInputUp: 0
   isOnLadder: 0
@@ -337,7 +339,7 @@ MonoBehaviour:
   whatIsHit:
     serializedVersion: 2
     m_Bits: 67108928
-  stompForce: 7
+  stompForce: 5
   playerstates: {fileID: 7550289033753128257}
   SmallColliders:
   - {fileID: 2798556647221471218}
@@ -445,9 +447,6 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.3
   knockbackUpForce: 1
-  timeToDieAfterBadLocal: 3
-  nowTimeToDieAfterBadLocal: 0
-  isInsideGround: 0
 --- !u!114 &3668697172349177264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,7 +649,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -105610191
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: d7c80cb2b7d53b8438b727eba66ec2a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

@@ -53,6 +53,13 @@ public class playLevel : MonoBehaviour
     private string selectedBackgroundName;
     #endregion
 
+    #region TimeWeather
+    private string volumeNameTimeWeather;
+    [SerializeField] private TimeWeatherData ScriptableTimeWeatherData;
+    [SerializeField] private Transform TimeWeatherLocal;
+    private GameObject currentTimeWeatherInstance;
+    #endregion
+
     #region GameObject
     public GameObjectsData ScriptableGameObjectData;
     public Transform GameObjectsContainer;
@@ -107,7 +114,7 @@ public class playLevel : MonoBehaviour
     #endregion
 
     private bool isWorld;
-
+    [SerializeField] private Color worldSolidTilemapColor;
     private void Awake()
     {
         if (instance == null)
@@ -297,7 +304,8 @@ public class playLevel : MonoBehaviour
                     // Carregar dados do background
                     string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
                     float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
-
+                    string timeWeatherName = sectorData.levelPreferences.TimeWeather;
+                    LoadTimeWeather(timeWeatherName);
                     // Chame a função de atualização do background
                     LoadBackground(backgroundName, backgroundOffset);
 
@@ -442,6 +450,10 @@ public class playLevel : MonoBehaviour
                         if (decorPrefab != null)
                         {
                             GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
+                            if (decorData != null)
+                            {
+                                decorObject.transform.localScale = decorData.scale;
+                            }
                             decorObject.transform.SetParent(decorContainer.transform);
                         }
                         else
@@ -472,6 +484,10 @@ public class playLevel : MonoBehaviour
                         if (decor2Prefab != null)
                         {
                             GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
+                            if (decor2Data != null)
+                            {
+                                decor2Object.transform.localScale = decor2Data.scale;
+                            }
                             decor2Object.transform.SetParent(decor2Container.transform);
 
                             // Encontra o primeiro SpriteRenderer em um ancestral
@@ -802,7 +818,38 @@ public class playLevel : MonoBehaviour
         ScreenAspectRatio.instance.m_target = PlayerPrefab;
         ScreenAspectRatio.instance.GetCharacterPosition();
     }
-
+    private void LoadTimeWeather(string timeWeather)
+    {
+        volumeNameTimeWeather = timeWeather;
+        foreach (Transform child in TimeWeatherLocal)
+        {
+            Destroy(child.gameObject);
+        }
+        GameObject TimeWeatherPrefab = null;
+        foreach (TimeWeatherData.TimeWeatherCategory timeWeatherCategory in ScriptableTimeWeatherData.timeWeatherCategories)
+        {
+            foreach (TimeWeatherData.TimeWeather timeWeatherInfo in timeWeatherCategory.TimeWeatherList)
+            {
+                if (timeWeatherInfo.TimeWeatherName == volumeNameTimeWeather)
+                {
+                    TimeWeatherPrefab = timeWeatherInfo.TimeWeatherPrefab;
+                    break;
+                }
+            }
+            if (TimeWeatherPrefab != null)
+                break;
+        }
+        if (TimeWeatherPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(TimeWeatherLocal.position.x, TimeWeatherLocal.position.z);
+            currentTimeWeatherInstance = Instantiate(TimeWeatherPrefab, spawnPosition, Quaternion.identity, TimeWeatherLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for TimeWeather: " + volumeNameTimeWeather);
+        }
+    }
     private void LoadBackground(string backgroundName, float offset)
     {
         selectedBackgroundName = backgroundName;
@@ -1130,7 +1177,7 @@ public class playLevel : MonoBehaviour
                                 rb.bodyType = RigidbodyType2D.Static;
                             }
                         }
-
+                        newTilemap.GetComponent<TilemapRenderer>().material.SetColor("_Color", worldSolidTilemapColor);
                         SetTilemapLayer(newTilemap, groundLayer);
                         
                     }

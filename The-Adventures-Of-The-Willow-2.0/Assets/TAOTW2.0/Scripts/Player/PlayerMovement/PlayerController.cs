@@ -68,8 +68,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float wallJumpingTime = 0.2f;
     public float wallJumpingCounter;
     [SerializeField] private float wallJumpingDuration = 0.4f;
-    private Vector2 wallJumpingPower = new Vector2(10f, 22f);
-    private Vector2 wallJumpingBoostPower = new Vector2(16f, 26f);
+    [SerializeField] private Vector2 wallJumpingPower = new Vector2(10f, 22f);
+    [SerializeField] private Vector2 wallJumpingBoostPower = new Vector2(16f, 26f);
     #endregion
 
     #region Ladder

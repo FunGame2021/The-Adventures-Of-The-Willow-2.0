@@ -53,6 +53,7 @@ TagManager:
   - Trigger
   - Particles
   - WayPoint
+  - BonusBlock
   layers:
   - Default
   - TransparentFX
@@ -113,6 +114,9 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Platforms
+    uniqueID: 4069734591
     locked: 0
   - name: DefaultDecor
     uniqueID: 4039822117

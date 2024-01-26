@@ -61,6 +61,7 @@ public class MoveAndSelectTool : MonoBehaviour
     public TMP_InputField zPosInput;
     public TMP_InputField shortLayerPosInput;
     public TMP_Dropdown dropdownShortLayerList;
+    public TMP_InputField scaleInput;
 
 
     //For level editor info
@@ -416,6 +417,7 @@ public class MoveAndSelectTool : MonoBehaviour
                     // Atualiza as propriedades ZPos e ShortLayer do MoveableObject
                     moveableObject.ZPos = newPosition.z;
                     moveableObject.ShortLayer = selectedDecorObject.GetComponent<SpriteRenderer>().sortingOrder;
+                    moveableObject.floatScale = selectedDecorObject.transform.localScale.x;
                 }
 
                 UpdateUIWithSelectedObjectData();
@@ -439,6 +441,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 {
                     moveableObject2.ZPos = newPosition.z;
                     moveableObject2.ShortLayer = moveableObject2.GetComponentInChildren<SpriteRenderer>().sortingOrder;
+                    moveableObject2.floatScale = moveableObject2.transform.localScale.x;
                 }
             }
         }
@@ -549,6 +552,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 // Atualiza os campos de entrada de texto e o Dropdown com as informações obtidas
                 zPosInput.text = moveableObject.ZPos.ToString("F2");
                 shortLayerPosInput.text = moveableObject.ShortLayer.ToString();
+                scaleInput.text = moveableObject.floatScale.ToString();
             }
         }
         else
@@ -558,6 +562,7 @@ public class MoveAndSelectTool : MonoBehaviour
             dropdownShortLayerList.value = 0;
             zPosInput.text = "";
             shortLayerPosInput.text = "";
+            scaleInput.text = "";
         }
     }
     private void UpdateUIWithSelectedObjectData2()
@@ -608,6 +613,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 dropdownShortLayerList.value = GetDropdownIndex(moveableObject2.ShortLayerName);
 
                 zPosInput.text = moveableObject2.ZPos.ToString("F2");
+                scaleInput.text = moveableObject2.floatScale.ToString();
 
             }
         }
@@ -618,6 +624,7 @@ public class MoveAndSelectTool : MonoBehaviour
             dropdownShortLayerList.value = 0;
             zPosInput.text = "";
             shortLayerPosInput.text = "";
+            scaleInput.text = "";
         }
     }
     private int GetDropdownIndex(string shortLayerName)
@@ -650,7 +657,11 @@ public class MoveAndSelectTool : MonoBehaviour
             {
                 currentMoveableObject.ZPos = zPos;
             }
-
+            float scale;
+            if (!string.IsNullOrEmpty(scaleInput.text) && float.TryParse(scaleInput.text, out scale))
+            {
+                currentMoveableObject.floatScale = scale;
+            }
             currentMoveableObject.ShortLayerName = dropdownShortLayerList.options[dropdownShortLayerList.value].text;
 
             currentMoveableObject.ApplyChanges();
@@ -664,6 +675,11 @@ public class MoveAndSelectTool : MonoBehaviour
             if (!string.IsNullOrEmpty(zPosInput.text) && float.TryParse(zPosInput.text, out zPos))
             {
                 currentMoveable2Object.ZPos = zPos;
+            }
+            float scale;
+            if (!string.IsNullOrEmpty(scaleInput.text) && float.TryParse(scaleInput.text, out scale))
+            {
+                currentMoveable2Object.floatScale = scale;
             }
             currentMoveable2Object.ShortLayerName = dropdownShortLayerList.options[dropdownShortLayerList.value].text;
 

@@ -550,6 +550,7 @@ public class LevelEditorManager : MonoBehaviour
                 panel.SetActive(true);
             }
         }
+
     }
     private void AddTilemapButtonListeners()
     {
@@ -1589,7 +1590,8 @@ public class LevelEditorManager : MonoBehaviour
         sectorData1.gridSizeData.currentGridHeight = 20; // Altura da grade
 
 
-        // Define as preferências do nível, como a música (MusicID)
+        // Define as preferências do nível, como a música (
+        // )
         sectorData1.levelPreferences = new LevelPreferences();
         sectorData1.levelPreferences.MusicID = 1; // ID da música do nível
         sectorData1.levelPreferences.BackgroundName = "GreenMountains_01";
@@ -1884,9 +1886,11 @@ public class LevelEditorManager : MonoBehaviour
         {
             string decorName = decorObject.name.Replace("(Clone)", "");
             Vector3 decorPosition = decorObject.transform.position;
+            Vector3 decorScale = decorObject.transform.localScale;
             DecorSaveData decorData = new DecorSaveData();
             decorData.name = decorName;
             decorData.position = decorPosition;
+            decorData.scale = decorScale;
             decorList.Add(decorData);
         }
 
@@ -1897,6 +1901,7 @@ public class LevelEditorManager : MonoBehaviour
         {
             string decor2Name = decor2Object.name.Replace("(Clone)", "");
             Vector3 decor2Position = decor2Object.transform.position;
+            Vector3 decor2Scale = decor2Object.transform.localScale;
 
             // Aqui você precisa acessar o componente SpriteRenderer do decor2Object, não do decor2Data
             SpriteRenderer spriteRenderer = decor2Object.GetComponentInChildren<SpriteRenderer>();
@@ -1908,6 +1913,7 @@ public class LevelEditorManager : MonoBehaviour
                 Decor2SaveData decor2Data = new Decor2SaveData();
                 decor2Data.name = decor2Name;
                 decor2Data.position = decor2Position;
+                decor2Data.scale = decor2Scale;
                 decor2Data.shortLayerName = spriteRenderer.sortingLayerName;
                 decor2List.Add(decor2Data);
             }
@@ -2056,6 +2062,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.levelPreferences.MusicID = 1; // ID da música do nível
             currentSectorData.levelPreferences.BackgroundName = "GreenMountains_01";
             currentSectorData.levelPreferences.BackgroundOffset = 9.5f;
+            currentSectorData.levelPreferences.TimeWeather = "MorningVolume";
 
             currentSectorData.enemySaveData = new List<EnemySaveData>();
             currentSectorData.decorSaveData = new List<DecorSaveData>();
@@ -2092,6 +2099,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.levelPreferences.MusicID = LevelSettings.instance.MusicIDToSave;
             currentSectorData.levelPreferences.BackgroundName = LevelSettings.instance.BackgroundToSave;
             currentSectorData.levelPreferences.BackgroundOffset = LevelSettings.instance.BackgroundOffsetToSave;
+            currentSectorData.levelPreferences.TimeWeather = LevelSettings.instance.volumeNameTimeWeather;
 
             currentSectorData.tilemapDataList = tilemapDataList; // Preencha com os dados apropriados
             currentSectorData.enemySaveData = enemyList; // Preencha com os dados apropriados
@@ -2235,9 +2243,11 @@ public class LevelEditorManager : MonoBehaviour
                     LevelSettings.instance.SetMusicID(sectorData.levelPreferences.MusicID);
 
                     // Carregar dados do background
-                    string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
-                    float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
+                    string backgroundName = sectorData.levelPreferences.BackgroundName;
+                    float backgroundOffset = sectorData.levelPreferences.BackgroundOffset;
+                    string TimeWeatherName = sectorData.levelPreferences.TimeWeather;
 
+                    LevelSettings.instance.UpdateTimeWeather(TimeWeatherName);
                     // Chame a função de atualização do background
                     LevelSettings.instance.UpdateBackground(backgroundName, backgroundOffset);
 
@@ -2562,6 +2572,10 @@ public class LevelEditorManager : MonoBehaviour
                         if (decorPrefab != null)
                         {
                             GameObject decorObject = Instantiate(decorPrefab, decorData.position, Quaternion.identity);
+                            if(decorData != null)
+                            {
+                                decorObject.transform.localScale = decorData.scale;
+                            }
                             decorObject.transform.SetParent(decorContainer.transform);
                         }
                         else
@@ -2592,6 +2606,10 @@ public class LevelEditorManager : MonoBehaviour
                         if (decor2Prefab != null)
                         {
                             GameObject decor2Object = Instantiate(decor2Prefab, decor2Data.position, Quaternion.identity);
+                            if(decor2Data != null)
+                            {
+                                decor2Object.transform.localScale = decor2Data.scale;
+                            }
                             decor2Object.transform.SetParent(decor2Container.transform);
 
                             // Encontra o primeiro SpriteRenderer em um ancestral
@@ -4000,6 +4018,7 @@ public class DecorSaveData
 {
     public string name;
     public Vector3 position;
+    public Vector3 scale;
 }
 
 [System.Serializable]
@@ -4008,6 +4027,7 @@ public class Decor2SaveData
     public string name;
     public Vector3 position;
     public string shortLayerName;
+    public Vector3 scale;
 }
 
 [System.Serializable]

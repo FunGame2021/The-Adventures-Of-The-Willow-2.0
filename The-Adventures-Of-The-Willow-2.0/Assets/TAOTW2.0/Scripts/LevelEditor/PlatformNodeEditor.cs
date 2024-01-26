@@ -40,6 +40,8 @@ public class PlatformNodeEditor : MonoBehaviour
     private LineRenderer lineRenderer;
     [SerializeField] private GameObject lineRenderPrefab;
 
+    public static Vector3 mousePosition;
+
     void Start()
     {
         if (instance == null)
@@ -53,7 +55,14 @@ public class PlatformNodeEditor : MonoBehaviour
     private void Update()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
-
+        if (Mouse.current != null)
+        {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            if (mousePos != null)
+            {
+                mousePosition = LevelEditorManager.instance.mainCamera.ScreenToWorldPoint(mousePos);
+            }
+        }
         if (isNodeEditor)
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
@@ -103,7 +112,6 @@ public class PlatformNodeEditor : MonoBehaviour
             }
             if (Mouse.current.leftButton.wasPressedThisFrame && Keyboard.current.shiftKey.isPressed && pointsLineRendererContainer != null)
             {
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 AddWaypoint(mousePosition);
             }
 
@@ -171,7 +179,7 @@ public class PlatformNodeEditor : MonoBehaviour
     }
     private void LateUpdate()
     {
-        Vector3 mousePosition = Mouse.current.position.ReadValue();
+        Vector3 mousePosition2 = Mouse.current.position.ReadValue();
 
         // Verifica se o clique foi realizado em um elemento do UI
         if (EventSystem.current.IsPointerOverGameObject())
@@ -180,7 +188,7 @@ public class PlatformNodeEditor : MonoBehaviour
         }
         if (isDragging && waypoint != null)
         {
-            Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition) + offset;
+            Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition2) + offset;
             waypoint.transform.position = new Vector3(newPosition.x, newPosition.y, waypoint.transform.position.z);
             UpdateWaypointPosition(waypoint);
             UpdateWaypointsEditor();

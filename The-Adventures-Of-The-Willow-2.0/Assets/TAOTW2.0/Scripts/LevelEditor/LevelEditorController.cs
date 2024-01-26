@@ -24,6 +24,10 @@ public class LevelEditorController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
+    public void DestroyThis()
+    {
+        DestroyImmediate(gameObject);
+    }
 
     private void Update()
     {

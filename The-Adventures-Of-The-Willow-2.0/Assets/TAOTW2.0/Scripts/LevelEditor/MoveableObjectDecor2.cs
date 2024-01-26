@@ -1,4 +1,5 @@
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveableObjectDecor2 : MonoBehaviour
@@ -9,7 +10,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
     public int ShortLayer;
     public string ShortLayerName;
     public float ZPos;
-
+    public float floatScale;
 
     private void Start()
     {
@@ -19,6 +20,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
         ShortLayerName = GetShortLayerName(myRenderers[0].sortingLayerID);
         ShortLayer = myRenderers[0].sortingOrder;
         ZPos = this.gameObject.transform.position.z;
+        floatScale = this.gameObject.transform.localScale.x;
     }
 
     void CheckForClick2()
@@ -36,6 +38,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
             ShortLayer = myRenderers[0].sortingOrder;
 
             ZPos = this.gameObject.transform.position.z;
+            floatScale = this.gameObject.transform.localScale.x;
         }
     }
 
@@ -81,6 +84,8 @@ public class MoveableObjectDecor2 : MonoBehaviour
                 Vector3 newPosition = transform.position;
                 newPosition.z = ZPos;
                 transform.position = newPosition;
+                Vector3 newScale = new Vector3(floatScale, floatScale, floatScale);
+                transform.localScale = newScale;
             }
         }
     }

@@ -520,6 +520,60 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightEditorPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ce85eb7-6bf4-4955-a65e-c2367e17a435"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftEditorPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""c13afced-a4cd-469c-91d9-927fc5b80fcd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BottomEditorPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""abddfe3f-28ec-4a52-8f58-a7c0e75fb5e9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""InfoEditorPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""ff90e1d5-4331-46af-b2ed-fd40cc222457"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TopEditorPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""a6a36e61-3a5b-4ce3-8a09-f30de4e53460"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8e85db5-676b-4417-b04c-f03ca7a791a2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -995,6 +1049,72 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""action"": ""ShiftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1d40517d-eba1-4195-b962-58c0b5ff9d72"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightEditorPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6724b4c3-fa92-4af7-90c7-dab563fb4fed"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftEditorPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""adfcbdfc-f576-4e4f-84d9-d334e9c3073c"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BottomEditorPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bcb0fc9d-b705-42ed-be9c-33e649ffbc93"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InfoEditorPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1f1400c-a0f5-40bc-9d6d-f43e9e143a1d"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TopEditorPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""08d2902a-6370-4c07-a4ab-9a6a399bd3d0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1037,6 +1157,12 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         m_UI_EnterPlayLevelEditor = m_UI.FindAction("EnterPlayLevelEditor", throwIfNotFound: true);
         m_UI_Delete = m_UI.FindAction("Delete", throwIfNotFound: true);
         m_UI_ShiftClick = m_UI.FindAction("ShiftClick", throwIfNotFound: true);
+        m_UI_RightEditorPanel = m_UI.FindAction("RightEditorPanel", throwIfNotFound: true);
+        m_UI_LeftEditorPanel = m_UI.FindAction("LeftEditorPanel", throwIfNotFound: true);
+        m_UI_BottomEditorPanel = m_UI.FindAction("BottomEditorPanel", throwIfNotFound: true);
+        m_UI_InfoEditorPanel = m_UI.FindAction("InfoEditorPanel", throwIfNotFound: true);
+        m_UI_TopEditorPanel = m_UI.FindAction("TopEditorPanel", throwIfNotFound: true);
+        m_UI_LeftClick = m_UI.FindAction("LeftClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1206,6 +1332,12 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
     private readonly InputAction m_UI_EnterPlayLevelEditor;
     private readonly InputAction m_UI_Delete;
     private readonly InputAction m_UI_ShiftClick;
+    private readonly InputAction m_UI_RightEditorPanel;
+    private readonly InputAction m_UI_LeftEditorPanel;
+    private readonly InputAction m_UI_BottomEditorPanel;
+    private readonly InputAction m_UI_InfoEditorPanel;
+    private readonly InputAction m_UI_TopEditorPanel;
+    private readonly InputAction m_UI_LeftClick;
     public struct UIActions
     {
         private @PlayerMoveAndExtraActions m_Wrapper;
@@ -1224,6 +1356,12 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         public InputAction @EnterPlayLevelEditor => m_Wrapper.m_UI_EnterPlayLevelEditor;
         public InputAction @Delete => m_Wrapper.m_UI_Delete;
         public InputAction @ShiftClick => m_Wrapper.m_UI_ShiftClick;
+        public InputAction @RightEditorPanel => m_Wrapper.m_UI_RightEditorPanel;
+        public InputAction @LeftEditorPanel => m_Wrapper.m_UI_LeftEditorPanel;
+        public InputAction @BottomEditorPanel => m_Wrapper.m_UI_BottomEditorPanel;
+        public InputAction @InfoEditorPanel => m_Wrapper.m_UI_InfoEditorPanel;
+        public InputAction @TopEditorPanel => m_Wrapper.m_UI_TopEditorPanel;
+        public InputAction @LeftClick => m_Wrapper.m_UI_LeftClick;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1275,6 +1413,24 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @ShiftClick.started += instance.OnShiftClick;
             @ShiftClick.performed += instance.OnShiftClick;
             @ShiftClick.canceled += instance.OnShiftClick;
+            @RightEditorPanel.started += instance.OnRightEditorPanel;
+            @RightEditorPanel.performed += instance.OnRightEditorPanel;
+            @RightEditorPanel.canceled += instance.OnRightEditorPanel;
+            @LeftEditorPanel.started += instance.OnLeftEditorPanel;
+            @LeftEditorPanel.performed += instance.OnLeftEditorPanel;
+            @LeftEditorPanel.canceled += instance.OnLeftEditorPanel;
+            @BottomEditorPanel.started += instance.OnBottomEditorPanel;
+            @BottomEditorPanel.performed += instance.OnBottomEditorPanel;
+            @BottomEditorPanel.canceled += instance.OnBottomEditorPanel;
+            @InfoEditorPanel.started += instance.OnInfoEditorPanel;
+            @InfoEditorPanel.performed += instance.OnInfoEditorPanel;
+            @InfoEditorPanel.canceled += instance.OnInfoEditorPanel;
+            @TopEditorPanel.started += instance.OnTopEditorPanel;
+            @TopEditorPanel.performed += instance.OnTopEditorPanel;
+            @TopEditorPanel.canceled += instance.OnTopEditorPanel;
+            @LeftClick.started += instance.OnLeftClick;
+            @LeftClick.performed += instance.OnLeftClick;
+            @LeftClick.canceled += instance.OnLeftClick;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1321,6 +1477,24 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @ShiftClick.started -= instance.OnShiftClick;
             @ShiftClick.performed -= instance.OnShiftClick;
             @ShiftClick.canceled -= instance.OnShiftClick;
+            @RightEditorPanel.started -= instance.OnRightEditorPanel;
+            @RightEditorPanel.performed -= instance.OnRightEditorPanel;
+            @RightEditorPanel.canceled -= instance.OnRightEditorPanel;
+            @LeftEditorPanel.started -= instance.OnLeftEditorPanel;
+            @LeftEditorPanel.performed -= instance.OnLeftEditorPanel;
+            @LeftEditorPanel.canceled -= instance.OnLeftEditorPanel;
+            @BottomEditorPanel.started -= instance.OnBottomEditorPanel;
+            @BottomEditorPanel.performed -= instance.OnBottomEditorPanel;
+            @BottomEditorPanel.canceled -= instance.OnBottomEditorPanel;
+            @InfoEditorPanel.started -= instance.OnInfoEditorPanel;
+            @InfoEditorPanel.performed -= instance.OnInfoEditorPanel;
+            @InfoEditorPanel.canceled -= instance.OnInfoEditorPanel;
+            @TopEditorPanel.started -= instance.OnTopEditorPanel;
+            @TopEditorPanel.performed -= instance.OnTopEditorPanel;
+            @TopEditorPanel.canceled -= instance.OnTopEditorPanel;
+            @LeftClick.started -= instance.OnLeftClick;
+            @LeftClick.performed -= instance.OnLeftClick;
+            @LeftClick.canceled -= instance.OnLeftClick;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1382,5 +1556,11 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         void OnEnterPlayLevelEditor(InputAction.CallbackContext context);
         void OnDelete(InputAction.CallbackContext context);
         void OnShiftClick(InputAction.CallbackContext context);
+        void OnRightEditorPanel(InputAction.CallbackContext context);
+        void OnLeftEditorPanel(InputAction.CallbackContext context);
+        void OnBottomEditorPanel(InputAction.CallbackContext context);
+        void OnInfoEditorPanel(InputAction.CallbackContext context);
+        void OnTopEditorPanel(InputAction.CallbackContext context);
+        void OnLeftClick(InputAction.CallbackContext context);
     }
 }

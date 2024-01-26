@@ -64,6 +64,13 @@ public class LevelSettings : MonoBehaviour
 
     #endregion
 
+    #region TimeWeather
+    public string volumeNameTimeWeather;
+    public TimeWeatherData ScriptableTimeWeatherData;
+    [SerializeField] private Transform TimeWeatherLocal;
+    private GameObject currentTimeWeatherInstance;
+    #endregion
+
     private void Awake()
     {
         if (instance == null)
@@ -558,5 +565,73 @@ public class LevelSettings : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region TimeWeather
+
+    public void UpdateTimeWeather(string timeWeather)
+    {
+        volumeNameTimeWeather = timeWeather;
+        foreach (Transform child in TimeWeatherLocal)
+        {
+            Destroy(child.gameObject);
+        }
+        GameObject TimeWeatherPrefab = null;
+        foreach (TimeWeatherData.TimeWeatherCategory timeWeatherCategory in ScriptableTimeWeatherData.timeWeatherCategories)
+        {
+            foreach (TimeWeatherData.TimeWeather timeWeatherInfo in timeWeatherCategory.TimeWeatherList)
+            {
+                if (timeWeatherInfo.TimeWeatherName == volumeNameTimeWeather)
+                {
+                    TimeWeatherPrefab = timeWeatherInfo.TimeWeatherPrefab;
+                    break;
+                }
+            }
+            if (TimeWeatherPrefab != null)
+                break;
+        }
+        if (TimeWeatherPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(TimeWeatherLocal.position.x, TimeWeatherLocal.position.z);
+            currentTimeWeatherInstance = Instantiate(TimeWeatherPrefab, spawnPosition, Quaternion.identity, TimeWeatherLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for TimeWeather: " + volumeNameTimeWeather);
+        }
+    }
+
+    public void MorningSelected()
+    {
+        volumeNameTimeWeather = "MorningVolume";
+        UpdateTimeWeather("MorningVolume");
+    }
+    public void MiddaySelected()
+    {
+        volumeNameTimeWeather = "MiddayVolume";
+        UpdateTimeWeather("MiddayVolume");
+    }
+    public void AfternoonSelected()
+    {
+
+        volumeNameTimeWeather = "AfternoonVolume";
+        UpdateTimeWeather("AfternoonVolume");
+    }
+    public void NightSelected()
+    {
+        volumeNameTimeWeather = "NightVolume";
+        UpdateTimeWeather("NightVolume");
+    }
+    public void CaveSelected()
+    {
+        volumeNameTimeWeather = "CaveVolume";
+        UpdateTimeWeather("CaveVolume");
+    }
+    public void DarkSelected()
+    {
+        volumeNameTimeWeather = "DarkVolume";
+        UpdateTimeWeather("DarkVolume");
+    }
     #endregion
 }

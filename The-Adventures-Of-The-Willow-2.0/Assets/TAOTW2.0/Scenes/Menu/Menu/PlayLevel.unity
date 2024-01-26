@@ -1882,7 +1882,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: c12879a3c77d80574f395a54a9852f6be7e14bc4af59531a9bc5848d49b4a2e70000000025cbcaf0971b288825fadcd33184b4f9315609fcb5fb521ddb570727f38cc50035ac6cb8
+  m_ApplyToSortingLayers: c12879a3c77d80574f395a54a9852f6be7e14bc4af59531a9bc5848d49b4a2e70000000025cbcaf0971b288825fadcd33184b4f9315609fcb5fb521ddb570727f38cc50035ac6cb8bf3893f2
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -2426,6 +2426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nametoescape: 
+  isLevelEditor: 0
 --- !u!4 &788246776
 Transform:
   m_ObjectHideFlags: 0
@@ -3026,6 +3027,8 @@ MonoBehaviour:
   enemyContainer: {fileID: 713707307}
   backgroundLocal: {fileID: 2001536415}
   backgroundData: {fileID: 11400000, guid: 40ca6bab6dff4be49a37108b44911584, type: 2}
+  ScriptableTimeWeatherData: {fileID: 11400000, guid: 21f99112399190b4ba632e22276fc862, type: 2}
+  TimeWeatherLocal: {fileID: 1176513220}
   ScriptableGameObjectData: {fileID: 11400000, guid: fd771a3eaa03736439693f1e8620901f, type: 2}
   GameObjectsContainer: {fileID: 1054590121}
   PlayerPrefab: {fileID: 155168309214299445, guid: 280e6a23a2ee9c6469e881e2754c4b90, type: 3}
@@ -3056,6 +3059,7 @@ MonoBehaviour:
   isPlayingLevel: 0
   scriptableParticleTypesData: {fileID: 11400000, guid: 56f35e8199fd9b149a83c33584fafc49, type: 2}
   levelDotPrefab: {fileID: 7109911152652461386, guid: d3873de5d571d6042ab46528b29aa663, type: 3}
+  worldSolidTilemapColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &1105208944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3172,6 +3176,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1143666716}
   m_CullTransparentMesh: 1
+--- !u!1 &1176513219
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1176513220}
+  m_Layer: 0
+  m_Name: TimeWeatherPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1176513220
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176513219}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1252006277
 GameObject:
   m_ObjectHideFlags: 0
@@ -5550,3 +5585,4 @@ SceneRoots:
   - {fileID: 295240978}
   - {fileID: 218213997}
   - {fileID: 2001536415}
+  - {fileID: 1176513220}

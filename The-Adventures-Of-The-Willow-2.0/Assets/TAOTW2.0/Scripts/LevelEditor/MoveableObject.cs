@@ -11,6 +11,7 @@ public class MoveableObject : MonoBehaviour
     public float ZPos;
     public int ShortLayer;
     public string ShortLayerName;
+    public float floatScale;
 
     private void Start()
     {
@@ -21,6 +22,7 @@ public class MoveableObject : MonoBehaviour
         string[] shortLayerOptions = SortingLayer.layers.Select(layer => layer.name).ToArray();
         // Definir a opção inicial como o short layer atual
         ShortLayerName = GetShortLayerName(myRenderer.sortingLayerID);
+        floatScale = this.transform.localScale.x;
     }
 
     void CheckForClick()
@@ -35,7 +37,7 @@ public class MoveableObject : MonoBehaviour
             // Define as propriedades ShortLayer e ZPos com os valores desejados
             ShortLayer = myRenderer.sortingLayerID; // Obter o valor int do short layer
             ZPos = transform.position.z; // Use a posição z do objeto como valor para ZPos
-
+            floatScale = transform.localScale.x;
             // Obtenha o nome do ShortLayer
             ShortLayerName = GetShortLayerName(ShortLayer);
 
@@ -98,7 +100,9 @@ public class MoveableObject : MonoBehaviour
         // Define a posição Z do objeto com o valor de ZPos
         Vector3 newPosition = transform.position;
         newPosition.z = ZPos;
+        Vector3 newScale = new Vector3(floatScale, floatScale, floatScale);
         transform.position = newPosition;
+        transform.localScale = newScale;
     }
 
 
