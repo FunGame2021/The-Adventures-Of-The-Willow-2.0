@@ -258,7 +258,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Linux/Build_Linux.zip
+          asset_path: ./build/Build_Linux.zip
           asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
           asset_content_type: application/zip
 
@@ -266,7 +266,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Windows/Build_Windows.zip
+          asset_path: ./build/Build_Windows.zip
           asset_name: TheAdventuresOfTheWillow2.0_Win32.zip
           asset_content_type: application/zip
 
@@ -274,7 +274,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Windows64/Build_Windows64.zip
+          asset_path: ./build/Build_Windows64.zip
           asset_name: TheAdventuresOfTheWillow2.0_Win64.zip
           asset_content_type: application/zip
           
@@ -282,7 +282,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Mac/*.zip
+          asset_path: ./build/Build_Mac.zip
           asset_name: TheAdventuresOfTheWillow2.0_Mac.zip
           asset_content_type: application/zip
 
