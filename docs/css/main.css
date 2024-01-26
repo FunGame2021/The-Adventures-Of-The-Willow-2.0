@@ -1,0 +1,112 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+:root {
+	--index: calc(1vw + 1vh);
+	--transition: 1.5s cubic-bezier(.05, .5, 0, 1);
+}
+@font-face {
+	font-family: BlackChancery;
+	src: url(../fonts/BlackChancery.ttf);
+	font-weight: 900;
+}
+@font-face {
+	font-family: merriweather-italic-3d;
+	src: url(../fonts/merriweather-regular-italic.woff2);
+}
+body {
+	background-color: #000;
+	color: #fff;
+	font-family: kamerik-3d;
+}
+
+.layers {
+	perspective: 1000px;
+	overflow: hidden;
+}
+.layers__container {
+	height: 100vh;
+	min-height: 500px;
+	transform-style: preserve-3d;
+	transform: rotateX(var(--move-y)) rotateY(var(--move-x));
+	will-change: transform;
+	transition: transform var(--transition);
+}
+.layers__item {
+	position: absolute;
+	inset: -5vw;
+	background-size: cover;
+	background-position: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.layer-1 {
+	transform: translateZ(780px) scale(1.06);
+}
+.layer-2 {
+	transform: translateZ(670px) scale(.4);
+}
+.layer-3 {
+	transform: translateZ(560px) scale(.3);
+}
+.layer-12 {
+	transform: translateZ(560px) scale(.5);
+}
+.layer-4 {
+	transform: translateZ(440px) scale(.9);
+}
+.layer-5 {
+	transform: translateZ(550px) scale(.7);
+}
+.layer-6 {
+	transform: translateZ(590px) scale(.45);
+}
+.layer-7 {
+	transform: translateZ(330px) scale(.9);
+}
+.layer-8 {
+	transform: translateZ(220px) scale(.9);
+}
+.layer-9 {
+	transform: translateZ(110px) scale(.9);
+}
+.layer-10 {
+	transform: translateZ(90px) scale(.9);
+}
+.layer-11 {
+	transform: translateZ(50px) scale(.9);
+}
+.hero-content {
+	font-size: calc(var(--index) * 2.9);
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: calc(var(--index) * -.15);
+	line-height: 1.35em;
+	margin-top: calc(var(--index) * 5.5);
+
+}
+.hero-content span {
+	display: block;
+}
+
+.button-start {
+	font-family: Arial;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: calc(var(--index) * .71);
+	letter-spacing: -.02vw;
+	padding: calc(var(--index) * .7) calc(var(--index) * 1.25);
+	background-color: transparent;
+	color: #fff;
+	border-radius: 10em;
+	border: rgb(255 255 255 / .4) 3px solid;
+	outline: none;
+	cursor: pointer;
+	margin-top: calc(var(--index) * 2.5);
+}
+.layer-4, .layer-5, .layer-6, .layer-7, .layer-8, .layer-9, .layer-10, .layer-11 {
+	pointer-events: none;
+}
