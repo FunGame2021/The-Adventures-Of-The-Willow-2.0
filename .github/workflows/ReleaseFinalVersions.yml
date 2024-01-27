@@ -258,13 +258,13 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Build_Linux.zip
+          asset_path: ./build/Linux/Build_Linux.zip
           asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
 
       - name: Check for Linux Artifact
         run: |
-          if [[ ! stat -c %f build/Build_Linux.zip ]]; then
-          echo "File ./build/Build_Linux.zip does not exist."
+          if [[ ! stat -c %f build/Linux/Build_Linux.zip ]]; then
+          echo "File ./build/Linux/Build_Linux.zip does not exist."
           exit 1
             fi
     
@@ -272,20 +272,20 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Build_Windows.zip
+          asset_path: ./build/Windows/Build_Windows.zip
           asset_name: TheAdventuresOfTheWillow2.0_Win32.zip
 
       - name: Upload Windows 64-bit Artifact
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Build_Windows64.zip
+          asset_path: ./build/Windows64/Build_Windows64.zip
           asset_name: TheAdventuresOfTheWillow2.0_Win64.zip
           
       - name: Upload Mac Artifact
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Build_Mac.zip
+          asset_path: ./build/Mac/Build_Mac.zip
           asset_name: TheAdventuresOfTheWillow2.0_Mac.zip
 
