@@ -1,4 +1,4 @@
-name: MultiPlatformBuildAndRelease
+name: ReleaseTest
 on:
   workflow_dispatch:
   push:
@@ -93,6 +93,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/Linux/Build_Linux.zip
           asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
+          asset_content_type: "application/zip"
 
       - name: Check for Linux Artifact
         run: |
