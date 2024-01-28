@@ -49,13 +49,7 @@ jobs:
         with:
           name: Build_Linux
           path: build
-          
-      - name: Download Linux Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: Build_Linux
-          path: build/Linux
- 
+
   createRelease:
     name: Create Release
     runs-on: ubuntu-latest
@@ -63,6 +57,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+          
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build_Linux
+          path: build/Linux
 
       - name: Create Release
         id: create_release
@@ -71,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: v0.0.1.${{ github.run_number }}
-          release_name: "Release v0.0.1.${{ github.run_number }} Alpha Version"
+          release_name: Release v0.0.1.${{ github.run_number }}
           body: |
             ### The Adventures of the Willow 2.0 - Alpha Version
 
@@ -81,11 +81,16 @@ jobs:
             - Fixed problem not being able to exit the level when testing in the level editor, improvements to the main menu.
             - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
-      - name: Upload Linux Artifact
+      - name: Archive Linux Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-artifact
+          path: build/Linux/
+
+      - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Linux/Linux_Build.zip
+          asset_path: build/Linux/
           asset_name: Linux_Build.zip
           asset_content_type: "application/zip"
-    
