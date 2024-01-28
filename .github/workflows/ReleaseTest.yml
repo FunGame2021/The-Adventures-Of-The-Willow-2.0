@@ -81,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/TheAdventuresOfTheWillowLinux.zip
+          asset_path: ./build/TheAdventuresOfTheWillowLinux.zip
           asset_name: TheAdventuresOfTheWillowLinux.zip
           asset_content_type: application/zip
           
