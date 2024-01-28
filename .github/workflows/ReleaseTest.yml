@@ -101,4 +101,8 @@ jobs:
           echo "File ./build/Linux/Build_Linux.zip does not exist."
           exit 1
             fi
-    
+            
+      - name: Debug - List files in directory
+        run: |
+         ls -R ./build/Linux
+
