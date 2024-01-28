@@ -46,8 +46,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: TheAdventuresOfTheWillow-Linux.zip  # Nome do artefato ZIP
-          path: build/Linux
+          name: TheAdventuresOfTheWillowLinux.zip  # Nome do artefato ZIP
+          path: build
       
       - name: List artifacts
         run: ls -R build
@@ -63,8 +63,8 @@ jobs:
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: TheAdventuresOfTheWillow-Linux.zip  # Nome do artefato ZIP
-          path: build/Linux
+          name: TheAdventuresOfTheWillowLinux.zip  # Nome do artefato ZIP
+          path: build
 
       - name: Create Release
         id: create_release
@@ -85,6 +85,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/Linux/TheAdventuresOfTheWillow-Linux.zip  # Caminho correto para o artefato ZIP
-          asset_name: TheAdventuresOfTheWillow-Linux.zip
+          asset_path: build/TheAdventuresOfTheWillowLinux.zip  # Caminho correto para o artefato ZIP
+          asset_name: TheAdventuresOfTheWillowLinux.zip
           asset_content_type: "application/zip"
