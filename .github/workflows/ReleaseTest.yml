@@ -33,7 +33,6 @@ jobs:
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-
       - uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -47,8 +46,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Linux
-          path: build
+          name: TheAdventuresOfTheWillow_Linux.zip  # Nome do artefato ZIP
+          path: build/Linux
 
   createRelease:
     name: Create Release
@@ -61,7 +60,7 @@ jobs:
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Build_Linux
+          name: TheAdventuresOfTheWillow_Linux.zip  # Nome do artefato ZIP
           path: build/Linux
 
       - name: Create Release
@@ -74,26 +73,15 @@ jobs:
           release_name: Release v0.0.1.${{ github.run_number }}
           body: |
             ### The Adventures of the Willow 2.0 - Alpha Version
-
             This is the alpha version release of The Adventures of the Willow 2.0.
-
             **Release Notes:**
             - Fixed problem not being able to exit the level when testing in the level editor, improvements to the main menu.
             - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
-
-      - name: Archive Linux Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-artifact
-          path: build/Linux/
-
-      - name: Zip Linux Artifacts
-        run: zip -r build/Linux/Linux_Build.zip build/Linux/
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/Linux/Linux_Build.zip
-          asset_name: Linux_Build.zip
+          asset_path: build/Linux/TheAdventuresOfTheWillow_Linux.zip  # Caminho correto para o artefato ZIP
+          asset_name: TheAdventuresOfTheWillow_Linux.zip
           asset_content_type: "application/zip"
