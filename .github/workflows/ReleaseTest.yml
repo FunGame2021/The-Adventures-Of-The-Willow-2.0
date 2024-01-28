@@ -67,9 +67,8 @@ jobs:
           path: ./build/toReleaseLinux
    
       - name: Archive content
-        uses: ./build/toReleaseLinux
-        with:
-         filename: TheAdventuresOfTheWillowLinux.zip
+        run: cd ./build/toReleaseLinux && zip -r TheAdventuresOfTheWillowLinux.zip .
+    
     
       - name: Create Release
         id: create_release
