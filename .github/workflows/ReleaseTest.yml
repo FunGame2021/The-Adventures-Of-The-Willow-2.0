@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /build/TheAdventuresOfTheWillowLinux.zip  # Caminho correto para o artefato ZIP
+          asset_path: /home/runner/work/The-Adventures-Of-The-Willow-2.0/The-Adventures-Of-The-Willow-2.0/build/TheAdventuresOfTheWillowLinux.zip  # Caminho correto para o artefato ZIP
           asset_name: TheAdventuresOfTheWillowLinux.zip
           asset_content_type: application/zip
           
