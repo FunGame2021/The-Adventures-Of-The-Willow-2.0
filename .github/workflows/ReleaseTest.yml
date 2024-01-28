@@ -66,14 +66,6 @@ jobs:
           name: TheAdventuresOfTheWillowLinux.zip  # Corrigido para corresponder ao nome do artefato no passo de upload
           path: ./build
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/TheAdventuresOfTheWillowLinux.zip  # Caminho correto para o artefato ZIP
-          asset_name: TheAdventuresOfTheWillowLinux.zip
-          asset_content_type: "application/zip"
-          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -89,3 +81,11 @@ jobs:
             - Fixed problem not being able to exit the level when testing in the level editor, improvements to the main menu.
             - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/TheAdventuresOfTheWillowLinux.zip  # Caminho correto para o artefato ZIP
+          asset_name: TheAdventuresOfTheWillowLinux.zip
+          asset_content_type: application/zip
+          
