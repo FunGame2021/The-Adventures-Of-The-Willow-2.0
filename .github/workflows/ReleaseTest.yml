@@ -59,12 +59,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Download Linux Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: TheAdventuresOfTheWillowLinux.zip  # Corrigido para corresponder ao nome do artefato no passo de upload
-          path: ./build
 
       - name: Create Release
         id: create_release
@@ -87,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/TheAdventuresOfTheWillowLinux.zip
+          asset_path: build/TheAdventuresOfTheWillowLinux.zip
           asset_name: TheAdventuresOfTheWillowLinux.zip
           asset_content_type: application/zip
           
