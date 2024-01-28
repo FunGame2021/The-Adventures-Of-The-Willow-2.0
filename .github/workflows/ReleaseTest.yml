@@ -76,7 +76,7 @@ jobs:
      
       - name: Debug - List files in directory
         run: |
-         ls -R ./build/Linux
+         ls -R ./build/combined
           
       - name: Create Release
         id: create_release
@@ -99,14 +99,14 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Linux/Build_Linux.zip
+          asset_path: ./build/combined/Build_Linux.zip
           asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
           asset_content_type: "application/zip"
 
       - name: Check for Linux Artifact
         run: |
-          if [[ ! stat -c %f build/Linux/Build_Linux.zip ]]; then
-          echo "File ./build/Linux/Build_Linux.zip does not exist."
+          if [[ ! stat -c %f build/combined/Build_Linux.zip ]]; then
+          echo "File ./build/combined/Build_Linux.zip does not exist."
           exit 1
             fi
             
