@@ -49,7 +49,13 @@ jobs:
         with:
           name: Build_Linux
           path: build
-     
+          
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build_Linux
+          path: build/Linux
+ 
   createRelease:
     name: Create Release
     runs-on: ubuntu-latest
@@ -58,12 +64,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download Linux Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: Build_Linux
-          path: build/Linux
- 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Linux
+          asset_path: ./build/Linux/Linux_Build.zip
           asset_name: Linux_Build.zip
           asset_content_type: "application/zip"
     
