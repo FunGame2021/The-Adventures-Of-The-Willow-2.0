@@ -782,6 +782,50 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ba456f2c2650b14db0ae785c6824491, type: 3}
+--- !u!1 &421327128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421327130}
+  - component: {fileID: 421327129}
+  m_Layer: 0
+  m_Name: AnalyticsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &421327129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421327128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b2bf995c0f3c73499b65a2c79a3e695, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &421327130
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421327128}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &441363687
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1631,6 +1675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nametoescape: 
+  isLevelEditor: 0
 --- !u!4 &1259685110
 Transform:
   m_ObjectHideFlags: 0
@@ -2680,7 +2725,13 @@ MonoBehaviour:
     actualPlayerWorldName: 
     player:
       coins: 0
+      stars: 0
       position: {x: 0, y: 0}
+      isBig: 0
+      isSmall: 0
+      isFirePower: 0
+      isAirPower: 0
+      isBubblePower: 0
     worlds: []
   currentSaveLevelData:
     CurrentLevelName: 
@@ -2694,6 +2745,15 @@ MonoBehaviour:
     levels: []
   currentWorldName: 
   currentLevelName: 
+  asWorldData: 0
+  loadedPlayerWorldPosition: {x: 0, y: 0, z: 0}
+  TotalCoins: 0
+  isWorldmapPlayed: 0
+  isSaveBig: 0
+  isSaveSmall: 0
+  isSaveFirePower: 0
+  isSaveAirPower: 0
+  isSaveBubblePower: 0
 --- !u!4 &1769720414
 Transform:
   m_ObjectHideFlags: 0
@@ -2901,3 +2961,4 @@ SceneRoots:
   - {fileID: 2022967491}
   - {fileID: 1769720414}
   - {fileID: 242391940}
+  - {fileID: 421327130}
