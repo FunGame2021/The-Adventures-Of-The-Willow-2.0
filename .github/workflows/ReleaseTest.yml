@@ -50,10 +50,6 @@ jobs:
           name: Build_Linux
           path: build
      
-      - name: Debug - List files in directory
-        run: |
-         ls -R ./build/Linux
-          
   createRelease:
     name: Create Release
     runs-on: ubuntu-latest
@@ -74,10 +70,7 @@ jobs:
           mkdir -p build/combined
           cp -r build/Linux/* build/combined/
      
-      - name: Debug - List files in directory
-        run: |
-         ls -R ./build/combined
-          
+ 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -109,8 +102,4 @@ jobs:
           echo "File ./build/combined/Build_Linux.zip does not exist."
           exit 1
             fi
-            
-      - name: Debug - List files in directory
-        run: |
-         ls -R ./build/Linux
-
+    
