@@ -1,9 +1,6 @@
 name: MultiPlatformBuildAndRelease
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   buildForMac:
@@ -62,7 +59,7 @@ jobs:
       # Upload do build como artefato
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Mac
+          name: TheAdventuresOfTheWillow_Mac.zip
           path: build
 
   buildForLinux:
@@ -106,7 +103,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Linux
+          name: TheAdventuresOfTheWillow_Linux.zip
           path: build
 
   buildForWindows32:
@@ -150,7 +147,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Windows
+          name: TheAdventuresOfTheWillow_Windows32.zip
           path: build
 
   buildForWindows64:
@@ -194,7 +191,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Windows64
+          name: TheAdventuresOfTheWillow_Windows64.zip
           path: build
 
   createRelease:
@@ -208,34 +205,39 @@ jobs:
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Build_Linux
-          path: build/Linux
+          name: TheAdventuresOfTheWillow_Linux.zip
+          path: ./build/toReleaseLinux
 
-      - name: Download Windows 32-bit Artifacts
+      - name: Download Windows32 Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Build_Windows
-          path: build/Windows
-
-      - name: Download Windows 64-bit Artifacts
+          name: TheAdventuresOfTheWillow_Windows32.zip
+          path: ./build/toReleaseWindows32
+           
+      - name: Download Windows64 Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Build_Windows64
-          path: build/Windows64
-
+          name: TheAdventuresOfTheWillow_Windows64.zip
+          path: ./build/toReleaseWindows64
+          
       - name: Download Mac Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Build_Mac
-          path: build/Mac
+          name: TheAdventuresOfTheWillow_Mac.zip
+          path: ./build/toReleaseMac
 
-      - name: Combine Artifacts
-        run: |
-          mkdir -p build/combined
-          cp -r build/Mac/* build/combined/
-          cp -r build/Linux/* build/combined/
-          cp -r build/Windows/* build/combined/
-          cp -r build/Windows64/* build/combined/
+
+      - name: Archive content Linux
+        run: cd ./build/toReleaseLinux && zip -r TheAdventuresOfTheWillow_Linux.zip .
+    
+      - name: Archive content Windows32
+        run: cd ./build/toReleaseWindows32 && zip -r TheAdventuresOfTheWillow_Windows32.zip .
+
+      - name: Archive content Windows64
+        run: cd ./build/toReleaseWindows64 && zip -r TheAdventuresOfTheWillow_Windows64.zip .
+        
+      - name: Archive content Mac
+        run: cd ./build/toReleaseMac && zip -r TheAdventuresOfTheWillow_Mac.zip .
 
       - name: Create Release
         id: create_release
@@ -254,38 +256,42 @@ jobs:
             - Fixed problem not being able to exit the level when testing in the level editor, improvements to the main menu.
             - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
-      - name: Upload Linux Artifact
+      - name: Upload release asset Linux
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Linux/Build_Linux.zip
-          asset_name: TheAdventuresOfTheWillow2.0_Linux.zip
+          asset_path: ./build/toReleaseLinux/TheAdventuresOfTheWillow_Linux.zip
+          asset_name: TheAdventuresOfTheWillow_Linux.zip
+          asset_content_type: application/zip
 
-      - name: Check for Linux Artifact
-        run: |
-          if [[ ! stat -c %f build/Linux/Build_Linux.zip ]]; then
-          echo "File ./build/Linux/Build_Linux.zip does not exist."
-          exit 1
-            fi
-    
-      - name: Upload Windows 32-bit Artifact
+      - name: Upload release asset Windows32
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Windows/Build_Windows.zip
-          asset_name: TheAdventuresOfTheWillow2.0_Win32.zip
+          asset_path: ./build/toReleaseWindows32/TheAdventuresOfTheWillow_Windows32.zip
+          asset_name: TheAdventuresOfTheWillow_Windows32.zip
+          asset_content_type: application/zip
 
-      - name: Upload Windows 64-bit Artifact
+      - name: Upload release asset Windows64
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Windows64/Build_Windows64.zip
-          asset_name: TheAdventuresOfTheWillow2.0_Win64.zip
-          
-      - name: Upload Mac Artifact
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/Mac/Build_Mac.zip
-          asset_name: TheAdventuresOfTheWillow2.0_Mac.zip
+          asset_path: ./build/toReleaseWindows64/TheAdventuresOfTheWillow_Windows64.zip
+          asset_name: TheAdventuresOfTheWillow_Windows64.zip
+          asset_content_type: application/zip
 
+      - name: Upload release asset Mac
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/toReleaseMac/TheAdventuresOfTheWillow_Mac.zip
+          asset_name: TheAdventuresOfTheWillow_Mac.zip
+          asset_content_type: application/zip
