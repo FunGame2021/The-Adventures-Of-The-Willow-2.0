@@ -64,8 +64,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: TheAdventuresOfTheWillowLinux.zip
-          path: ./build/torelease
-
+          path: ./build/toReleaseLinux
+   
+      - name: Archive content
+        uses: ./build/toReleaseLinux
+        with:
+         filename: TheAdventuresOfTheWillowLinux.zip
+    
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -90,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/torelease/TheAdventuresOfTheWillowLinux.zip
+          asset_path: ./build/toReleaseLinux/TheAdventuresOfTheWillowLinux.zip
           asset_name: TheAdventuresOfTheWillowLinux.zip
           asset_content_type: application/zip
           
