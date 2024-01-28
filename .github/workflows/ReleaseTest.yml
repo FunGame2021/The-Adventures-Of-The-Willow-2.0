@@ -63,8 +63,9 @@ jobs:
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: TheAdventuresOfTheWillowLinux.zip  # Nome do artefato ZIP
+          name: TheAdventuresOfTheWillowLinux.zip  # Corrigido para corresponder ao nome do artefato no passo de upload
           path: build
+
 
       - name: Create Release
         id: create_release
