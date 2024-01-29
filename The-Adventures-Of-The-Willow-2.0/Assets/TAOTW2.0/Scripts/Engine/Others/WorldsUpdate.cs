@@ -6,7 +6,9 @@ using System.IO.Compression;
 
 public class WorldsUpdate : MonoBehaviour
 {
-    private string githubUrl = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/Assets/StreamingAssets/Worlds/ExtraWorlds/";
+    private string githubUrl = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/ExtraWorldsVersionInfo.json";
+    private string githubUrlWorlds = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/Worlds.zip";
+
     private string inGameExtraWorlds = "Assets/StreamingAssets/Worlds/";
 
     void Start()
@@ -16,6 +18,26 @@ public class WorldsUpdate : MonoBehaviour
 
     IEnumerator CheckAndDownloadNewVersion()
     {
+        Debug.Log("URL usada: " + githubUrl);
+
+        // Configuração da solicitação UnityWebRequest com um tempo limite de 10 segundos
+        UnityWebRequest webRequest = UnityWebRequest.Get(githubUrl);
+        webRequest.timeout = 10;
+
+        // Iniciar a solicitação
+        yield return webRequest.SendWebRequest();
+
+        // Verificar erros
+        if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Erro na solicitação: " + webRequest.error);
+        }
+        else
+        {
+            // Se a solicitação for bem-sucedida, imprimir o conteúdo da resposta
+            Debug.Log("Conteúdo da resposta: " + webRequest.downloadHandler.text);
+        }
+
         // Verificar se o arquivo JSON local existe
         string localVersionFilePath = Path.Combine(inGameExtraWorlds, "ExtraWorldsVersion");
         if (!File.Exists(localVersionFilePath))
@@ -46,6 +68,7 @@ public class WorldsUpdate : MonoBehaviour
             yield return StartCoroutine(DownloadReplaceFolderFromGitHub("ExtraWorlds", "Worlds"));
         }
     }
+
     ExtraWorldsVersion GetLocalExtraWorldsVersion()
     {
         string localVersionFilePath = Path.Combine(inGameExtraWorlds, "ExtraWorldsVersion");
@@ -93,46 +116,59 @@ public class WorldsUpdate : MonoBehaviour
 
     IEnumerator DownloadReplaceFolderFromGitHub(string githubFolder, string localFolder)
     {
-        string githubFolderUrl = githubUrl + githubFolder;
+        string githubFolderUrl = githubUrlWorlds;
 
-        // Download the folder from GitHub
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(githubFolderUrl))
+        // Verificar se a pasta ZIP já existe localmente antes de baixar novamente
+        string zipFilePath = Path.Combine(inGameExtraWorlds, localFolder + ".zip");
+        if (!File.Exists(zipFilePath))
         {
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+            // Download the ZIP file from GitHub
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(githubFolderUrl))
             {
-                Debug.LogError("Request error: " + webRequest.error);
-                yield break;
-            }
+                yield return webRequest.SendWebRequest();
 
-            // Replace the local folder with the downloaded data
-            ReplaceLocalFolder(localFolder, webRequest.downloadHandler.data);
+                if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.LogError("Request error: " + webRequest.error);
+                    yield break;
+                }
+
+                // Replace the local folder with the downloaded ZIP file
+                ReplaceLocalFolder(localFolder, webRequest.downloadHandler.data, zipFilePath);
+            }
+        }
+        else
+        {
+            Debug.Log("A versão mais recente já está baixada. Nenhuma ação necessária.");
         }
     }
 
-    void ReplaceLocalFolder(string localFolder, byte[] folderData)
+    void ReplaceLocalFolder(string localFolder, byte[] folderData, string zipFilePath)
     {
         string localFolderPath = Path.Combine(inGameExtraWorlds, localFolder);
 
-        // Delete the local folder if it exists
-        if (Directory.Exists(localFolderPath))
-            Directory.Delete(localFolderPath, true);
-
-        // Create the new local folder
-        Directory.CreateDirectory(localFolderPath);
-
         // Extract and save the folder data
-        string zipFilePath = Path.Combine(inGameExtraWorlds, localFolder + ".zip");
         File.WriteAllBytes(zipFilePath, folderData);
 
-        // Extract the zip file (you may need a third-party library for this)
-        // Example using System.IO.Compression:
-        ZipFile.ExtractToDirectory(zipFilePath, localFolderPath);
+        // Extract the zip file directly into the existing local folder
+        using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+        {
+            foreach (ZipArchiveEntry entry in archive.Entries)
+            {
+                string entryPath = Path.Combine(localFolderPath, entry.FullName);
+
+                // Create directories if they don't exist
+                Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
+
+                // Extract the entry's contents
+                entry.ExtractToFile(entryPath, true);
+            }
+        }
 
         // Delete the zip file after extraction, if desired
         File.Delete(zipFilePath);
     }
+
 }
 
 [System.Serializable]
