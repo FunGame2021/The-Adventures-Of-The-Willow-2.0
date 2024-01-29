@@ -9,7 +9,7 @@ public class WorldsUpdate : MonoBehaviour
     private string githubUrl = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/ExtraWorldsVersionInfo.json";
     private string githubUrlWorlds = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/Worlds.zip";
 
-    private string inGameExtraWorlds = "Assets/StreamingAssets/Worlds/";
+    private string inGameExtraWorlds = "Assets/StreamingAssets/";
 
     void Start()
     {
@@ -168,6 +168,7 @@ public class WorldsUpdate : MonoBehaviour
         // Delete the zip file after extraction, if desired
         File.Delete(zipFilePath);
     }
+
 
 }
 
