@@ -247,12 +247,13 @@ public class TileButton : MonoBehaviour
                 }
                 else
                 {
+                    LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
                     // Verifica se a posição da célula está dentro dos limites da grelha
-                    if (IsCellWithinGridBounds(cellPos))
+                    /*/if (IsCellWithinGridBounds(cellPos))
                     {
                         // Define a telha selecionada na posição do mouse
                         LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
-                    }
+                    }*/
                 }
             }
             else if (selectedTile != null && Mouse.current.leftButton.wasReleasedThisFrame)
@@ -278,12 +279,14 @@ public class TileButton : MonoBehaviour
                 }
                 else
                 {
+                    LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
+                    /*/
                     // Verifica se a posição da célula está dentro dos limites da grelha
                     if (IsCellWithinGridBounds(cellPos))
                     {
                         // Define a telha selecionada na posição do mouse
-                        LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
-                    }
+                        
+                    }*/
                 }
             }
         }

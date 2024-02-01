@@ -186,6 +186,7 @@ public class LevelEditorManager : MonoBehaviour
     public bool CanPlayLevel;
     //Info Level Edito Object selected to intantiate
     public string selectedStringInfo;
+    [SerializeField] private GameObject SectorPanel;
 
     [SerializeField] private GameObject SaveSuccessfullPanel;
     [SerializeField] private GameObject WarnExitSavePanel;
@@ -193,6 +194,8 @@ public class LevelEditorManager : MonoBehaviour
     private bool shouldAutoSave = true; // Adicione esta variável
     public bool CoroutineCalled;
     private Coroutine autoSaveCoroutine;
+
+    #region Start Things/ Editor Things
     public enum SelectedObjectType
     {
         Enemy,
@@ -1466,10 +1469,11 @@ public class LevelEditorManager : MonoBehaviour
     }
     #endregion
 
-
+    #endregion
 
     #region Save Data
 
+    #region Another Save Data Things
     public void ToLoadNewSector()
     {
         StartCoroutine(SaveAndLoadNewSector());
@@ -1479,8 +1483,7 @@ public class LevelEditorManager : MonoBehaviour
         // Chama a função SaveLevel e aguarda até que ela termine
         yield return StartCoroutine(SaveLevel());
 
-        // Após o término de SaveLevel, chama e carrega novo sector
-        SectorManager.instance.LoadNewSector();
+        SectorPanel.SetActive(true);
     }
     public void EnableAutoSave()
     {
@@ -1557,6 +1560,8 @@ public class LevelEditorManager : MonoBehaviour
         WarnExitSavePanel.SetActive(false);
         SaveSuccessfullPanel.SetActive(true);
     }
+
+    #endregion
     public void CreateNewLevel()
     {
         // Obtém o nome do nível e o autor dos campos de entrada
@@ -1809,6 +1814,8 @@ public class LevelEditorManager : MonoBehaviour
         List<GameObjectSaveData> gameObjectList = new List<GameObjectSaveData>();
         List<TriggerGameObjectSaveData> triggerList = new List<TriggerGameObjectSaveData>();
         List<ParticlesSaveData> particlesList = new List<ParticlesSaveData>();
+        List<SpawnPointsSaveData> spawnPointList = new List<SpawnPointsSaveData>();
+
         GameObject[] gameObjectObjects = GameObject.FindGameObjectsWithTag("GameObject");
         foreach (GameObject gameObjectObject in gameObjectObjects)
         {
@@ -1868,6 +1875,22 @@ public class LevelEditorManager : MonoBehaviour
                 }
 
             }
+            else if (gameObjectName.Contains("SpawnPoint"))
+            {
+                SpawnPoint spawnPointObjectScript = gameObjectObject.GetComponent<SpawnPoint>();
+                if (spawnPointObjectScript != null)
+                {
+                    // Crie um objeto SpawnPointsSaveData
+                    SpawnPointsSaveData spawnPointData = new SpawnPointsSaveData();
+                    string NameId = spawnPointObjectScript.SpawnPointID;
+
+                    spawnPointData.name = gameObjectName;
+                    spawnPointData.NameID = NameId;
+                    spawnPointData.position = gameObjectPosition;
+
+                    spawnPointList.Add(spawnPointData);
+                }
+            }
             else
             {
                 // Crie um objeto GameObjectSaveData para outros objetos
@@ -1926,21 +1949,49 @@ public class LevelEditorManager : MonoBehaviour
 
         // Obtém a lista de ObjectSaveData dos objetos na cena
         List<ObjectSaveData> objectList = new List<ObjectSaveData>();
+        List<DoorSaveData> doorList = new List<DoorSaveData>();
         GameObject[] objectObjects = GameObject.FindGameObjectsWithTag("ObjectObject");
         foreach (GameObject objectObject in objectObjects)
         {
             string objectName = objectObject.name.Replace("(Clone)", "");
             Vector3 objectPosition = objectObject.transform.position;
 
-            // Obtém o tipo do objeto a partir do ScriptableObjectData
-            ObjectType objectType = GetObjectType(objectName);
+            if (objectName.Contains("Door"))
+            {
+                Door doorObjectScript = objectObject.GetComponent<Door>();
 
-            ObjectSaveData objectData = new ObjectSaveData();
-            objectData.name = objectName;
-            objectData.position = objectPosition;
-            objectData.objectType = objectType;
+                if (doorObjectScript != null)
+                {
+                    DoorSaveData doorData = new DoorSaveData();
 
-            objectList.Add(objectData);
+                    doorData.name = objectName;
+                    doorData.position = objectPosition;
+                    doorData.DoorID = doorObjectScript.DoorID;
+                    doorData.SecondDoorID = doorObjectScript.SecondDoorID;
+                    doorData.SectorDoorName = doorObjectScript.SectorName;
+                    doorData.PositionPointName = doorObjectScript.PositionPoint;
+                    doorData.WithKey = doorObjectScript.WithKey;
+                    doorData.ToSector = doorObjectScript.toSector;
+
+                    doorList.Add(doorData);
+                }
+                else
+                {
+                    Debug.LogWarning("DoorObject script not found on Door: " + objectName);
+                }
+            }
+            else
+            {
+                // Obtém o tipo do objeto a partir do ScriptableObjectData
+                ObjectType objectType = GetObjectType(objectName);
+
+                ObjectSaveData objectData = new ObjectSaveData();
+                objectData.name = objectName;
+                objectData.position = objectPosition;
+                objectData.objectType = objectType;
+
+                objectList.Add(objectData);
+            }
         }
 
 
@@ -2071,6 +2122,8 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.movingObjectsaveData = new List<MovingObjectSaveData>();
             currentSectorData.triggerGameObjectSaveData = new List<TriggerGameObjectSaveData>();
             currentSectorData.particlesSaveData = new List<ParticlesSaveData>();
+            currentSectorData.doorSaveData = new List<DoorSaveData>();
+            currentSectorData.spawnPointsSaveData = new List<SpawnPointsSaveData>();
             currentSectorData.gameObjectSaveData = new List<GameObjectSaveData>();
 
             // Crie um novo TilemapData vazio para o setor
@@ -2109,6 +2162,8 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.decorSaveData = decorList; // Preencha com os dados apropriados
             currentSectorData.decor2SaveData = decor2List; // Preencha com os dados apropriados
             currentSectorData.objectSaveData = objectList; // Preencha com os dados apropriados
+            currentSectorData.doorSaveData = doorList;
+            currentSectorData.spawnPointsSaveData = spawnPointList;
             currentSectorData.movingObjectsaveData = movingObjectList;
         }
 
@@ -2232,6 +2287,8 @@ public class LevelEditorManager : MonoBehaviour
                     List<GameObjectSaveData> gameObjectList = sectorData.gameObjectSaveData;
                     List<TriggerGameObjectSaveData> triggerList = sectorData.triggerGameObjectSaveData;
                     List<ParticlesSaveData> particlesList = sectorData.particlesSaveData;
+                    List<DoorSaveData> doorList = sectorData.doorSaveData;
+                    List<SpawnPointsSaveData> spawnPointList = sectorData.spawnPointsSaveData;
                     List<DecorSaveData> decorList = sectorData.decorSaveData;
                     List<Decor2SaveData> decor2List = sectorData.decor2SaveData;
                     List<ObjectSaveData> objectList = sectorData.objectSaveData;
@@ -2366,6 +2423,96 @@ public class LevelEditorManager : MonoBehaviour
                         }
                     }
 
+                    // Para objetos Portas
+                    foreach (DoorSaveData doorData in doorList)
+                    {
+                        // Encontrar o prefab do objeto Door
+                        GameObject doorObjectPrefab = null;
+
+                        foreach (ObjectsData.ObjectCategory category in ScriptableObjectData.categories)
+                        {
+                            foreach (ObjectsData.ObjectsInfo objectInfo in category.Objects)
+                            {
+                                if (objectInfo.ObjectName == doorData.name)
+                                {
+                                    doorObjectPrefab = objectInfo.prefab;
+                                    break;
+                                }
+                            }
+
+                            if (doorObjectPrefab != null)
+                                break;
+                        }
+
+                        if (doorObjectPrefab != null)
+                        {
+                            GameObject doorObject = Instantiate(doorObjectPrefab, doorData.position, Quaternion.identity);
+                            doorObject.transform.SetParent(GameObjectsContainer.transform);
+
+                            // Configurar o componente de script do prefab com os valores de doorData
+                            Door doorScript = doorObject.GetComponentInChildren<Door>();
+
+                            if (doorScript != null)
+                            {
+                                doorScript.DoorID = doorData.DoorID;
+                                doorScript.SecondDoorID = doorData.SecondDoorID;
+                                doorScript.PositionPoint = doorData.PositionPointName;
+                                doorScript.SectorName = doorData.SectorDoorName;
+                                doorScript.WithKey = doorData.WithKey;
+                                doorScript.toSector = doorData.ToSector;
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Door script not found on Door object: " + doorData.name);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for Door object: " + doorData.name);
+                        }
+                    }
+
+                    foreach (SpawnPointsSaveData spawnPointData in spawnPointList)
+                    {
+                        // Encontrar o prefab do objeto Door
+                        GameObject spawnPointObjectPrefab = null;
+
+                        foreach (GameObjectsData.GameObjectCategory category in ScriptableGameObjectData.categories)
+                        {
+                            foreach (GameObjectsData.GameObjectsInfo gameObjectInfo in category.GameObjects)
+                            {
+                                if (gameObjectInfo.GameObjectName == spawnPointData.name)
+                                {
+                                    spawnPointObjectPrefab = gameObjectInfo.prefab;
+                                    break;
+                                }
+                            }
+                            if (spawnPointObjectPrefab != null)
+                                break;
+                        }
+                        if (spawnPointObjectPrefab != null)
+                        {
+                            GameObject spawnPointObject = Instantiate(spawnPointObjectPrefab, spawnPointData.position, Quaternion.identity);
+                            spawnPointObject.transform.SetParent(GameObjectsContainer.transform);
+
+                            // Configurar o componente de script do prefab com os valores de doorData
+                            SpawnPoint spawnPointScript = spawnPointObject.GetComponentInChildren<SpawnPoint>();
+
+                            if (spawnPointScript != null)
+                            {
+                                spawnPointScript.SpawnPointID = spawnPointData.NameID;
+                            }
+                            else
+                            {
+                                Debug.LogWarning("SpawnPoint script not found on SpawnPoint object: " + spawnPointData.name);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Prefab not found for Door object: " + spawnPointData.name);
+                        }
+                    }
+
 
                     foreach (ParticlesSaveData particleData in particlesList)
                     {
@@ -2409,7 +2556,7 @@ public class LevelEditorManager : MonoBehaviour
                         }
                     }
 
-                    // Para objetos normais
+                    // Para Gameobjetos normais
                     foreach (GameObjectSaveData normalObjectData in gameObjectList)
                     {
                         // Encontre o prefab do objeto normal
@@ -3230,6 +3377,7 @@ public class LevelEditorManager : MonoBehaviour
             }
         }
     }
+
     public void DeleteSector(string sectorName, string worldName, string level)
     {
         // Verificar se o setor a ser excluído não é o setor principal (sector1)
@@ -3290,6 +3438,7 @@ public class LevelEditorManager : MonoBehaviour
         }
     }
 
+    #region World
     public IEnumerator SaveWorld()
     {
         // Cria um objeto LevelData para salvar os dados do nível
@@ -3682,6 +3831,8 @@ public class LevelEditorManager : MonoBehaviour
             Debug.LogWarning("Save file not found: " + loadPath);
         }
     }
+    #endregion
+    #region Other Save Things
     private TileBase GetTileByName(string tileName)
     {
         TileBase tile = null;
@@ -3930,7 +4081,7 @@ public class LevelEditorManager : MonoBehaviour
             Debug.LogWarning("A pasta do mundo não existe!");
         }
     }
-
+    #endregion
     #endregion
 
 }
@@ -4076,7 +4227,28 @@ public class ParticlesSaveData
     public bool isLoop;
     public Vector3 position;
 }
-   
+
+[System.Serializable]
+public class DoorSaveData
+{
+    public string name;
+    public string DoorID;
+    public string SecondDoorID;
+    public string PositionPointName;
+    public string SectorDoorName;
+    public bool WithKey;
+    public bool ToSector;
+    public Vector3 position;
+}
+
+[System.Serializable]
+public class SpawnPointsSaveData
+{
+    public string name;
+    public string NameID;
+    public Vector3 position;
+}
+
 [System.Serializable] 
 public class LevelDotData
 {
@@ -4106,6 +4278,8 @@ public class SectorData
     public List<GameObjectSaveData> gameObjectSaveData;
     public List<TriggerGameObjectSaveData> triggerGameObjectSaveData;
     public List<ParticlesSaveData> particlesSaveData;
+    public List<DoorSaveData> doorSaveData;
+    public List<SpawnPointsSaveData> spawnPointsSaveData;
     public List<DecorSaveData> decorSaveData;
     public List<Decor2SaveData> decor2SaveData;
     public List<ObjectSaveData> objectSaveData;

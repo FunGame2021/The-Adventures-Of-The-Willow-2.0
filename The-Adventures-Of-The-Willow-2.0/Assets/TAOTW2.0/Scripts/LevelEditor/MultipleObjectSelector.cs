@@ -43,7 +43,6 @@ public class MultipleObjectSelector : MonoBehaviour
 
     #endregion
 
-
     [Header("MovingPlatforms")]
     #region movingPlatforms
     private Button[] mpButtons;
@@ -71,6 +70,59 @@ public class MultipleObjectSelector : MonoBehaviour
     private Button mpBackButton;
     private Button mpOkButton;
     #endregion
+
+
+    [Header("Doors")]
+    #region Doors
+    [SerializeField] private GameObject DoorPanelPrefab;
+    private GameObject DoorSelectedObject;
+    private Door doorObjectScript;
+    private GameObject DoorPanelInstance; 
+    
+    private TMP_InputField[] doorInputField;
+    private TMP_InputField DoorIDInput;
+    private TMP_InputField SecondDoorIDInput;
+    private TMP_InputField PositionPointInput;
+
+    private string DoorIDString;
+    private string SecondDoorIDString;
+    private string PositionPointString;
+    private string SectorNameString;
+
+    private Toggle[] doorToggles;
+    private Toggle WithKey;
+    private Toggle ToSector;
+
+    private TMP_Dropdown[] doorDropdowns;
+    private TMP_Dropdown sectorDropdown;
+
+    private bool doorIsOpened = false;
+    private Button[] doorButtons;
+    private Button doorBackButton;
+    private Button doorOkButton;
+
+    #endregion
+
+    [Header("SpawnPoints")]
+    #region SpawnPoints
+
+    [SerializeField] private GameObject spawnPointPanelPrefab;
+    private GameObject spawnPointSelectedObject;
+    private SpawnPoint spawnPointObjectScript;
+    private GameObject spawnPointPanelInstance;
+
+    private string SpawnPointID;
+
+    private TMP_InputField[] spawnPointInputField;
+    private TMP_InputField spawnPointIDInput;
+
+    private string spawnPointIDString;
+
+    private bool spawnPointIsOpened = false;
+    private Button[] spawnPointButtons;
+    private Button spawnPointBackButton;
+    private Button spawnPointOkButton;
+    #endregion
     void Update()
     {
         if (Mouse.current.rightButton.wasPressedThisFrame)
@@ -92,9 +144,9 @@ public class MultipleObjectSelector : MonoBehaviour
                     {
                         toggles = panelInstance.GetComponentsInChildren<Toggle>();
 
-                        foreach(Toggle toggle in toggles)
+                        foreach (Toggle toggle in toggles)
                         {
-                            if(toggle.name == "initial")
+                            if (toggle.name == "initial")
                             {
                                 isInitialStarted = toggle;
                             }
@@ -231,7 +283,7 @@ public class MultipleObjectSelector : MonoBehaviour
                             {
                                 platformControllerScript.pathType = WaypointPathType.Open;
                             }
-                            if(mpIsPingPong.isOn)
+                            if (mpIsPingPong.isOn)
                             {
                                 platformControllerScript.behaviorType = WaypointBehaviorType.PingPong;
                             }
@@ -262,6 +314,168 @@ public class MultipleObjectSelector : MonoBehaviour
                 }
             }
             #endregion
+            #region Doors
+            if (hit.collider != null && !doorIsOpened)
+            {
+                if (hit.collider != null && hit.collider.CompareTag("ObjectObject") && hit.collider.gameObject.name.StartsWith("Door"))
+                {
+                    doorIsOpened = true;
+                    DoorSelectedObject = hit.collider.gameObject;
+                    doorObjectScript = DoorSelectedObject.GetComponent<Door>();
+                    DoorPanelInstance = Instantiate(DoorPanelPrefab, panelLocalization);
+
+                    if (DoorPanelInstance != null)
+                    {
+                        doorToggles = DoorPanelInstance.GetComponentsInChildren<Toggle>();
+
+                        foreach (Toggle toggle in doorToggles)
+                        {
+                            if (toggle.name == "WithKey")
+                            {
+                                WithKey = toggle;
+                            }
+                            if (toggle.name == "ToSector")
+                            {
+                                ToSector = toggle;
+                            }
+                        }
+                        doorInputField = DoorPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                        foreach (TMP_InputField doorInput in doorInputField)
+                        {
+                            if (doorInput.name == "DoorID")
+                            {
+                                DoorIDInput = doorInput;
+                            }
+                            if (doorInput.name == "SecondDoorID")
+                            {
+                                SecondDoorIDInput = doorInput;
+                            }
+                            if (doorInput.name == "PositionPoint")
+                            {
+                                PositionPointInput = doorInput;
+                            }
+                        }
+                        doorDropdowns = DoorPanelInstance.GetComponentsInChildren<TMP_Dropdown>();
+
+                        foreach (TMP_Dropdown DoorDropdowns in doorDropdowns)
+                        {
+                            if (DoorDropdowns.name == "SectorName")
+                            {
+                                sectorDropdown = DoorDropdowns;
+
+                                if (sectorDropdown != null)
+                                {
+                                    // Chame o método para preencher o Dropdown com os setores
+                                    PopulateSectorDropdown();
+                                    // Registre o método como um ouvinte para o evento OnValueChanged do Dropdown
+                                    sectorDropdown.onValueChanged.AddListener(OnSectorDropdownValueChanged);
+
+                                    // Localize o índice correspondente à SectorNameString
+                                    int sectorIndex = GetSectorIndex(doorObjectScript.SectorName);
+
+                                    // Defina o índice do Dropdown
+                                    sectorDropdown.value = sectorIndex;
+                                }
+                            }
+                        }
+
+                        doorButtons = DoorPanelInstance.GetComponentsInChildren<Button>();
+                        foreach (Button button in doorButtons)
+                        {
+                            if (button.name == "BackButton")
+                            {
+                                doorBackButton = button;
+                            }
+                            else if (button.name == "OKButton")
+                            {
+                                doorOkButton = button;
+                            }
+                        }
+
+                        // Configurar eventos para botões
+                        doorBackButton.onClick.AddListener(() =>
+                        {
+                            doorIsOpened = false;
+                            Destroy(DoorPanelInstance);
+                        });
+
+                        doorOkButton.onClick.AddListener(() =>
+                        {
+                            doorObjectScript.DoorID = DoorIDString;
+                            doorObjectScript.SecondDoorID = SecondDoorIDString;
+                            doorObjectScript.WithKey = WithKey.isOn;
+                            doorObjectScript.toSector = ToSector.isOn;
+                            doorObjectScript.PositionPoint = PositionPointString;
+                            doorObjectScript.SectorName = SectorNameString;
+
+                            doorIsOpened = false;
+                            Destroy(DoorPanelInstance);
+                        });
+
+                        UpdateUIValuesDoor();
+                    }
+                }
+
+                
+            }
+            #endregion
+            #region SpawnPoints
+            if (hit.collider != null && !spawnPointIsOpened)
+            {
+                if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("SpawnPoint"))
+                {
+                    spawnPointIsOpened = true;
+                    spawnPointSelectedObject = hit.collider.gameObject;
+                    spawnPointObjectScript = spawnPointSelectedObject.GetComponent<SpawnPoint>();
+                    spawnPointPanelInstance = Instantiate(spawnPointPanelPrefab, panelLocalization);
+
+                    if (spawnPointPanelInstance != null)
+                    {
+                        spawnPointInputField = spawnPointPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                        foreach (TMP_InputField spawnPointInput in spawnPointInputField)
+                        {
+                            if (spawnPointInput.name == "SpawnPointID")
+                            {
+                                spawnPointIDInput = spawnPointInput;
+                            }
+                        }
+
+                        spawnPointButtons = spawnPointPanelInstance.GetComponentsInChildren<Button>();
+                        foreach (Button button in spawnPointButtons)
+                        {
+                            if (button.name == "BackButton")
+                            {
+                                spawnPointBackButton = button;
+                            }
+                            else if (button.name == "OKButton")
+                            {
+                                spawnPointOkButton = button;
+                            }
+                        }
+
+                        // Configurar eventos para botões
+                        spawnPointBackButton.onClick.AddListener(() =>
+                        {
+                            spawnPointIsOpened = false;
+                            Destroy(spawnPointPanelInstance);
+                        });
+
+                        spawnPointOkButton.onClick.AddListener(() =>
+                        {
+                            spawnPointObjectScript.SpawnPointID = spawnPointIDString;
+
+                            spawnPointIsOpened = false;
+                            Destroy(spawnPointPanelInstance);
+                        });
+
+                        UpdateUIValuesSpawnPoint();
+                    }
+                }
+
+
+            }
+
+            #endregion
         }
         #region particles
         if (isOpened)
@@ -291,11 +505,11 @@ public class MultipleObjectSelector : MonoBehaviour
                 {
                     platformIDString = platformIDInput.text;
                 }
-                if(speedInput != null)
+                if (speedInput != null)
                 {
                     speedString = speedInput.text;
                 }
-                if(stopDistanceInput != null)
+                if (stopDistanceInput != null)
                 {
                     stopDistanceString = stopDistanceInput.text;
                 }
@@ -308,8 +522,63 @@ public class MultipleObjectSelector : MonoBehaviour
             platformControllerScript = null;
         }
         #endregion
-    }
 
+        #region Door
+        if (doorIsOpened)
+        {
+            if (DoorPanelInstance != null)
+            {
+                if (DoorIDInput != null)
+                {
+                    DoorIDString = DoorIDInput.text;
+                }
+                if (SecondDoorIDInput != null)
+                {
+                    SecondDoorIDString = SecondDoorIDInput.text;
+                }
+                if (PositionPointInput != null)
+                {
+                    PositionPointString = PositionPointInput.text;
+                }
+            }
+        }
+        else
+        {
+            DoorSelectedObject = null;
+            DoorPanelInstance = null;
+            doorObjectScript = null;
+        }
+        #endregion
+        #region SpawnPoint
+        if (spawnPointIsOpened)
+        {
+            if (spawnPointPanelInstance != null)
+            {
+                if (spawnPointIDInput != null)
+                {
+                    spawnPointIDString = spawnPointIDInput.text;
+                }
+            }
+        }
+        else
+        {
+            spawnPointSelectedObject = null;
+            spawnPointPanelInstance = null;
+            spawnPointObjectScript = null;
+        }
+        #endregion
+    }
+    void PopulateSectorDropdown()
+    {
+        // Substitua isso pela lógica real de obtenção de setores ou adicione manualmente
+        List<string> sectorNames = new List<string> { "Sector1", "Sector2", "Sector3", "Sector4", "Sector5" };
+
+        // Limpe as opções existentes
+        sectorDropdown.ClearOptions();
+
+        // Adicione os setores ao Dropdown
+        sectorDropdown.AddOptions(sectorNames);
+    }
     #region particles
     void UpdateUIValues()
     {
@@ -408,6 +677,58 @@ public class MultipleObjectSelector : MonoBehaviour
         }
     
                 
+    }
+    #endregion
+
+    #region Door
+    void UpdateUIValuesDoor()
+    {
+        if (doorObjectScript != null)
+        {
+            DoorIDString = doorObjectScript.DoorID;
+            PositionPointString = doorObjectScript.PositionPoint;
+
+            DoorIDInput.text = doorObjectScript.DoorID;
+            PositionPointInput.text = doorObjectScript.PositionPoint;
+            WithKey.isOn = doorObjectScript.WithKey;
+            ToSector.isOn = doorObjectScript.toSector;
+            SectorNameString = doorObjectScript.SectorName;
+            SecondDoorIDInput.text = doorObjectScript.SecondDoorID;
+            SecondDoorIDString = doorObjectScript.SecondDoorID;
+        }
+    }
+    void OnSectorDropdownValueChanged(int value)
+    {
+        SectorNameString = sectorDropdown.options[value].text;
+
+    }
+    int GetSectorIndex(string sectorName)
+    {
+        // Obtenha o índice do setor no Dropdown com base no nome do setor
+        List<TMP_Dropdown.OptionData> options = sectorDropdown.options;
+
+        for (int i = 0; i < options.Count; i++)
+        {
+            if (options[i].text == sectorName)
+            {
+                return i;
+            }
+        }
+
+        // Se não encontrar, retorne um valor padrão (pode ajustar conforme necessário)
+        return 0;
+    }
+    #endregion
+
+    #region SpawnPoint
+
+    void UpdateUIValuesSpawnPoint()
+    {
+        if (spawnPointObjectScript != null)
+        {
+            spawnPointIDString = spawnPointObjectScript.SpawnPointID;
+            spawnPointIDInput.text = spawnPointObjectScript.SpawnPointID;
+        }
     }
     #endregion
 }

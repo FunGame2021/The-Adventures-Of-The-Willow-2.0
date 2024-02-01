@@ -172,15 +172,21 @@ public class SectorManager : MonoBehaviour
 
     public void SetCurrentSector(string sectorName)
     {
-        tempCurrentSectorName = sectorName;
-        LevelEditorManager.instance.ToLoadNewSector();
+        //tempCurrentSectorName = sectorName;
+        //LevelEditorManager.instance.ToLoadNewSector();
+        LevelEditorManager.instance.ClearAllScene();
+        currentSectorName = sectorName;
+        LevelEditorManager.instance.LoadLevel(WorldManager.instance.currentWorldName, WorldManager.instance.currentLevelName, currentSectorName);
+        SectorPanel.SetActive(false);
+        LevelEditorManager.instance.CanPlayLevelTrue();
     }
+    /*/
     public void LoadNewSector()
     {
         currentSectorName = tempCurrentSectorName;
         LevelEditorManager.instance.LoadLevel(WorldManager.instance.currentWorldName, WorldManager.instance.currentLevelName, currentSectorName);
         SectorPanel.SetActive(false);
         LevelEditorManager.instance.CanPlayLevelTrue();
-    }
+    }*/
 
 }
