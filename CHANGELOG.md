@@ -12,6 +12,7 @@
   - Improvements in creating and opening sectors in the editor.
   - Added doors and keys to load/enter different sectors or use different points in the same sector.
   
+  - Note: Loading sectors and using keys are not fully done yet.
   - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
 
