@@ -195,46 +195,22 @@ jobs:
           path: build
 
   deploy_to_itchio:
-  runs-on: ubuntu-latest
-  needs: [buildForMac, buildForLinux, buildForWindows32, buildForWindows64]
-  steps:
-    - name: Download Windows Artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: Build_Windows
-        path: ${{ github.workspace }}/build_Windows
+    runs-on: ubuntu-latest
+    needs: [buildForMac, buildForLinux, buildForWindows32, buildForWindows64]
+    steps:
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          sudo mv butler /usr/local/bin/butler
 
-    - name: Install butler
-      run: |
-        curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
-        unzip butler.zip
-        chmod +x butler
-        sudo mv butler /usr/local/bin/butler
+      - name: Set up Butler credentials
+        run: |
+          echo "${{ secrets.BUTLER_API_KEY }}" | butler login --stdin
 
-    - name: Set up Butler credentials
-      run: |
-        echo "${{ secrets.BUTLER_API_KEY }}" | butler login --stdin
-
-    - name: Deploy Windows to itch.io
-      run: |
-        butler push ${{ github.workspace }}/build_Windows FunGame2022/the-adventures-of-the-willow:windows
-
-    - name: Download Mac Artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: Build_Mac
-        path: ${{ github.workspace }}/build_Mac
-
-    - name: Deploy Mac to itch.io
-      run: |
-        butler push ${{ github.workspace }}/build_Mac FunGame2022/the-adventures-of-the-willow:mac
-
-    - name: Download Linux Artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: Build_Linux
-        path: ${{ github.workspace }}/build_Linux
-
-    - name: Deploy Linux to itch.io
-      run: |
-        butler push ${{ github.workspace }}/build_Linux FunGame2022/the-adventures-of-the-willow:linux
+      - name: Deploy to itch.io
+        run: |
+          butler push ${{ github.workspace }}/build_Mac FunGame2022/the-adventures-of-the-willow:mac
+          butler push ${{ github.workspace }}/build_Linux FunGame2022/the-adventures-of-the-willow:linux
+          butler push ${{ github.workspace }}/build_Windows FunGame2022/the-adventures-of-the-willow:windows
