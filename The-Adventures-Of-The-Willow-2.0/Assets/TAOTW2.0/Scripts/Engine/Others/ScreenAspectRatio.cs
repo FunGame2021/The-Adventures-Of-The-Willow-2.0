@@ -52,7 +52,7 @@ public class ScreenAspectRatio : MonoBehaviour
         {
             m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
         }
-        GetCharacterPosition();
+        GetStartCharacterPosition();
        
     }
 
@@ -153,10 +153,27 @@ public class ScreenAspectRatio : MonoBehaviour
         {
             LevelInfoAnimator.SetBool("StartedLevel", true);
         }
-        GetCharacterPosition();
 
     }
-    public void GetCharacterPosition()
+    public void OpenRadiusTransition()
+    {
+        m_isStarting = true; 
+        m_target = GameObject.FindGameObjectWithTag("Player");
+        if (m_target == null)
+        {
+            m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
+        }
+    }
+    public void CloseRadiusTransition()
+    {
+        m_isStarting = false; 
+        m_target = GameObject.FindGameObjectWithTag("Player");
+        if (m_target == null)
+        {
+            m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
+        }
+    }
+    public void GetStartCharacterPosition()
     {
         Vector3 screenPos = Camera.main.WorldToScreenPoint(m_target.transform.position);
 
@@ -203,4 +220,53 @@ public class ScreenAspectRatio : MonoBehaviour
         m_maskTransition.material.SetFloat("Center_X", characterScreen_w);
         m_maskTransition.material.SetFloat("Center_Y", characterScreen_h);
     }
+    public void GetCharacterPosition()
+    {
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(m_target.transform.position);
+
+        float characterScreen_w = 0;
+        float characterScreen_h = 0;
+
+        //if (m_isStarting)
+        //{
+        //    m_radius = 0;
+        //    m_maskTransition.material.SetFloat("Radius", m_radius);
+        //}
+        //else
+        //{
+        //    m_radius = 1;
+        //    m_maskTransition.material.SetFloat("Radius", m_radius);
+        //}
+
+        m_screen_h = Screen.height;
+        m_screen_w = Screen.width;
+
+        if (m_screen_w < m_screen_h) //Portrait
+        {
+            m_maskTransition.rectTransform.sizeDelta = new Vector2(m_canvas.rect.height, m_canvas.rect.height);
+            float newScreenPos_x = screenPos.x + (m_screen_h - m_screen_w) / 2;
+
+            characterScreen_w = (newScreenPos_x * 100) / m_screen_h;
+            characterScreen_w /= 100;
+
+            characterScreen_h = (screenPos.y * 100) / m_screen_h;
+            characterScreen_h /= 100;
+        }
+        else  //Landscape
+        {
+            m_maskTransition.rectTransform.sizeDelta = new Vector2(m_canvas.rect.width, m_canvas.rect.width);
+            float newScreenPos_y = screenPos.y + (m_screen_w - m_screen_h) / 2;
+
+            characterScreen_w = (screenPos.x * 100) / m_screen_w;
+            characterScreen_w /= 100;
+
+            characterScreen_h = (newScreenPos_y * 100) / m_screen_w;
+            characterScreen_h /= 100;
+        }
+
+        m_maskTransition.material.SetFloat("Center_X", characterScreen_w);
+        m_maskTransition.material.SetFloat("Center_Y", characterScreen_h);
+    }
+
+
 }

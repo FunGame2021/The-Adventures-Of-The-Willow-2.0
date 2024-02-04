@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,9 @@ public class LoadSectorTransition : MonoBehaviour
 {
     public static LoadSectorTransition instance;
     private GameObject Player;
+
+    private string tempPositionPoint;
+    private string tempSectorName;
 
     private void Start()
     {
@@ -18,16 +22,26 @@ public class LoadSectorTransition : MonoBehaviour
     }
     public void sectorCloseDoorTransition(string SectorName, string positionPoint)
     {
-        ScreenAspectRatio.instance.CloseTransition();
+        tempPositionPoint = positionPoint;
+        tempSectorName = SectorName;
+
+        ScreenAspectRatio.instance.GetCharacterPosition();
+        ScreenAspectRatio.instance.CloseRadiusTransition();
+        StartCoroutine(ToEndectorCloseDoorTransition());
+    }
+    IEnumerator ToEndectorCloseDoorTransition()
+    {
+        yield return new WaitForSeconds(3f);
+
         if (LoadPlayLevel.instance != null)
         {
-            LoadPlayLevel.instance.ActiveSector(SectorName);
+            LoadPlayLevel.instance.ActiveSector(tempSectorName);
         }
         else if (playLevel.instance != null)
         {
-            playLevel.instance.ActiveSector(SectorName);
+            playLevel.instance.ActiveSector(tempSectorName);
         }
-        StartCoroutine(ToFindDoorPoint(positionPoint));
+        StartCoroutine(ToFindDoorPoint(tempPositionPoint));
     }
     IEnumerator ToFindDoorPoint(string positionPoint)
     {
@@ -35,6 +49,7 @@ public class LoadSectorTransition : MonoBehaviour
         // Encontrar todos os objetos com a tag "Door" no setor específico
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
 
+        Player = GameObject.FindGameObjectWithTag("Player");
         // Filtrar os objetos para encontrar aquele que tem o mesmo nome que positionPoint
         foreach (GameObject doorObject in doors)
         {
@@ -51,16 +66,25 @@ public class LoadSectorTransition : MonoBehaviour
     }
     public void sectorCloseTransition(string SectorName, string positionPoint)
     {
-        ScreenAspectRatio.instance.CloseTransition();
-        if(LoadPlayLevel.instance != null)
+        tempPositionPoint = positionPoint;
+        tempSectorName = SectorName;
+        ScreenAspectRatio.instance.GetCharacterPosition();
+        ScreenAspectRatio.instance.CloseRadiusTransition();
+        StartCoroutine(ToEndsectorCloseTransition());
+    }
+    IEnumerator ToEndsectorCloseTransition()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (LoadPlayLevel.instance != null)
         {
-            LoadPlayLevel.instance.ActiveSector(SectorName);
+            LoadPlayLevel.instance.ActiveSector(tempSectorName);
         }
-        else if(playLevel.instance != null)
+        else if (playLevel.instance != null)
         {
-            playLevel.instance.ActiveSector(SectorName);
+            playLevel.instance.ActiveSector(tempSectorName);
         }
-        StartCoroutine(ToFindSpawnPoint(positionPoint));
+        StartCoroutine(ToFindSpawnPoint(tempPositionPoint));
     }
     IEnumerator ToFindSpawnPoint(string positionPoint)
     {
@@ -71,11 +95,20 @@ public class LoadSectorTransition : MonoBehaviour
         // Filtrar os objetos para encontrar o que tem o mesmo nome que positionPoint
         GameObject spawnPoint = Array.Find(spawnPoints, point => point.name == positionPoint);
 
+        Player = GameObject.FindGameObjectWithTag("Player");
         if (spawnPoint != null)
         {
-            // Teleportar o jogador para o SpawnPoint encontrado
-            Player.transform.position = spawnPoint.transform.position;
-            StartCoroutine(ToLoad());
+            // Verificar se o jogador e spawnPoint não são nulos antes de acessar transform.position
+            if (Player != null && spawnPoint != null)
+            {
+                // Teleportar o jogador para o SpawnPoint encontrado
+                Player.transform.position = spawnPoint.transform.position;
+                StartCoroutine(ToLoad());
+            }
+            else
+            {
+                Debug.LogError("Player or spawnPoint is null."+ positionPoint.ToString() + spawnPoint.ToString());
+            }
         }
     }
     IEnumerator ToLoad()
@@ -86,6 +119,7 @@ public class LoadSectorTransition : MonoBehaviour
     }
     public void sectorOpenTransition()
     {
-        ScreenAspectRatio.instance.OpenTransition();
+        ScreenAspectRatio.instance.GetCharacterPosition();
+        ScreenAspectRatio.instance.OpenRadiusTransition();
     }
 }

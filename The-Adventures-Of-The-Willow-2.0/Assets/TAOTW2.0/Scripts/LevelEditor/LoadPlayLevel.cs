@@ -167,6 +167,8 @@ public class LoadPlayLevel : MonoBehaviour
                 PlayMusic();
                 LevelTimeManager.instance.Begin(gameLevelTime);
                 GameStates.instance.isLevelStarted = true;
+                ScreenAspectRatio.instance.StartTransitionNow();
+                PressStartInfo.SetActive(false);
             }
         }
 

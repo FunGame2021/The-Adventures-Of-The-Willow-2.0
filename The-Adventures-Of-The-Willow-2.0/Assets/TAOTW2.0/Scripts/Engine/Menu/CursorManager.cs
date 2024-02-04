@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CursorManager : MonoBehaviour
 {
-	public static CursorManager cursorManagerInstance;
+	public static CursorManager instance;
 
 	[SerializeField] private bool CursorLockedVar;
 	
@@ -14,9 +14,9 @@ public class CursorManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = (false);
 		CursorLockedVar = (false);
-		if(cursorManagerInstance == null)
+		if(instance == null)
 		{
-			cursorManagerInstance = this;
+            instance = this;
 		}
     }
 

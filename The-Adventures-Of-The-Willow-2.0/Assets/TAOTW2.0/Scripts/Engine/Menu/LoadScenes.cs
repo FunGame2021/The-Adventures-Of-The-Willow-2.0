@@ -28,11 +28,12 @@ public class LoadScenes : MonoBehaviour
         {
             if (!isLevelEditor)
             {
-                if (LoadWorldBack.instance != null)
-                {
-                    LoadWorldBack.instance.WorldLoadAfterPlay();
-                }
-                else
+            //    if (LoadWorldBack.instance != null)
+            //    {
+            //        LoadWorldBack.instance.WorldLoadAfterPlay();
+            //    }
+                
+                if(LoadWorldBack.instance == null)
                 {
                     SceneManager.LoadScene(nametoescape);
                 }
@@ -45,10 +46,12 @@ public class LoadScenes : MonoBehaviour
         if (LoadWorldBack.instance != null)
         {
             LoadWorldBack.instance.WorldLoadAfterPlay();
+            Time.timeScale = 1;
         }
         else
         {
             SceneManager.LoadScene(nametoescape);
+            Time.timeScale = 1;
         }
     }
 	

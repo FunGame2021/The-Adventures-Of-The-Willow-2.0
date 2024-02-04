@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class ActivateCursor : MonoBehaviour
 {
-	public CursorManager cursorManager;
-	
-    
     void Update()
     {
-        cursorManager.cursorAppear();
+        CursorManager.instance.cursorAppear();
     }
 }
