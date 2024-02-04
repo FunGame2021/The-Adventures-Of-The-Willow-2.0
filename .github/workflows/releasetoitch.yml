@@ -250,13 +250,13 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
 
       - name: Deploy to itch.io - Mac
-        run: butler push ./build/toReleaseMac/TheAdventuresOfTheWillow_Mac.zip FunGame2022/the-adventures-of-the-willow:mac
+        run: butler push ./build/toReleaseMac/TheAdventuresOfTheWillow_Mac.zip FunGame2022/the-adventures-of-the-willow/:mac
 
       - name: Deploy to itch.io - Linux
-        run: butler push ./build/toReleaseLinux/TheAdventuresOfTheWillow_Linux.zip FunGame2022/the-adventures-of-the-willow:linux
+        run: butler push ./build/toReleaseLinux/TheAdventuresOfTheWillow_Linux.zip FunGame2022/the-adventures-of-the-willow/:linux
 
       - name: Deploy to itch.io - Windows 64
-        run: butler push ./build/toReleaseWindows64/TheAdventuresOfTheWillow_Windows64.zip FunGame2022/the-adventures-of-the-willow:windows
+        run: butler push ./build/toReleaseWindows64/TheAdventuresOfTheWillow_Windows64.zip FunGame2022/the-adventures-of-the-willow/:windows
       
       - name: Deploy to itch.io - Windows 32
-        run: butler push ./build/toReleaseWindows32/TheAdventuresOfTheWillow_Windows32.zip FunGame2022/the-adventures-of-the-willow:windows
+        run: butler push ./build/toReleaseWindows32/TheAdventuresOfTheWillow_Windows32.zip FunGame2022/the-adventures-of-the-willow/:windows
