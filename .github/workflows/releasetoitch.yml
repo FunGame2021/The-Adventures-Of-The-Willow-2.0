@@ -205,9 +205,10 @@ jobs:
           chmod +x butler
           sudo mv butler /usr/local/bin/butler
 
-      - name: Set up Butler credentials
-        run: |
-          echo "${{ secrets.BUTLER_API_KEY }}" | butler login --stdin
+      - name: Set Butler Credetials
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
 
       - name: Deploy to itch.io
         run: |
