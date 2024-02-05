@@ -10,7 +10,12 @@
   - Removed the restriction of adding tiles only inside the grid (this now serves as an isolation reference so the camera does not deviate from the level so as not to show empty areas).
   - Added sector loading when playing.
   - Improvements in creating and opening sectors in the editor.
-  - Added doors and keys to load/enter different sectors or use different points in the same sector.
+  - Added doors to load/enter different sectors or use different points in the same sector.
+  - Improvements in Sector loading.
+  - Added playing and stopping music according to sectors.
+  - Improved transitions.
+  - Added environmental particle time.
+  - Added audio for the time countdown.
   
   - Note: Loading sectors and using keys are not fully done yet.
   - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").

@@ -65,6 +65,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference HealthCollect { get; private set; }
     [field: SerializeField] public EventReference PowerUpCollect { get; private set; }
     [field: SerializeField] public EventReference StarCollect { get; private set; }
+    [field: SerializeField] public EventReference TickTimer { get; private set; }
+    [field: SerializeField] public EventReference Countdown { get; private set; }
 
 
     [field: Header("Objects Triggers")]

@@ -26,6 +26,14 @@ public class CheckPoint : MonoBehaviour
         if (checkpoint.gameObject.CompareTag("Player"))
         {
             PlayerHealth.instance.playerPosCheck = thisPosition;
+            if(LoadPlayLevel.instance != null)
+            {
+                PlayerHealth.instance.LastSectorCheck = LoadPlayLevel.instance.currentSectorActive;
+            }
+            if(playLevel.instance != null)
+            {
+                PlayerHealth.instance.LastSectorCheck = playLevel.instance.playLevelCurrentSectorActive;
+            }
             
             if (!AudioPlayed)
             {

@@ -2114,6 +2114,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.levelPreferences.BackgroundName = "GreenMountains_01";
             currentSectorData.levelPreferences.BackgroundOffset = 9.5f;
             currentSectorData.levelPreferences.TimeWeather = "MorningVolume";
+            currentSectorData.levelPreferences.Weather = "Sun";
 
             currentSectorData.enemySaveData = new List<EnemySaveData>();
             currentSectorData.decorSaveData = new List<DecorSaveData>();
@@ -2153,6 +2154,7 @@ public class LevelEditorManager : MonoBehaviour
             currentSectorData.levelPreferences.BackgroundName = LevelSettings.instance.BackgroundToSave;
             currentSectorData.levelPreferences.BackgroundOffset = LevelSettings.instance.BackgroundOffsetToSave;
             currentSectorData.levelPreferences.TimeWeather = LevelSettings.instance.volumeNameTimeWeather;
+            currentSectorData.levelPreferences.Weather = LevelSettings.instance.particleNameWeather;
 
             currentSectorData.tilemapDataList = tilemapDataList; // Preencha com os dados apropriados
             currentSectorData.enemySaveData = enemyList; // Preencha com os dados apropriados
@@ -2303,8 +2305,10 @@ public class LevelEditorManager : MonoBehaviour
                     string backgroundName = sectorData.levelPreferences.BackgroundName;
                     float backgroundOffset = sectorData.levelPreferences.BackgroundOffset;
                     string TimeWeatherName = sectorData.levelPreferences.TimeWeather;
+                    string WeatherName = sectorData.levelPreferences.Weather;
 
                     LevelSettings.instance.UpdateTimeWeather(TimeWeatherName);
+                    LevelSettings.instance.UpdateWeather(WeatherName);
                     // Chame a função de atualização do background
                     LevelSettings.instance.UpdateBackground(backgroundName, backgroundOffset);
 
@@ -4133,7 +4137,7 @@ public class LevelPreferences
     public int MusicID;
     public string BackgroundName;
     public float BackgroundOffset;
-    public string WeatherName;
+    public string Weather;
     public string TimeWeather;
 }
 

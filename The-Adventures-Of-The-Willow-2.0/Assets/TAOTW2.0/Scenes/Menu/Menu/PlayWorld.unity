@@ -311,6 +311,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &183836023
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 183836024}
+  m_Layer: 0
+  m_Name: Sector3Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &183836024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183836023}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1919.9999, y: -1079.6521, z: -55.65217}
+  m_LocalScale: {x: 5.565217, y: 5.565217, z: 5.565217}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384434400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &190290279
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,6 +842,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347396441}
   m_CullTransparentMesh: 1
+--- !u!1 &351130340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 351130341}
+  m_Layer: 0
+  m_Name: Sector1Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &351130341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351130340}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1919.9999, y: -1079.6521, z: -55.65217}
+  m_LocalScale: {x: 5.565217, y: 5.565217, z: 5.565217}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384434400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &354268339
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,6 +1098,11 @@ RectTransform:
   - {fileID: 1762757193}
   - {fileID: 1697812996}
   - {fileID: 1574313476}
+  - {fileID: 351130341}
+  - {fileID: 1212822797}
+  - {fileID: 183836024}
+  - {fileID: 2047070173}
+  - {fileID: 1498457445}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2342,6 +2409,12 @@ MonoBehaviour:
   ScriptableEnemyData: {fileID: 11400000, guid: 6af1fab145e678844b8645684e919a1e, type: 2}
   backgroundData: {fileID: 11400000, guid: 40ca6bab6dff4be49a37108b44911584, type: 2}
   ScriptableTimeWeatherData: {fileID: 11400000, guid: 21f99112399190b4ba632e22276fc862, type: 2}
+  ScriptableWeatherData: {fileID: 11400000, guid: b8df986a1da231243862e254ede215a7, type: 2}
+  Sector1Weather: {fileID: 351130340}
+  Sector2Weather: {fileID: 1212822796}
+  Sector3Weather: {fileID: 183836023}
+  Sector4Weather: {fileID: 2047070172}
+  Sector5Weather: {fileID: 1498457444}
   ScriptableGameObjectData: {fileID: 11400000, guid: b4299db087183ea48a5e12d87cd3a4b5, type: 2}
   PlayerPrefab: {fileID: 155168309214299445, guid: 280e6a23a2ee9c6469e881e2754c4b90, type: 3}
   WorldPlayerPrefab: {fileID: 155168309214299445, guid: 891d45ee5f969db46a2444390c02ffa3, type: 3}
@@ -2721,6 +2794,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1212822796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1212822797}
+  m_Layer: 0
+  m_Name: Sector2Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1212822797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212822796}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1919.9999, y: -1079.6521, z: -55.65217}
+  m_LocalScale: {x: 5.565217, y: 5.565217, z: 5.565217}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384434400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1253994782
 GameObject:
   m_ObjectHideFlags: 0
@@ -3317,6 +3421,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468750065}
   m_CullTransparentMesh: 1
+--- !u!1 &1498457444
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1498457445}
+  m_Layer: 0
+  m_Name: Sector5Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1498457445
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498457444}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1919.9999, y: -1079.6521, z: -55.65217}
+  m_LocalScale: {x: 5.565217, y: 5.565217, z: 5.565217}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384434400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1499736498
 GameObject:
   m_ObjectHideFlags: 0
@@ -5210,6 +5345,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041153865}
   m_CullTransparentMesh: 1
+--- !u!1 &2047070172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2047070173}
+  m_Layer: 0
+  m_Name: Sector4Weather
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2047070173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047070172}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1919.9999, y: -1079.6521, z: -55.65217}
+  m_LocalScale: {x: 5.565217, y: 5.565217, z: 5.565217}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 384434400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2059424391
 GameObject:
   m_ObjectHideFlags: 0

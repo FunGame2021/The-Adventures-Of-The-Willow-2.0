@@ -71,6 +71,13 @@ public class LevelSettings : MonoBehaviour
     private GameObject currentTimeWeatherInstance;
     #endregion
 
+    #region Weather
+    public string particleNameWeather;
+    public WeatherData ScriptableWeatherData;
+    [SerializeField] private Transform weatherLocal;
+    private GameObject currentWeatherInstance;
+    #endregion
+
     private void Awake()
     {
         if (instance == null)
@@ -632,6 +639,73 @@ public class LevelSettings : MonoBehaviour
     {
         volumeNameTimeWeather = "DarkVolume";
         UpdateTimeWeather("DarkVolume");
+    }
+    #endregion
+
+    #region Weather
+    public void UpdateWeather(string weather)
+    {
+        particleNameWeather = weather;
+
+        foreach (Transform child in weatherLocal)
+        {
+            Destroy(child.gameObject);
+        }
+        GameObject WeatherPrefab = null;
+        foreach (WeatherData.WeatherCategory WeatherCategory in ScriptableWeatherData.WeatherCategories)
+        {
+            foreach (WeatherData.Weather WeatherInfo in WeatherCategory.WeatherList)
+            {
+                if (WeatherInfo.WeatherName == particleNameWeather)
+                {
+                    WeatherPrefab = WeatherInfo.WeatherPrefab;
+                    break;
+                }
+            }
+            if (WeatherPrefab != null)
+                break;
+        }
+        if (WeatherPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(7, 10, 10);
+            currentWeatherInstance = Instantiate(WeatherPrefab, spawnPosition, Quaternion.identity, weatherLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for Weather: " + particleNameWeather);
+        }
+    }
+
+    public void RainSelected()
+    {
+        particleNameWeather = "Rain";
+        UpdateWeather("Rain");
+    }
+    public void SnowSelected()
+    {
+        particleNameWeather = "Snow";
+        UpdateWeather("Snow");
+    }
+    public void StormRain()
+    {
+        particleNameWeather = "Storm_Rain";
+        UpdateWeather("Storm_Rain");
+    }
+    public void Storm()
+    {
+        particleNameWeather = "Storm";
+        UpdateWeather("Storm");
+    }
+    public void Sun()
+    {
+        particleNameWeather = "Sun";
+        UpdateWeather("Sun");
+    }
+    public void FallLeaves()
+    {
+        particleNameWeather = "FallLeaves";
+        UpdateWeather("FallLeaves");
     }
     #endregion
 }

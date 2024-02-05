@@ -19,10 +19,13 @@ public class LevelTimeManager : MonoBehaviour
     private Coroutine timerCoroutine; // Usado para controlar a contagem de tempo.
 
     [SerializeField] private bool isNormalGame;
+    private int lastSecond = -1; // Inicializa com um valor impossível
+
 
     //Level info save
     public float elapsedTime;
-
+    bool countdownPlayed = true;
+    bool started;
 
     void Start()
     {
@@ -30,6 +33,8 @@ public class LevelTimeManager : MonoBehaviour
         {
             instance = this;
         }
+
+        countdownPlayed = true;
         //Call From Load Level
         //Being(Duration);
     }
@@ -46,9 +51,11 @@ public class LevelTimeManager : MonoBehaviour
             {
                 LoadPlayLevel.instance.SpeedMusic();
             }
+            started = false;
         }
         else
         {
+            started = true;
             if (isNormalGame)
             {
 
@@ -60,10 +67,28 @@ public class LevelTimeManager : MonoBehaviour
                 LoadPlayLevel.instance.SpeedMusicNormal();
             }
         }
+        if (remainingDuration <= 20 && remainingDuration >= 0 && !countdownPlayed && !started)
+        {
+            countdownPlayed = true;
+            AudioManager.instance.PlayOneShotNo3D(FMODEvents.instance.Countdown);
+        }
+
+        int currentSecond = remainingDuration % 60;
+        if (currentSecond != lastSecond)
+        {
+            lastSecond = currentSecond;
+
+            if (currentSecond <= 10 && currentSecond > 0)
+            {
+                PlayCountdownSound();
+            }
+        }
+
     }
 
     public void Begin(int seconds)
     {
+        countdownPlayed = false;
         InitialDuration = seconds; // Atualiza a duração inicial
         remainingDuration = InitialDuration;
         elapsedTime = 0f; // Inicializa o tempo decorrido
@@ -114,6 +139,8 @@ public class LevelTimeManager : MonoBehaviour
             if (!isPaused)
             {
                 elapsedTime += 1f; // Incrementa o tempo decorrido
+                                   
+                
                 UpdateUITimer();
                 remainingDuration--;
             }
@@ -121,7 +148,10 @@ public class LevelTimeManager : MonoBehaviour
         }
         OnEnd();
     }
-
+    private void PlayCountdownSound()
+    {
+        AudioManager.instance.PlayOneShotNo3D(FMODEvents.instance.TickTimer);
+    }
     private void UpdateUITimer()
     {
         uiTimerText.text = $"{remainingDuration / 60:00} : {remainingDuration % 60:00}";

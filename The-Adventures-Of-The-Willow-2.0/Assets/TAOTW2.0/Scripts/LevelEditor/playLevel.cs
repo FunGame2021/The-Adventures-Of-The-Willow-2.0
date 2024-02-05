@@ -25,6 +25,12 @@ public class playLevel : MonoBehaviour
     [SerializeField] private GameObject LevelInfoPanel, WorldInfoPanel;
     #region Load Level
     public int MusicID;
+    private int tempMusicID;
+    private int MusicIDSector1;
+    private int MusicIDSector2;
+    private int MusicIDSector3;
+    private int MusicIDSector4;
+    private int MusicIDSector5;
     private FMOD.Studio.EventInstance musicEventInstance;
     #region Manager
     public int gameLevelTime;
@@ -54,6 +60,18 @@ public class playLevel : MonoBehaviour
     private Transform TimeWeatherLocal;
     [SerializeField] private TimeWeatherData ScriptableTimeWeatherData;
     private GameObject currentTimeWeatherInstance;
+    #endregion
+
+    #region Weather
+    private string particleNameWeather;
+    [SerializeField] private WeatherData ScriptableWeatherData;
+    private Transform WeatherLocal;
+    private GameObject currentWeatherInstance;
+    [SerializeField] private GameObject Sector1Weather;
+    [SerializeField] private GameObject Sector2Weather;
+    [SerializeField] private GameObject Sector3Weather;
+    [SerializeField] private GameObject Sector4Weather;
+    [SerializeField] private GameObject Sector5Weather;
     #endregion
 
     #region GameObject
@@ -107,6 +125,9 @@ public class playLevel : MonoBehaviour
     [SerializeField] private Transform Sector3;
     [SerializeField] private Transform Sector4;
     [SerializeField] private Transform Sector5;
+
+
+    public string playLevelCurrentSectorActive;
     #endregion
 
     #region particles
@@ -221,7 +242,7 @@ public class playLevel : MonoBehaviour
             {
                 isPlayingLevel = true;
                 StartedLevel = true;
-                PlayMusic();
+                PlayMusic(MusicIDSector1);
                 LevelTimeManager.instance.Begin(gameLevelTime);
                 GameStates.instance.isLevelStarted = true;
                 ScreenAspectRatio.instance.StartTransitionNow();
@@ -232,7 +253,7 @@ public class playLevel : MonoBehaviour
                 isPlayingWorld = true;
                 StartedWorld = true;
                 WorldPressStartInfo.SetActive(false);
-                PlayMusic();
+                PlayMusic(MusicIDSector1);
                 ScreenAspectRatio.instance.StartTransitionNow();
             }
         }
@@ -311,6 +332,11 @@ public class playLevel : MonoBehaviour
                 Sector3.gameObject.SetActive(false);
                 Sector4.gameObject.SetActive(false);
                 Sector5.gameObject.SetActive(false);
+                Sector1Weather.gameObject.SetActive(true);
+                Sector2Weather.gameObject.SetActive(false);
+                Sector3Weather.gameObject.SetActive(false);
+                Sector4Weather.gameObject.SetActive(false);
+                Sector5Weather.gameObject.SetActive(false);
                 GridHeight = GridHeightCameraSector1;
                 GridWidth = GridWidthCameraSector1;
 
@@ -324,36 +350,62 @@ public class playLevel : MonoBehaviour
 
         // Encontre o transformador correspondente com base no nome do setor
         Transform sectorTransform = GetSectorTransform(sectorToActivate);
-
+        playLevelCurrentSectorActive = sectorToActivate;
         if (sectorTransform != null)
         {
             // Ativa o transformador do setor especificado
             sectorTransform.gameObject.SetActive(true);
             if (sectorTransform == Sector1)
             {
+                Sector1Weather.SetActive(true);
+                if (MusicID != MusicIDSector1)
+                {
+                    RePlayMusic(MusicIDSector1);
+                }
                 GridHeight = GridHeightCameraSector1;
                 GridWidth = GridWidthCameraSector1;
             }
             else if (sectorTransform == Sector2)
             {
+                Sector2Weather.SetActive(true);
+                if (MusicID != MusicIDSector2)
+                {
+                    RePlayMusic(MusicIDSector2);
+                }
                 GridHeight = GridHeightCameraSector2;
                 GridWidth = GridWidthCameraSector2;
             }
             else if (sectorTransform == Sector3)
             {
+                Sector3Weather.SetActive(true);
+                if (MusicID != MusicIDSector3)
+                {
+                    RePlayMusic(MusicIDSector3);
+                }
                 GridHeight = GridHeightCameraSector3;
                 GridWidth = GridWidthCameraSector3;
             }
             else if (sectorTransform == Sector4)
             {
+                if (MusicID != MusicIDSector4)
+                {
+                    RePlayMusic(MusicIDSector4);
+                }
+                Sector4Weather.SetActive(true);
                 GridHeight = GridHeightCameraSector4;
                 GridWidth = GridWidthCameraSector4;
             }
             else if (sectorTransform == Sector5)
             {
+                if (MusicID != MusicIDSector5)
+                {
+                    RePlayMusic(MusicIDSector5);
+                }
+                Sector5Weather.SetActive(true);
                 GridHeight = GridHeightCameraSector5;
                 GridWidth = GridWidthCameraSector5;
             }
+            CameraZoom.instance.AdjustGridColliderSize();
         }
     }
     private void DisableAllSectorTransforms()
@@ -364,6 +416,11 @@ public class playLevel : MonoBehaviour
         Sector3.gameObject.SetActive(false);
         Sector4.gameObject.SetActive(false);
         Sector5.gameObject.SetActive(false);
+        Sector1Weather.gameObject.SetActive(false);
+        Sector2Weather.gameObject.SetActive(false);
+        Sector3Weather.gameObject.SetActive(false);
+        Sector4Weather.gameObject.SetActive(false);
+        Sector5Weather.gameObject.SetActive(false);
     }
     private Transform GetSectorTransform(string sectorName)
     {
@@ -427,13 +484,17 @@ public class playLevel : MonoBehaviour
         List<MovingObjectSaveData> movingObjectList = sectorData.movingObjectsaveData;
 
 
-        MusicID = sectorData.levelPreferences.MusicID;
+        tempMusicID = sectorData.levelPreferences.MusicID;
+        setMusicIDS(tempMusicID, sectorTransform.name);
+
 
         // Carregar dados do background
         string backgroundName = sectorData.levelPreferences.BackgroundName; // Substitua pelo nome da variável correta
         float backgroundOffset = sectorData.levelPreferences.BackgroundOffset; // Substitua pelo nome da variável correta
         string timeWeatherName = sectorData.levelPreferences.TimeWeather;
+        string WeatherName = sectorData.levelPreferences.Weather;
         LoadTimeWeather(timeWeatherName, sectorTransform);
+        LoadWeather(WeatherName, sectorTransform);
         // Chame a função de atualização do background
         LoadBackground(backgroundName, backgroundOffset, sectorTransform);
 
@@ -1062,6 +1123,58 @@ public class playLevel : MonoBehaviour
             Debug.LogWarning("Prefab not found for TimeWeather: " + volumeNameTimeWeather);
         }
     }
+    private void LoadWeather(string weather, Transform sectorTransform)
+    {
+        particleNameWeather = weather;
+        if (sectorTransform == Sector1)
+        {
+            WeatherLocal = Sector1Weather.transform;
+        }
+        else if (sectorTransform == Sector2)
+        {
+            WeatherLocal = Sector2Weather.transform;
+        }
+        else if (sectorTransform == Sector3)
+        {
+            WeatherLocal = Sector3Weather.transform;
+        }
+        else if (sectorTransform == Sector4)
+        {
+            WeatherLocal = Sector4Weather.transform;
+        }
+        else if (sectorTransform == Sector5)
+        {
+            WeatherLocal = Sector5Weather.transform;
+        }
+        foreach (Transform child in WeatherLocal)
+        {
+            Destroy(child.gameObject);
+        }
+        GameObject WeatherPrefab = null;
+        foreach (WeatherData.WeatherCategory WeatherCategory in ScriptableWeatherData.WeatherCategories)
+        {
+            foreach (WeatherData.Weather WeatherInfo in WeatherCategory.WeatherList)
+            {
+                if (WeatherInfo.WeatherName == particleNameWeather)
+                {
+                    WeatherPrefab = WeatherInfo.WeatherPrefab;
+                    break;
+                }
+            }
+            if (WeatherPrefab != null)
+                break;
+        }
+        if (WeatherPrefab != null)
+        {
+            // Instancie o novo prefab de fundo no local com base no offset
+            Vector3 spawnPosition = new Vector3(7, 10, 0);
+            currentWeatherInstance = Instantiate(WeatherPrefab, spawnPosition, Quaternion.identity, WeatherLocal);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab not found for Weather: " + particleNameWeather);
+        }
+    }
     private void LoadBackground(string backgroundName, float offset, Transform sectorTransform)
     {
         GameObject backgroundLocalObject = new GameObject("backgroundLocal");
@@ -1104,7 +1217,29 @@ public class playLevel : MonoBehaviour
 
     }
 
-
+    private void setMusicIDS(int musicID, string sector)
+    {
+        if (sector == "Sector1")
+        {
+            MusicIDSector1 = musicID;
+        }
+        else if (sector == "Sector2")
+        {
+            MusicIDSector2 = musicID;
+        }
+        else if (sector == "Sector3")
+        {
+            MusicIDSector3 = musicID;
+        }
+        else if (sector == "Sector4")
+        {
+            MusicIDSector4 = musicID;
+        }
+        else if (sector == "Sector5")
+        {
+            MusicIDSector5 = musicID;
+        }
+    }
     public void AdjustDeathZoneColliderSize(Transform sectorTransform)
     {
         GameObject DeathZone = Instantiate(DeathZonePrefab, new Vector3(0, -0.07f, 0), Quaternion.identity);
@@ -1142,13 +1277,33 @@ public class playLevel : MonoBehaviour
 
 
     // Função para reproduzir a música selecionada
-    private void PlayMusic()
+    private void PlayMusic(int id)
     {
         // Carregar o evento FMOD associado à música selecionada
-        if (FMODEvents.instance != null && FMODEvents.instance.musicList.ContainsKey((FMODEvents.MusicID)MusicID))
+        if (FMODEvents.instance != null && FMODEvents.instance.musicList.ContainsKey((FMODEvents.MusicID)id))
         {
-            EventReference musicEvent = FMODEvents.instance.musicList[(FMODEvents.MusicID)MusicID];
+            EventReference musicEvent = FMODEvents.instance.musicList[(FMODEvents.MusicID)id];
 
+            MusicID = id;
+
+            // Criar uma nova instância do evento FMOD para a nova música
+            musicEventInstance = RuntimeManager.CreateInstance(musicEvent);
+
+            // Tocar a música a partir do início
+            if (musicEventInstance.isValid())
+            {
+                musicEventInstance.start();
+            }
+        }
+    }
+    private void RePlayMusic(int id)
+    {
+        StopMusic();
+        // Carregar o evento FMOD associado à música selecionada
+        if (FMODEvents.instance != null && FMODEvents.instance.musicList.ContainsKey((FMODEvents.MusicID)id))
+        {
+            EventReference musicEvent = FMODEvents.instance.musicList[(FMODEvents.MusicID)id];
+            MusicID = id;
 
             // Criar uma nova instância do evento FMOD para a nova música
             musicEventInstance = RuntimeManager.CreateInstance(musicEvent);

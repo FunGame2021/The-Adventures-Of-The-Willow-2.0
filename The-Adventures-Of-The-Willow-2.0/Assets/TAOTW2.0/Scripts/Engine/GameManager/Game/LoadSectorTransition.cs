@@ -11,6 +11,7 @@ public class LoadSectorTransition : MonoBehaviour
 
     private string tempPositionPoint;
     private string tempSectorName;
+    private Vector3 tempCheckPositionPoint;
 
     private void Start()
     {
@@ -24,14 +25,14 @@ public class LoadSectorTransition : MonoBehaviour
     {
         tempPositionPoint = positionPoint;
         tempSectorName = SectorName;
-
+        PlayerHealth.instance.isInvincible = true;
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.CloseRadiusTransition();
         StartCoroutine(ToEndectorCloseDoorTransition());
     }
     IEnumerator ToEndectorCloseDoorTransition()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
         if (LoadPlayLevel.instance != null)
         {
@@ -45,7 +46,7 @@ public class LoadSectorTransition : MonoBehaviour
     }
     IEnumerator ToFindDoorPoint(string positionPoint)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         // Encontrar todos os objetos com a tag "Door" no setor específico
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
 
@@ -70,11 +71,12 @@ public class LoadSectorTransition : MonoBehaviour
         tempSectorName = SectorName;
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.CloseRadiusTransition();
+        PlayerHealth.instance.isInvincible = true;
         StartCoroutine(ToEndsectorCloseTransition());
     }
     IEnumerator ToEndsectorCloseTransition()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
         if (LoadPlayLevel.instance != null)
         {
@@ -88,7 +90,7 @@ public class LoadSectorTransition : MonoBehaviour
     }
     IEnumerator ToFindSpawnPoint(string positionPoint)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         // Encontrar todos os objetos com a tag "SpawnPoint" no setor específico
         GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
@@ -113,7 +115,7 @@ public class LoadSectorTransition : MonoBehaviour
     }
     IEnumerator ToLoad()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         sectorOpenTransition();
 
     }
@@ -121,5 +123,46 @@ public class LoadSectorTransition : MonoBehaviour
     {
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.OpenRadiusTransition();
+        PlayerHealth.instance.isInvincible = false;
+    }
+
+
+
+    public void sectorSimpleCloseTransition(string SectorName, Vector3 positionPoint)
+    {
+        tempCheckPositionPoint = positionPoint;
+        tempSectorName = SectorName;
+        ScreenAspectRatio.instance.GetCharacterPosition();
+        ScreenAspectRatio.instance.CloseRadiusTransition();
+        PlayerHealth.instance.isInvincible = true;
+        StartCoroutine(ToEndSimplesectorCloseTransition());
+    }
+    IEnumerator ToEndSimplesectorCloseTransition()
+    {
+        yield return new WaitForSeconds(2f);
+
+        if (LoadPlayLevel.instance != null)
+        {
+            LoadPlayLevel.instance.ActiveSector(tempSectorName);
+        }
+        else if (playLevel.instance != null)
+        {
+            playLevel.instance.ActiveSector(tempSectorName);
+        }
+        StartCoroutine(ToFindCheckPoint(tempCheckPositionPoint));
+    }
+    IEnumerator ToFindCheckPoint(Vector3 positionPoint)
+    {
+        yield return new WaitForSeconds(1f);
+        Player = GameObject.FindGameObjectWithTag("Player");
+        if (positionPoint != null)
+        {
+            if (Player != null && positionPoint != null)
+            {
+                // Teleportar o jogador para o SpawnPoint encontrado
+                Player.transform.position = positionPoint;
+                StartCoroutine(ToLoad());
+            }
+        }
     }
 }

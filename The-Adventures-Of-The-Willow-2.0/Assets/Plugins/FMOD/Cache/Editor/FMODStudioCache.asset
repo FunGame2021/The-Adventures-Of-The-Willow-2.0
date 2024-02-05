@@ -204,7 +204,7 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638425794787084754
+  lastModified: 638427567396519069
   FileSizes:
   - Name: Desktop
     Value: 7904
@@ -499,7 +499,7 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.assets.bank
   Name: Master.assets
   StudioPath: bank:/Master.assets
-  lastModified: 638425794787144699
+  lastModified: 638427567396609697
   FileSizes:
   - Name: Desktop
     Value: 494
@@ -548,12 +548,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/SFX.assets.bank
   Name: SFX.assets
   StudioPath: bank:/SFX.assets
-  lastModified: 638425794796491066
+  lastModified: 638427567766424672
   FileSizes:
   - Name: Desktop
-    Value: 2547392
+    Value: 2867168
   - Name: Mobile
-    Value: 4719904
+    Value: 5410592
   Exists: 1
 --- !u!114 &-4099481443579788325
 MonoBehaviour:
@@ -763,6 +763,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1344
+--- !u!114 &-1741868529543924743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Others/TickTimer
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Others/TickTimer
+  Guid:
+    Data1: 245329900
+    Data2: 1297438268
+    Data3: 93220739
+    Data4: -1719602049
+  Banks:
+  - {fileID: -1316155249848695341}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1000
 --- !u!114 &-1605842163967921670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -859,12 +886,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638425794794071032
+  lastModified: 638427567759441424
   FileSizes:
   - Name: Desktop
-    Value: 57920
+    Value: 59868
   - Name: Mobile
-    Value: 57920
+    Value: 59868
   Exists: 1
 --- !u!114 &-1118635482416120303
 MonoBehaviour:
@@ -952,12 +979,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638425794787184731
+  lastModified: 638427567396719690
   FileSizes:
   - Name: Desktop
-    Value: 4648
+    Value: 4740
   - Name: Mobile
-    Value: 4648
+    Value: 4740
   Exists: 1
 --- !u!114 &-413326299845429206
 MonoBehaviour:
@@ -1127,12 +1154,14 @@ MonoBehaviour:
   - {fileID: -8058457845667679931}
   - {fileID: -1605842163967921670}
   - {fileID: -2824921088928305566}
+  - {fileID: 7192566821719190204}
+  - {fileID: -1741868529543924743}
   EditorParameters: []
   MasterBanks:
   - {fileID: -7116817319431878045}
   StringsBanks:
   - {fileID: -510336797259339001}
-  cacheTime: 638425794796491066
+  cacheTime: 638427567766424672
   cacheVersion: 131605
 --- !u!114 &8231981627387293
 MonoBehaviour:
@@ -2193,6 +2222,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &7192566821719190204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Others/Countdown
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Others/Countdown
+  Guid:
+    Data1: 259359266
+    Data2: 1096432416
+    Data3: -1161946701
+    Data4: -67113829
+  Banks:
+  - {fileID: -1316155249848695341}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 25000
 --- !u!114 &7278997338697933607
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float knockbackDuration = 0.3f;
     [SerializeField] private float knockbackUpForce = 1f;
 
-
+    public string LastSectorCheck;
 
     void Start()
     {
@@ -186,7 +186,10 @@ public class PlayerHealth : MonoBehaviour
         if (playerPosCheck != null)
         {
             yield return new WaitForSeconds(toDie);
-            this.transform.position = playerPosCheck;
+            if (LoadSectorTransition.instance != null)
+            {
+                LoadSectorTransition.instance.sectorSimpleCloseTransition(LastSectorCheck, playerPosCheck);
+            }
             isDeadNow = false;
             PlayerController.instance.stopPlayer = false;
             LevelTimeManager.instance.RestartTimer();
@@ -211,7 +214,10 @@ public class PlayerHealth : MonoBehaviour
     {
         //playerAnimatiorController.PlayerStart();
         //PlayerController.instance.isDead = false;
-        this.transform.position = startPlayerPos;
+        if (LoadSectorTransition.instance != null)
+        {
+            LoadSectorTransition.instance.sectorSimpleCloseTransition("Sector1", startPlayerPos);
+        }
         isDeadNow = false;
         PlayerController.instance.stopPlayer = false;
         LevelTimeManager.instance.RestartTimer();
