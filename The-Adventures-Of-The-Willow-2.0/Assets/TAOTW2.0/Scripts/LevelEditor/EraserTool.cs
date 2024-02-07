@@ -107,7 +107,7 @@ public class EraserTool : MonoBehaviour
         }
     }
 
-    private void ToggleTileEraser()
+    public void ToggleTileEraser()
     {
         isActiveEraserTile = !isActiveEraserTile; // Inverte o estado da ferramenta
 
@@ -117,7 +117,7 @@ public class EraserTool : MonoBehaviour
         eraserTileButton.colors = colors;
     }
 
-    private void ToggleEnemyEraser()
+    public void ToggleEnemyEraser()
     {
         isActiveEraserEnemy = !isActiveEraserEnemy; // Inverte o estado da ferramenta
 

@@ -1283,4 +1283,13 @@ public class LoadPlayLevel : MonoBehaviour
             }
         }
     }
+
+
+    public void StopTestGameButton()
+    {
+        if (LevelEditorController.instance != null)
+        {
+            LevelEditorController.instance.TestGamePlay();
+        }
+    }
 }

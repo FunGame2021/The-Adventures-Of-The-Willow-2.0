@@ -574,6 +574,159 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftCTRL"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f363cdb-38db-4131-8042-6cff2735b23f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""U"",
+                    ""type"": ""Button"",
+                    ""id"": ""a571b744-1119-493b-b976-6e3b1a11b440"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Y"",
+                    ""type"": ""Button"",
+                    ""id"": ""45f90e8e-3ec0-483e-8c89-15afbbfaa51a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""I"",
+                    ""type"": ""Button"",
+                    ""id"": ""a824d638-319b-45b3-aff0-ce10404e8106"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""O"",
+                    ""type"": ""Button"",
+                    ""id"": ""6d5bc9a9-b7e5-4e4f-9ad1-1ea16663c0e2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""P"",
+                    ""type"": ""Button"",
+                    ""id"": ""b68952b1-be31-4655-a116-1a6d92d6fe38"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""H"",
+                    ""type"": ""Button"",
+                    ""id"": ""da6c9ad7-e5a0-447f-8ef4-c5aa044c3bc9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""J"",
+                    ""type"": ""Button"",
+                    ""id"": ""fccb4eca-449d-47a0-a7f2-a215eb3efae5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""K"",
+                    ""type"": ""Button"",
+                    ""id"": ""63730f01-2240-4fac-88b7-2b7678da08ed"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""E"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b9742d9-d1a0-4a6b-ba7e-4193b2d4ca28"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Q"",
+                    ""type"": ""Button"",
+                    ""id"": ""83488f2d-688b-4f57-a9f3-2e75bd8b0f7b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""W"",
+                    ""type"": ""Button"",
+                    ""id"": ""bdae94ed-414c-4d80-b383-d4c4323a776b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""A"",
+                    ""type"": ""Button"",
+                    ""id"": ""d5fca403-f64e-4b7a-a85b-da4438e60f09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""S"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8ad20ac-f39a-4c59-a3ba-34c49126b145"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""D"",
+                    ""type"": ""Button"",
+                    ""id"": ""4c035b3f-a61a-4f2b-b06b-959e461e7652"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""R"",
+                    ""type"": ""Button"",
+                    ""id"": ""d05eec4d-e2f1-49c7-955c-6c8c730193c5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""T"",
+                    ""type"": ""Button"",
+                    ""id"": ""1cef28cb-6217-4248-8691-86c68b0a95c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1009,7 +1162,7 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                 {
                     ""name"": """",
                     ""id"": ""d2123b4f-764a-4516-a54d-f504072fde20"",
-                    ""path"": ""<Keyboard>/t"",
+                    ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -1115,6 +1268,193 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""action"": ""LeftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7fc3a5c-63d3-4ebe-9d8b-5be70ff53e78"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftCTRL"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4dac3819-7b36-47de-b14b-dfc0f0bedd45"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""U"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc95fa3c-4a80-494b-ad19-18ab6aa9ca77"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Y"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""93ab986d-ae8a-4d67-906d-de519de63374"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""I"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1898fc9c-313f-4d9b-949a-96ea42b1932d"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""O"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a604012-1ad3-4ffa-9efb-3579c868ea60"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""P"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0630da1-9c03-4b1c-bc93-b39eaba8e4f1"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""H"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e9d6ee89-f1f6-4e25-ab42-c31e03fa78bc"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""J"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""032ac0a1-b17a-4650-a554-e8831c07bdf8"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""K"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ddfd6459-a88c-4bd5-9724-632a74249afa"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""E"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8c54c5cb-6391-435d-889c-aad0e32f8eb9"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Q"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d83fad18-1e6e-4300-b53e-1e0c9ccf07cf"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""W"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb0bc92d-a473-4cac-8c0a-a5bd9b4257a7"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f866bea-0765-475c-89b7-dd3a5875d393"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""S"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""025bcaa1-c0d3-42cc-9c4b-8d379c21a914"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""D"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85b973a8-76cb-4989-88e9-a0de123751ef"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""R"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55db1a20-4087-443b-b7ba-959a0b464c73"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""T"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1163,6 +1503,23 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         m_UI_InfoEditorPanel = m_UI.FindAction("InfoEditorPanel", throwIfNotFound: true);
         m_UI_TopEditorPanel = m_UI.FindAction("TopEditorPanel", throwIfNotFound: true);
         m_UI_LeftClick = m_UI.FindAction("LeftClick", throwIfNotFound: true);
+        m_UI_LeftCTRL = m_UI.FindAction("LeftCTRL", throwIfNotFound: true);
+        m_UI_U = m_UI.FindAction("U", throwIfNotFound: true);
+        m_UI_Y = m_UI.FindAction("Y", throwIfNotFound: true);
+        m_UI_I = m_UI.FindAction("I", throwIfNotFound: true);
+        m_UI_O = m_UI.FindAction("O", throwIfNotFound: true);
+        m_UI_P = m_UI.FindAction("P", throwIfNotFound: true);
+        m_UI_H = m_UI.FindAction("H", throwIfNotFound: true);
+        m_UI_J = m_UI.FindAction("J", throwIfNotFound: true);
+        m_UI_K = m_UI.FindAction("K", throwIfNotFound: true);
+        m_UI_E = m_UI.FindAction("E", throwIfNotFound: true);
+        m_UI_Q = m_UI.FindAction("Q", throwIfNotFound: true);
+        m_UI_W = m_UI.FindAction("W", throwIfNotFound: true);
+        m_UI_A = m_UI.FindAction("A", throwIfNotFound: true);
+        m_UI_S = m_UI.FindAction("S", throwIfNotFound: true);
+        m_UI_D = m_UI.FindAction("D", throwIfNotFound: true);
+        m_UI_R = m_UI.FindAction("R", throwIfNotFound: true);
+        m_UI_T = m_UI.FindAction("T", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1338,6 +1695,23 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
     private readonly InputAction m_UI_InfoEditorPanel;
     private readonly InputAction m_UI_TopEditorPanel;
     private readonly InputAction m_UI_LeftClick;
+    private readonly InputAction m_UI_LeftCTRL;
+    private readonly InputAction m_UI_U;
+    private readonly InputAction m_UI_Y;
+    private readonly InputAction m_UI_I;
+    private readonly InputAction m_UI_O;
+    private readonly InputAction m_UI_P;
+    private readonly InputAction m_UI_H;
+    private readonly InputAction m_UI_J;
+    private readonly InputAction m_UI_K;
+    private readonly InputAction m_UI_E;
+    private readonly InputAction m_UI_Q;
+    private readonly InputAction m_UI_W;
+    private readonly InputAction m_UI_A;
+    private readonly InputAction m_UI_S;
+    private readonly InputAction m_UI_D;
+    private readonly InputAction m_UI_R;
+    private readonly InputAction m_UI_T;
     public struct UIActions
     {
         private @PlayerMoveAndExtraActions m_Wrapper;
@@ -1362,6 +1736,23 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         public InputAction @InfoEditorPanel => m_Wrapper.m_UI_InfoEditorPanel;
         public InputAction @TopEditorPanel => m_Wrapper.m_UI_TopEditorPanel;
         public InputAction @LeftClick => m_Wrapper.m_UI_LeftClick;
+        public InputAction @LeftCTRL => m_Wrapper.m_UI_LeftCTRL;
+        public InputAction @U => m_Wrapper.m_UI_U;
+        public InputAction @Y => m_Wrapper.m_UI_Y;
+        public InputAction @I => m_Wrapper.m_UI_I;
+        public InputAction @O => m_Wrapper.m_UI_O;
+        public InputAction @P => m_Wrapper.m_UI_P;
+        public InputAction @H => m_Wrapper.m_UI_H;
+        public InputAction @J => m_Wrapper.m_UI_J;
+        public InputAction @K => m_Wrapper.m_UI_K;
+        public InputAction @E => m_Wrapper.m_UI_E;
+        public InputAction @Q => m_Wrapper.m_UI_Q;
+        public InputAction @W => m_Wrapper.m_UI_W;
+        public InputAction @A => m_Wrapper.m_UI_A;
+        public InputAction @S => m_Wrapper.m_UI_S;
+        public InputAction @D => m_Wrapper.m_UI_D;
+        public InputAction @R => m_Wrapper.m_UI_R;
+        public InputAction @T => m_Wrapper.m_UI_T;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1431,6 +1822,57 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @LeftClick.started += instance.OnLeftClick;
             @LeftClick.performed += instance.OnLeftClick;
             @LeftClick.canceled += instance.OnLeftClick;
+            @LeftCTRL.started += instance.OnLeftCTRL;
+            @LeftCTRL.performed += instance.OnLeftCTRL;
+            @LeftCTRL.canceled += instance.OnLeftCTRL;
+            @U.started += instance.OnU;
+            @U.performed += instance.OnU;
+            @U.canceled += instance.OnU;
+            @Y.started += instance.OnY;
+            @Y.performed += instance.OnY;
+            @Y.canceled += instance.OnY;
+            @I.started += instance.OnI;
+            @I.performed += instance.OnI;
+            @I.canceled += instance.OnI;
+            @O.started += instance.OnO;
+            @O.performed += instance.OnO;
+            @O.canceled += instance.OnO;
+            @P.started += instance.OnP;
+            @P.performed += instance.OnP;
+            @P.canceled += instance.OnP;
+            @H.started += instance.OnH;
+            @H.performed += instance.OnH;
+            @H.canceled += instance.OnH;
+            @J.started += instance.OnJ;
+            @J.performed += instance.OnJ;
+            @J.canceled += instance.OnJ;
+            @K.started += instance.OnK;
+            @K.performed += instance.OnK;
+            @K.canceled += instance.OnK;
+            @E.started += instance.OnE;
+            @E.performed += instance.OnE;
+            @E.canceled += instance.OnE;
+            @Q.started += instance.OnQ;
+            @Q.performed += instance.OnQ;
+            @Q.canceled += instance.OnQ;
+            @W.started += instance.OnW;
+            @W.performed += instance.OnW;
+            @W.canceled += instance.OnW;
+            @A.started += instance.OnA;
+            @A.performed += instance.OnA;
+            @A.canceled += instance.OnA;
+            @S.started += instance.OnS;
+            @S.performed += instance.OnS;
+            @S.canceled += instance.OnS;
+            @D.started += instance.OnD;
+            @D.performed += instance.OnD;
+            @D.canceled += instance.OnD;
+            @R.started += instance.OnR;
+            @R.performed += instance.OnR;
+            @R.canceled += instance.OnR;
+            @T.started += instance.OnT;
+            @T.performed += instance.OnT;
+            @T.canceled += instance.OnT;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1495,6 +1937,57 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @LeftClick.started -= instance.OnLeftClick;
             @LeftClick.performed -= instance.OnLeftClick;
             @LeftClick.canceled -= instance.OnLeftClick;
+            @LeftCTRL.started -= instance.OnLeftCTRL;
+            @LeftCTRL.performed -= instance.OnLeftCTRL;
+            @LeftCTRL.canceled -= instance.OnLeftCTRL;
+            @U.started -= instance.OnU;
+            @U.performed -= instance.OnU;
+            @U.canceled -= instance.OnU;
+            @Y.started -= instance.OnY;
+            @Y.performed -= instance.OnY;
+            @Y.canceled -= instance.OnY;
+            @I.started -= instance.OnI;
+            @I.performed -= instance.OnI;
+            @I.canceled -= instance.OnI;
+            @O.started -= instance.OnO;
+            @O.performed -= instance.OnO;
+            @O.canceled -= instance.OnO;
+            @P.started -= instance.OnP;
+            @P.performed -= instance.OnP;
+            @P.canceled -= instance.OnP;
+            @H.started -= instance.OnH;
+            @H.performed -= instance.OnH;
+            @H.canceled -= instance.OnH;
+            @J.started -= instance.OnJ;
+            @J.performed -= instance.OnJ;
+            @J.canceled -= instance.OnJ;
+            @K.started -= instance.OnK;
+            @K.performed -= instance.OnK;
+            @K.canceled -= instance.OnK;
+            @E.started -= instance.OnE;
+            @E.performed -= instance.OnE;
+            @E.canceled -= instance.OnE;
+            @Q.started -= instance.OnQ;
+            @Q.performed -= instance.OnQ;
+            @Q.canceled -= instance.OnQ;
+            @W.started -= instance.OnW;
+            @W.performed -= instance.OnW;
+            @W.canceled -= instance.OnW;
+            @A.started -= instance.OnA;
+            @A.performed -= instance.OnA;
+            @A.canceled -= instance.OnA;
+            @S.started -= instance.OnS;
+            @S.performed -= instance.OnS;
+            @S.canceled -= instance.OnS;
+            @D.started -= instance.OnD;
+            @D.performed -= instance.OnD;
+            @D.canceled -= instance.OnD;
+            @R.started -= instance.OnR;
+            @R.performed -= instance.OnR;
+            @R.canceled -= instance.OnR;
+            @T.started -= instance.OnT;
+            @T.performed -= instance.OnT;
+            @T.canceled -= instance.OnT;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1562,5 +2055,22 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         void OnInfoEditorPanel(InputAction.CallbackContext context);
         void OnTopEditorPanel(InputAction.CallbackContext context);
         void OnLeftClick(InputAction.CallbackContext context);
+        void OnLeftCTRL(InputAction.CallbackContext context);
+        void OnU(InputAction.CallbackContext context);
+        void OnY(InputAction.CallbackContext context);
+        void OnI(InputAction.CallbackContext context);
+        void OnO(InputAction.CallbackContext context);
+        void OnP(InputAction.CallbackContext context);
+        void OnH(InputAction.CallbackContext context);
+        void OnJ(InputAction.CallbackContext context);
+        void OnK(InputAction.CallbackContext context);
+        void OnE(InputAction.CallbackContext context);
+        void OnQ(InputAction.CallbackContext context);
+        void OnW(InputAction.CallbackContext context);
+        void OnA(InputAction.CallbackContext context);
+        void OnS(InputAction.CallbackContext context);
+        void OnD(InputAction.CallbackContext context);
+        void OnR(InputAction.CallbackContext context);
+        void OnT(InputAction.CallbackContext context);
     }
 }

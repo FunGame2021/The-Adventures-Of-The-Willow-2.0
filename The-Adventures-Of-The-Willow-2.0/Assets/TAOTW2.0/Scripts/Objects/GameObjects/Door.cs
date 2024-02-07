@@ -28,7 +28,12 @@ public class Door : MonoBehaviour
     private bool keyOpened;
     private bool isOnDoor;
     private bool isTeleporting = false;
+    private float timeToTeleportAgain = 4f;
 
+    void Start()
+    {
+        isTeleporting = false;
+    }
     void Update()
     {
         if (waitingToOpen && !doorOpen && isOnDoor)
@@ -73,6 +78,7 @@ public class Door : MonoBehaviour
         if (keyOpened && doorOpen && PlayerController.instance.moveInputUp > 0.1f && isOnDoor && !isTeleporting)
         {
             isTeleporting = true;
+            timeToTeleportAgain = 4f;
 
             if (!string.IsNullOrEmpty(SecondDoorID))
             {
@@ -111,10 +117,18 @@ public class Door : MonoBehaviour
             }
 
         }
+
+        if(timeToTeleportAgain >= 0f)
+        {
+            timeToTeleportAgain -= Time.deltaTime;
+        }
+        if(timeToTeleportAgain <= 0)
+        {
+            isTeleporting = false;
+        }
     }
     void MoveToSector(string sectorName, string positionPoint)
     {
-        isTeleporting = false;
         LoadSectorTransition.instance.sectorCloseTransition(sectorName, positionPoint);
     }
    
@@ -138,7 +152,6 @@ public class Door : MonoBehaviour
 
     void MoveToDoorSector(string sectorName, string positionPoint)
     {
-        isTeleporting = false; 
         LoadSectorTransition.instance.sectorCloseDoorTransition(sectorName, positionPoint);
     }
 

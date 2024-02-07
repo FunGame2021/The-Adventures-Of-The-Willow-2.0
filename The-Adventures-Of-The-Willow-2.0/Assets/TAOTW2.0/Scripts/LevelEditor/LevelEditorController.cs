@@ -14,25 +14,58 @@ public class LevelEditorController : MonoBehaviour
     public string AtualWorld;
     public string AtualLevel;
 
-   // private bool canStartGame = true; // Variável para controlar o atraso após iniciar o jogo
+    string currentSceneName;
+    // private bool canStartGame = true; // Variável para controlar o atraso após iniciar o jogo
 
     private void Awake()
     {
+        currentSceneName = SceneManager.GetActiveScene().name;
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
     }
+    private void Start()
+    {
+        if (currentSceneName != "LevelEditor" && currentSceneName != "LevelEditorPlayTest")
+        {
+            DestroyThis();
+        }
+    }
     public void DestroyThis()
     {
         DestroyImmediate(gameObject);
     }
-
+    public void TestGamePlay()
+    {
+        if (LevelEditorManager.instance != null)
+        {
+            if (LevelEditorManager.instance.CanPlayLevel)
+            {
+                if (isPlaying)
+                {
+                    StopGame();
+                }
+                else
+                {
+                    //Warn To Save Level After Test Game
+                    WarnStartGame();
+                }
+            }
+        }
+        else
+        {
+            if (isPlaying)
+            {
+                StopGame();
+            }
+        }
+    }
     private void Update()
     {
         // Verifica o input do jogador para alternar entre reprodução e edição
-        if (UserInput.instance.playerMoveAndExtraActions.UI.EnterPlayLevelEditor.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.EnterPlayLevelEditor.WasPressedThisFrame())
         {
             if (LevelEditorManager.instance != null)
             {
@@ -54,41 +87,6 @@ public class LevelEditorController : MonoBehaviour
                 if (isPlaying)
                 {
                     StopGame();
-                }
-            }
-            if (UserInput.instance.playerMoveAndExtraActions.UI.EnterPlayLevelEditor.WasPressedThisFrame())
-            {
-                if (LevelEditorManager.instance != null)
-                {
-                    if (LevelEditorManager.instance.CanPlayLevel)
-                    {
-                        if (isPlaying)
-                        {
-                            StopGame();
-                        }
-                        else
-                        {
-                            //Warn To Save Level After Test Game
-                            WarnStartGame();
-                        }
-                    }
-                }
-                else
-                {
-                    if (isPlaying)
-                    {
-                        StopGame();
-                    }
-                }
-            }
-            if (UserInput.instance.playerMoveAndExtraActions.UI.EscapeMenu.WasPressedThisFrame())
-            {
-                if (LevelEditorManager.instance == null)
-                {
-                    if (isPlaying)
-                    {
-                        StopGame();
-                    }
                 }
             }
 

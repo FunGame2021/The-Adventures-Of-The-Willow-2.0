@@ -9,10 +9,12 @@ public class WorldsUpdate : MonoBehaviour
     private string githubUrl = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/ExtraWorldsVersionInfo.json";
     private string githubUrlWorlds = "https://raw.githubusercontent.com/jojocarlos/The-Adventures-Of-The-Willow-2.0/main/GameWorlds/Worlds.zip";
 
-    private string inGameExtraWorlds = "Assets/StreamingAssets/";
+    private string inGameExtraWorlds;
 
     void Start()
     {
+        inGameExtraWorlds = Path.Combine(Application.persistentDataPath, "Worlds");
+
         StartCoroutine(CheckAndDownloadNewVersion());
     }
 
@@ -146,6 +148,12 @@ public class WorldsUpdate : MonoBehaviour
     void ReplaceLocalFolder(string localFolder, byte[] folderData, string zipFilePath)
     {
         string localFolderPath = Path.Combine(inGameExtraWorlds, localFolder);
+
+        // Certifique-se de que o diretório de destino exista
+        if (!Directory.Exists(localFolderPath))
+        {
+            Directory.CreateDirectory(localFolderPath);
+        }
 
         // Extract and save the folder data
         File.WriteAllBytes(zipFilePath, folderData);

@@ -115,7 +115,8 @@ public class LevelEditorManager : MonoBehaviour
     public string selectedEnemyName;
     //public event Action<string> OnEnemySelected;
 
-    public Transform EnemyContainer; public EraserTool eraserTool;
+    public Transform EnemyContainer; 
+    public EraserTool eraserTool;
 
     //drag enemy and objects
     public Button selectPointButton; // Botão de ativação/desativação da ferramenta selectpoint
@@ -194,6 +195,8 @@ public class LevelEditorManager : MonoBehaviour
     private bool shouldAutoSave = true; // Adicione esta variável
     public bool CoroutineCalled;
     private Coroutine autoSaveCoroutine;
+
+    public bool isCTRLClicked;
 
     #region Start Things/ Editor Things
     public enum SelectedObjectType
@@ -515,7 +518,7 @@ public class LevelEditorManager : MonoBehaviour
             StopDragTempObject();
         }
         //Snap Grid Size
-        if(UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasPressedThisFrame())
+        if(UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasPressedThisFrame())
         {
             // Incrementa o índice (se chegou ao final, reinicia)
             currentSnapGridIndex = (currentSnapGridIndex + 1) % snapGridSizes.Length;
@@ -554,6 +557,55 @@ public class LevelEditorManager : MonoBehaviour
             }
         }
 
+        #region Shortcuts
+        if(UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed())
+        {
+            isCTRLClicked = true;
+        }
+        else
+        {
+            isCTRLClicked = false;
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.S.IsPressed())
+        {
+            //Save
+
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.R.IsPressed())
+        {
+            //SelectPoint Tool
+            ToggleSelectPoint();
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.U.IsPressed())
+        {
+            //Unselect Object
+            StopDragTempObject();
+            ClearSelectedThings();
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.E.IsPressed())
+        {
+            //Delete enemies
+            eraserTool.ToggleEnemyEraser();
+
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.T.IsPressed())
+        {
+            //DeleteTiles
+            eraserTool.ToggleTileEraser();
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.Y.IsPressed())
+        {
+            //SnapGrid
+
+            ActivateSnapGrid();
+        }
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.W.IsPressed())
+        {
+            //ShowGrid
+
+            gridVisualizer.OnEnableGrid();
+        }
+        #endregion
     }
     private void AddTilemapButtonListeners()
     {
@@ -565,6 +617,15 @@ public class LevelEditorManager : MonoBehaviour
         }
     }
 
+    private void ClearSelectedThings()
+    {
+        TileButton.instance.selectedTile = null;
+        selectedObjectName = string.Empty;
+        selectedEnemyName = string.Empty;
+        selectedDecor2Name = string.Empty;
+        selectedGameObjectName = string.Empty;
+        selectedDecorName = string.Empty;
+    }
     #region Tilemap
 
     public void AddTilemap()
@@ -1307,7 +1368,7 @@ public class LevelEditorManager : MonoBehaviour
         // Armazena os dados dos tiles existentes
         Dictionary<Vector3Int, TileBase> existingTiles = new Dictionary<Vector3Int, TileBase>();
 
-        // Percorre todas as células do Tilemap e armazena os tiles existentes
+        /*/ Percorre todas as células do Tilemap e armazena os tiles existentes
         foreach (var position in selectedTilemap.cellBounds.allPositionsWithin)
         {
             if (selectedTilemap.HasTile(position))
@@ -1338,7 +1399,7 @@ public class LevelEditorManager : MonoBehaviour
                     selectedTilemap.SetTile(cellPosition, null); // Define a telha como nula (sem telha)
                 }
             }
-        }
+        }*/
     }
 
     public void ResizeGrid(int newWidth, int newHeight)
@@ -1463,12 +1524,18 @@ public class LevelEditorManager : MonoBehaviour
     }
     private void OnObjectsToggleValueChanged(bool isOn)
     {
-        // Ativa ou desativa o contêiner de decoração com base no estado do botão de alternância
         objectsContainer.SetActive(isOn);
         nodesLineRendererContainer.SetActive(isOn);
     }
     #endregion
 
+    public void TestGameButton()
+    {
+        if(LevelEditorController.instance != null)
+        {
+            LevelEditorController.instance.TestGamePlay();
+        }
+    }
     #endregion
 
     #region Save Data

@@ -29,4 +29,13 @@ public class UserInput : MonoBehaviour
     {
         playerMoveAndExtraActions.Disable();
     }
+    public void DisableInput()
+    {
+        playerMoveAndExtraActions.Disable();
+    }
+
+    public void EnableInput()
+    {
+        playerMoveAndExtraActions.Enable();
+    }
 }

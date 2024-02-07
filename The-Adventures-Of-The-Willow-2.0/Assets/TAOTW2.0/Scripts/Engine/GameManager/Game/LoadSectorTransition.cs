@@ -26,6 +26,7 @@ public class LoadSectorTransition : MonoBehaviour
         tempPositionPoint = positionPoint;
         tempSectorName = SectorName;
         PlayerHealth.instance.isInvincible = true;
+        PlayerController.instance.FreezePlayer();
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.CloseRadiusTransition();
         StartCoroutine(ToEndectorCloseDoorTransition());
@@ -72,6 +73,7 @@ public class LoadSectorTransition : MonoBehaviour
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.CloseRadiusTransition();
         PlayerHealth.instance.isInvincible = true;
+        PlayerController.instance.FreezePlayer();
         StartCoroutine(ToEndsectorCloseTransition());
     }
     IEnumerator ToEndsectorCloseTransition()
@@ -124,6 +126,7 @@ public class LoadSectorTransition : MonoBehaviour
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.OpenRadiusTransition();
         PlayerHealth.instance.isInvincible = false;
+        PlayerController.instance.UnFreezePlayer();
     }
 
 
@@ -135,6 +138,7 @@ public class LoadSectorTransition : MonoBehaviour
         ScreenAspectRatio.instance.GetCharacterPosition();
         ScreenAspectRatio.instance.CloseRadiusTransition();
         PlayerHealth.instance.isInvincible = true;
+        PlayerController.instance.FreezePlayer();
         StartCoroutine(ToEndSimplesectorCloseTransition());
     }
     IEnumerator ToEndSimplesectorCloseTransition()

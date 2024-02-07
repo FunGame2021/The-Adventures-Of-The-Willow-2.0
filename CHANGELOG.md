@@ -14,8 +14,11 @@
   - Improvements in Sector loading.
   - Added playing and stopping music according to sectors.
   - Improved transitions.
-  - Added environmental particle time.
-  - Added audio for the time countdown.
+  - Added Environmental particle time.
+  - Added Audio for the time countdown.
+  - Added Level Editor ShortCuts.
+  - Fixed Bug player falls after load Sector.
+  - Fixed Resize Grid is deleting tiles.
   
   - Note: Loading sectors and using keys are not fully done yet.
   - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").

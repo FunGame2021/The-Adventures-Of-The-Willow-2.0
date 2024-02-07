@@ -674,6 +674,23 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void FreezePlayer()
+    {
+        RB.constraints = RigidbodyConstraints2D.FreezePositionY; 
+        RB.freezeRotation = true;
+        stopPlayer = true;
+        vecGravity = new Vector2(0, -Physics2D.gravity.y);
+        RB.gravityScale = 0;
+        UserInput.instance.DisableInput();
+    }
+    public void UnFreezePlayer()
+    {
+        RB.constraints &= ~RigidbodyConstraints2D.FreezePositionY;
+        RB.freezeRotation = true;
+        stopPlayer = false;
+        RB.gravityScale = normalGravity;
+        UserInput.instance.EnableInput();
+    }
     public void ApplyKnockBack(float knockbackForce, float knockbackDuration, float knockbackUpForce, bool knockFromRight)
     {
         KnockBackCount = knockbackDuration;

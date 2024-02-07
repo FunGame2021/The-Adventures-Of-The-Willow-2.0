@@ -37,7 +37,7 @@ public class LevelEditorCamera : MonoBehaviour
 
     private void Update()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject() && !LevelEditorManager.instance.isCTRLClicked)
         {
             // O rato não está sobre a UI
             MoveCamera();

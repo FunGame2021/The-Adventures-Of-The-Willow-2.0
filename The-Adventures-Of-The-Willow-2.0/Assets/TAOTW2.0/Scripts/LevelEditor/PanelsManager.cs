@@ -23,27 +23,27 @@ public class PanelsManager : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftEditorPanel.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.LeftEditorPanel.WasPressedThisFrame())
         {
             isLeftHide = !isLeftHide;
             LeftAnimator.SetBool("HideLeftPanel", isLeftHide ? true : false);
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.BottomEditorPanel.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.BottomEditorPanel.WasPressedThisFrame())
         {
             isBottomHide = !isBottomHide;
             BottomAnimator.SetBool("HideBottomPanel", isBottomHide ? true : false);
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.InfoEditorPanel.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.InfoEditorPanel.WasPressedThisFrame())
         {
             isInfoHide = !isInfoHide;
             InfoAnimator.SetBool("HideInfoPanel", isInfoHide ? true : false);
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.RightEditorPanel.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.RightEditorPanel.WasPressedThisFrame())
         {
             isRightHide = !isRightHide;
             RightAnimator.SetBool("HideRightPanel", isRightHide ? true : false);
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.TopEditorPanel.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.TopEditorPanel.WasPressedThisFrame())
         {
             isTopHide = !isTopHide;
             TopAnimator.SetBool("HideTopPanel", isTopHide ? true : false);
