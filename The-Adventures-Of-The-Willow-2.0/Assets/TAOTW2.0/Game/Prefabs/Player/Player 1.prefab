@@ -319,6 +319,8 @@ MonoBehaviour:
   wallJumpingTime: 0.1
   wallJumpingCounter: 0
   wallJumpingDuration: 0.1
+  wallJumpingPower: {x: 10, y: 22}
+  wallJumpingBoostPower: {x: 16, y: 26}
   upSpeed: 3
   moveInputUp: 0
   isOnLadder: 0
@@ -445,6 +447,7 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.3
   knockbackUpForce: 1
+  LastSectorCheck: 
 --- !u!114 &3668697172349177264
 MonoBehaviour:
   m_ObjectHideFlags: 0

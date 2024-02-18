@@ -15,6 +15,13 @@ public class Key : MonoBehaviour
     public Animator Anim;
     public bool keyDoorOpened;
 
+    private Vector3 targetPosition;
+    private Vector3 currentVelocity;
+
+    public float smoothTime = 0.3f;
+    public float delay = 1.0f;  // Atraso em segundos
+
+
     void Start()
     {
         Anim.SetBool("PlayerFollow", false);
@@ -24,7 +31,14 @@ public class Key : MonoBehaviour
     {
         if (isFollowing)
         {
-            transform.position = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
+            // Posição atrasada em relação à posição do jogador
+            Vector3 delayedPosition = followTarget.position - followTarget.forward * delay;
+
+            // Suavização exponencial para a posição
+            targetPosition = Vector3.SmoothDamp(targetPosition, delayedPosition, ref currentVelocity, smoothTime);
+
+            // Aplica a posição suavizada à chave
+            transform.position = targetPosition;
         }
         if (keyDoorOpened)
         {

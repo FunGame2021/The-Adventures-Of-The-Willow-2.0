@@ -47,7 +47,7 @@ public class TriggerObjectSelector : MonoBehaviour
             Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
 
-            if (hit.collider != null && !isOpened)
+            if (hit.collider != null && !isOpened && LevelEditorManager.instance.isActiveSelectPoint)
             {
                 if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Trigger"))
                 {

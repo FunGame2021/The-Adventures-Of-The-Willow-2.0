@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using System.Text.RegularExpressions;
 using System.Collections;
 using UnityEngine.Rendering;
+using UnityEditor;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -1006,6 +1007,7 @@ public class LevelEditorManager : MonoBehaviour
         selectedObjectName = string.Empty;
 
         selectedGameObjectName = gameObjectName;
+       
 
         // Procura o objeto no ObjectsData com base no nome selecionado
         GameObject gameObjectPrefab = FindGameObjectPrefabByName(selectedGameObjectName);
@@ -1017,6 +1019,10 @@ public class LevelEditorManager : MonoBehaviour
             // Verifica se já existe um objeto temporário (objectTemp)
             StartCoroutine(WaitForTempObject(gameObjectPrefab));
     	}
+        else
+        {
+            StopDragTempObject();
+        }
     }
 
 
@@ -2047,6 +2053,21 @@ public class LevelEditorManager : MonoBehaviour
                     Debug.LogWarning("DoorObject script not found on Door: " + objectName);
                 }
             }
+            else if(objectName.Contains("Key"))
+            {
+                // Obtém o tipo do objeto a partir do ScriptableObjectData
+                ObjectType objectType = GetObjectType(objectName);
+
+                Key keyObjectScript = objectObject.GetComponent<Key>();
+
+                ObjectSaveData objectData = new ObjectSaveData();
+                objectData.name = objectName;
+                objectData.position = objectPosition;
+                objectData.objectType = objectType;
+                objectData.id = keyObjectScript.keyID;
+
+                objectList.Add(objectData);
+            }
             else
             {
                 // Obtém o tipo do objeto a partir do ScriptableObjectData
@@ -2685,6 +2706,20 @@ public class LevelEditorManager : MonoBehaviour
 
                             ObjectType objectType = objectData.objectType;
 
+                            // Verifica se é uma chave
+                            if (objectData.name.Contains("Key"))
+                            {
+                                Key keyComponent = objectObject.GetComponent<Key>();
+                                if (keyComponent != null)
+                                {
+                                    // Atribui o ID salvo ao script da chave
+                                    keyComponent.keyID = objectData.id;
+                                }
+                                else
+                                {
+                                    Debug.LogWarning("Key component not found on Key object: " + objectData.name);
+                                }
+                            }
 
                         }
                         else

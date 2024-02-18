@@ -681,7 +681,20 @@ public class LoadPlayLevel : MonoBehaviour
 
                 ObjectType objectType = objectData.objectType;
 
-
+                // Verifica se é uma chave
+                if (objectData.name.Contains("Key"))
+                {
+                    Key keyComponent = objectObject.GetComponent<Key>();
+                    if (keyComponent != null)
+                    {
+                        // Atribui o ID salvo ao script da chave
+                        keyComponent.keyID = objectData.id;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Key component not found on Key object: " + objectData.name);
+                    }
+                }
             }
             else
             {

@@ -16,11 +16,30 @@
   - Improved transitions.
   - Added Environmental particle time.
   - Added Audio for the time countdown.
-  - Added Level Editor ShortCuts.
   - Fixed Bug player falls after load Sector.
   - Fixed Resize Grid is deleting tiles.
+  - Added Key Fuction.
   
-  - Note: Loading sectors and using keys are not fully done yet.
+  - Added Level Editor ShortCuts:
+  
+  *Shortcuts*
+        
+		CTRL + E  Delete Enemies Tool (ON/OFF)
+        CTRL + T  Delete Tiles Tool (ON/OFF)
+        CTRL + G  Snap Gride Size
+        CTRL + Y  Snap Gride (ON/OFF)
+        CTRL + R  Select Tool (ON/OFF)
+        CTRL + U  Unselect selected anything
+        CTRL + W  Grid View (ON/OFF)
+        CTRL + S  Save Game
+        CTRL + P  Test Level / Exit Test Level
+
+        CTRL + 1  Hide/Show Panel
+        CTRL + 2  Hide/Show Panel
+        CTRL + 3  Hide/Show Panel
+        CTRL + 4  Hide/Show Panel
+        CTRL + 5  Hide/Show Panel
+  
   - Note: It's an Alpha version, it still has a lot of bugs and is missing things, don't use the editor as something final, because you could lose the level save ("In principle nothing was detected or found about this, but use it only for testing and see if there are any problems").
 
 

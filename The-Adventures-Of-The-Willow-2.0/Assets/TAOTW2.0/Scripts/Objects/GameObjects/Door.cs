@@ -18,9 +18,9 @@ public class Door : MonoBehaviour
 
     private KeyFollow thePlayer;
 
-    [SerializeField] private GameObject doorOpenSprite;
-
     [SerializeField] private bool doorOpen, waitingToOpen;
+
+    [SerializeField] private Animator DoorAnim;
 
     [SerializeField] private ParticleSystem collectEffect;
     [SerializeField] private Animator AnimKeyOpen;
@@ -40,21 +40,20 @@ public class Door : MonoBehaviour
         {
             waitingToOpen = false;
             doorOpen = true;
-            StartCoroutine(Opened());
 
             // Verificar WithKey
             if (WithKey)
             {
                 List<Key> keysToRemove = new List<Key>();
 
-                AnimKeyOpen.SetTrigger("OpenDoor");
-                collectEffect.Play();
 
                 foreach (Key key in thePlayer.followingKeys)
                 {
                     // Comparar DoorID com a keyID
                     if (key.keyID == DoorID)
                     {
+                        AnimKeyOpen.SetTrigger("OpenDoor");
+                        collectEffect.Play();
                         keyOpened = true;
                         key.gameObject.SetActive(false);
                         thePlayer.RemoveKey(key);
@@ -80,41 +79,8 @@ public class Door : MonoBehaviour
             isTeleporting = true;
             timeToTeleportAgain = 4f;
 
-            if (!string.IsNullOrEmpty(SecondDoorID))
-            {
-                    // Verificar toSector
-                    if (toSector)
-                    {
-                        // Se toSector for verdadeiro, mover para a posição SectorName
-                        // Aqui você pode implementar a lógica específica para mover para o setor
-                        MoveToDoorSector(SectorName, SecondDoorID);
-
-                    }
-                    else
-                    {
-                        // Se toSector for falso, mover para a posição PositionPoint
-                        // Aqui você pode implementar a lógica específica para mover para o ponto de posição
-                        MoveToDoorPosition(SecondDoorID);
-
-                    }
-            }
-            else
-            {
-                // Verificar toSector
-                if (toSector)
-                {
-                    // Se toSector for verdadeiro, mover para a posição SectorName
-                    // Aqui você pode implementar a lógica específica para mover para o setor
-                    MoveToSector(SectorName, PositionPoint);
-                }
-                else
-                {
-                    // Se toSector for falso, mover para a posição PositionPoint
-                    // Aqui você pode implementar a lógica específica para mover para o ponto de posição
-                    MoveToPosition(PositionPoint);
-                }
-
-            }
+            DoorAnim.SetTrigger("Open");
+            StartCoroutine(Opened());
 
         }
 
@@ -181,7 +147,41 @@ public class Door : MonoBehaviour
     IEnumerator Opened()
     {
         yield return new WaitForSeconds(seconds);
-        doorOpenSprite.SetActive(false);
+        if (!string.IsNullOrEmpty(SecondDoorID))
+        {
+            // Verificar toSector
+            if (toSector)
+            {
+                // Se toSector for verdadeiro, mover para a posição SectorName
+                // Aqui você pode implementar a lógica específica para mover para o setor
+                MoveToDoorSector(SectorName, SecondDoorID);
+
+            }
+            else
+            {
+                // Se toSector for falso, mover para a posição PositionPoint
+                // Aqui você pode implementar a lógica específica para mover para o ponto de posição
+                MoveToDoorPosition(SecondDoorID);
+
+            }
+        }
+        else
+        {
+            // Verificar toSector
+            if (toSector)
+            {
+                // Se toSector for verdadeiro, mover para a posição SectorName
+                // Aqui você pode implementar a lógica específica para mover para o setor
+                MoveToSector(SectorName, PositionPoint);
+            }
+            else
+            {
+                // Se toSector for falso, mover para a posição PositionPoint
+                // Aqui você pode implementar a lógica específica para mover para o ponto de posição
+                MoveToPosition(PositionPoint);
+            }
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

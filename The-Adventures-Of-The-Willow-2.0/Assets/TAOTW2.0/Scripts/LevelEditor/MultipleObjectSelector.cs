@@ -123,359 +123,444 @@ public class MultipleObjectSelector : MonoBehaviour
     private Button spawnPointBackButton;
     private Button spawnPointOkButton;
     #endregion
+
+
+    [Header("Keys")]
+    #region Keys
+
+    [SerializeField] private GameObject KeyPanelPrefab;
+    private GameObject KeySelectedObject;
+    private Key KeyObjectScript;
+    private GameObject KeyPanelInstance;
+
+    private string KeyID;
+
+    private TMP_InputField[] KeyInputField;
+    private TMP_InputField KeyIDInput;
+
+    private string KeyIDString;
+
+    private Button[] KeyButtons;
+    private Button KeyBackButton;
+    private Button KeyOkButton;
+
+    private bool KeyIsOpened = false;
+    #endregion
+
     void Update()
     {
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            #region particles
-            Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
-
-            if (hit.collider != null && !isOpened)
+            if (LevelEditorManager.instance.isActiveSelectPoint)
             {
-                if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Particle"))
+                #region particles
+                Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
+
+                if (hit.collider != null && !isOpened)
                 {
-                    isOpened = true;
-                    selectedObject = hit.collider.gameObject;
-                    particleObjectScript = selectedObject.GetComponent<ParticlesObject>();
-                    panelInstance = Instantiate(panelPrefab, panelLocalization);
-
-                    if (panelInstance != null)
+                    if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Particle"))
                     {
-                        toggles = panelInstance.GetComponentsInChildren<Toggle>();
+                        isOpened = true;
+                        selectedObject = hit.collider.gameObject;
+                        particleObjectScript = selectedObject.GetComponent<ParticlesObject>();
+                        panelInstance = Instantiate(panelPrefab, panelLocalization);
 
-                        foreach (Toggle toggle in toggles)
+                        if (panelInstance != null)
                         {
-                            if (toggle.name == "initial")
-                            {
-                                isInitialStarted = toggle;
-                            }
-                            else if (toggle.name == "isLoop")
-                            {
-                                isLoop = toggle;
-                            }
-                        }
+                            toggles = panelInstance.GetComponentsInChildren<Toggle>();
 
-                        particleNameInputField = panelInstance.GetComponentInChildren<TMP_InputField>();
-
-                        buttons = panelInstance.GetComponentsInChildren<Button>();
-                        foreach (Button button in buttons)
-                        {
-                            if (button.name == "BackButton")
+                            foreach (Toggle toggle in toggles)
                             {
-                                backButton = button;
-                            }
-                            else if (button.name == "OKButton")
-                            {
-                                okButton = button;
-                            }
-                            else if (button.name == "PaticleTypeButton")
-                            {
-                                particleTypeButton = button;
-                            }
-                        }
-
-                        // Configurar eventos para botões
-                        backButton.onClick.AddListener(() =>
-                        {
-                            isOpened = false;
-                            Destroy(panelInstance);
-                        });
-
-                        okButton.onClick.AddListener(() =>
-                        {
-                            particleObjectScript.particleType = particleType;
-                            particleObjectScript.particleName = particleName;
-                            particleObjectScript.isLoop = isLoop.isOn;
-                            particleObjectScript.initialStarted = isInitialStarted.isOn;
-
-                            isOpened = false;
-                            Destroy(panelInstance);
-                        });
-
-
-                        particleTypeButton.onClick.AddListener(() =>
-                        {
-                            ParticleTypePanel.SetActive(true);
-                            InitializeParticleTypeButtons();
-                        });
-
-                        UpdateUIValues();
-                    }
-                }
-            }
-            #endregion
-            #region Moving Platform
-
-            if (hit.collider != null && !mpIsOpened)
-            {
-                if (hit.collider != null && hit.collider.CompareTag("MovingPlatform"))
-                {
-                    mpIsOpened = true;
-                    mpSelectedObject = hit.collider.gameObject;
-                    platformControllerScript = mpSelectedObject.GetComponent<PlatformController>();
-                    mpPanelInstance = Instantiate(mpPanelPrefab, panelLocalization);
-
-                    if (mpPanelInstance != null)
-                    {
-                        mpToggles = mpPanelInstance.GetComponentsInChildren<Toggle>();
-
-                        foreach (Toggle toggle in mpToggles)
-                        {
-                            if (toggle.name == "initial")
-                            {
-                                mpIsInitialStarted = toggle;
-                            }
-                            else if (toggle.name == "isPingPong")
-                            {
-                                mpIsPingPong = toggle;
-                            }
-                            else if (toggle.name == "isClosed")
-                            {
-                                mpIsClosed = toggle;
-                            }
-                        }
-
-                        mpInputField = mpPanelInstance.GetComponentsInChildren<TMP_InputField>();
-                        foreach (TMP_InputField mpInput in mpInputField)
-                        {
-                            if (mpInput.name == "inputID")
-                            {
-                                platformIDInput = mpInput;
-                            }
-                            else if (mpInput.name == "inputSpeed")
-                            {
-                                speedInput = mpInput;
-                            }
-                            else if (mpInput.name == "inputStopDistance")
-                            {
-                                stopDistanceInput = mpInput;
-                            }
-                        }
-
-
-                        mpButtons = mpPanelInstance.GetComponentsInChildren<Button>();
-                        foreach (Button button in mpButtons)
-                        {
-                            if (button.name == "BackButton")
-                            {
-                                backButton = button;
-                            }
-                            else if (button.name == "OKButton")
-                            {
-                                okButton = button;
-                            }
-                        }
-                        // Configurar eventos para botões
-                        backButton.onClick.AddListener(() =>
-                        {
-                            mpIsOpened = false;
-                            Destroy(mpPanelInstance);
-                        });
-
-                        okButton.onClick.AddListener(() =>
-                        {
-                            if (mpIsClosed.isOn)
-                            {
-                                platformControllerScript.pathType = WaypointPathType.Closed;
-                            }
-                            else
-                            {
-                                platformControllerScript.pathType = WaypointPathType.Open;
-                            }
-                            if (mpIsPingPong.isOn)
-                            {
-                                platformControllerScript.behaviorType = WaypointBehaviorType.PingPong;
-                            }
-                            else
-                            {
-                                platformControllerScript.behaviorType = WaypointBehaviorType.Loop;
-                            }
-                            platformControllerScript.initialStart = mpIsInitialStarted.isOn;
-                            platformControllerScript.platformMoveid = platformIDString.ToString();
-                            float speedValue;
-                            float stopDistanceValue;
-
-                            if (float.TryParse(speedString, out speedValue))
-                            {
-                                platformControllerScript.moveSpeed = speedValue;
-                            }
-
-                            if (float.TryParse(stopDistanceString, out stopDistanceValue))
-                            {
-                                platformControllerScript.stopDistance = stopDistanceValue;
-                            }
-
-                            mpIsOpened = false;
-                            Destroy(mpPanelInstance);
-                        });
-                        UpdateUIValuesMP();
-                    }
-                }
-            }
-            #endregion
-            #region Doors
-            if (hit.collider != null && !doorIsOpened)
-            {
-                if (hit.collider != null && hit.collider.CompareTag("ObjectObject") && hit.collider.gameObject.name.StartsWith("Door"))
-                {
-                    doorIsOpened = true;
-                    DoorSelectedObject = hit.collider.gameObject;
-                    doorObjectScript = DoorSelectedObject.GetComponent<Door>();
-                    DoorPanelInstance = Instantiate(DoorPanelPrefab, panelLocalization);
-
-                    if (DoorPanelInstance != null)
-                    {
-                        doorToggles = DoorPanelInstance.GetComponentsInChildren<Toggle>();
-
-                        foreach (Toggle toggle in doorToggles)
-                        {
-                            if (toggle.name == "WithKey")
-                            {
-                                WithKey = toggle;
-                            }
-                            if (toggle.name == "ToSector")
-                            {
-                                ToSector = toggle;
-                            }
-                        }
-                        doorInputField = DoorPanelInstance.GetComponentsInChildren<TMP_InputField>();
-                        foreach (TMP_InputField doorInput in doorInputField)
-                        {
-                            if (doorInput.name == "DoorID")
-                            {
-                                DoorIDInput = doorInput;
-                            }
-                            if (doorInput.name == "SecondDoorID")
-                            {
-                                SecondDoorIDInput = doorInput;
-                            }
-                            if (doorInput.name == "PositionPoint")
-                            {
-                                PositionPointInput = doorInput;
-                            }
-                        }
-                        doorDropdowns = DoorPanelInstance.GetComponentsInChildren<TMP_Dropdown>();
-
-                        foreach (TMP_Dropdown DoorDropdowns in doorDropdowns)
-                        {
-                            if (DoorDropdowns.name == "SectorName")
-                            {
-                                sectorDropdown = DoorDropdowns;
-
-                                if (sectorDropdown != null)
+                                if (toggle.name == "initial")
                                 {
-                                    // Chame o método para preencher o Dropdown com os setores
-                                    PopulateSectorDropdown();
-                                    // Registre o método como um ouvinte para o evento OnValueChanged do Dropdown
-                                    sectorDropdown.onValueChanged.AddListener(OnSectorDropdownValueChanged);
-
-                                    // Localize o índice correspondente à SectorNameString
-                                    int sectorIndex = GetSectorIndex(doorObjectScript.SectorName);
-
-                                    // Defina o índice do Dropdown
-                                    sectorDropdown.value = sectorIndex;
+                                    isInitialStarted = toggle;
+                                }
+                                else if (toggle.name == "isLoop")
+                                {
+                                    isLoop = toggle;
                                 }
                             }
-                        }
 
-                        doorButtons = DoorPanelInstance.GetComponentsInChildren<Button>();
-                        foreach (Button button in doorButtons)
-                        {
-                            if (button.name == "BackButton")
+                            particleNameInputField = panelInstance.GetComponentInChildren<TMP_InputField>();
+
+                            buttons = panelInstance.GetComponentsInChildren<Button>();
+                            foreach (Button button in buttons)
                             {
-                                doorBackButton = button;
+                                if (button.name == "BackButton")
+                                {
+                                    backButton = button;
+                                }
+                                else if (button.name == "OKButton")
+                                {
+                                    okButton = button;
+                                }
+                                else if (button.name == "PaticleTypeButton")
+                                {
+                                    particleTypeButton = button;
+                                }
                             }
-                            else if (button.name == "OKButton")
+
+                            // Configurar eventos para botões
+                            backButton.onClick.AddListener(() =>
                             {
-                                doorOkButton = button;
-                            }
+                                isOpened = false;
+                                Destroy(panelInstance);
+                            });
+
+                            okButton.onClick.AddListener(() =>
+                            {
+                                particleObjectScript.particleType = particleType;
+                                particleObjectScript.particleName = particleName;
+                                particleObjectScript.isLoop = isLoop.isOn;
+                                particleObjectScript.initialStarted = isInitialStarted.isOn;
+
+                                isOpened = false;
+                                Destroy(panelInstance);
+                            });
+
+
+                            particleTypeButton.onClick.AddListener(() =>
+                            {
+                                ParticleTypePanel.SetActive(true);
+                                InitializeParticleTypeButtons();
+                            });
+
+                            UpdateUIValues();
                         }
-
-                        // Configurar eventos para botões
-                        doorBackButton.onClick.AddListener(() =>
-                        {
-                            doorIsOpened = false;
-                            Destroy(DoorPanelInstance);
-                        });
-
-                        doorOkButton.onClick.AddListener(() =>
-                        {
-                            doorObjectScript.DoorID = DoorIDString;
-                            doorObjectScript.SecondDoorID = SecondDoorIDString;
-                            doorObjectScript.WithKey = WithKey.isOn;
-                            doorObjectScript.toSector = ToSector.isOn;
-                            doorObjectScript.PositionPoint = PositionPointString;
-                            doorObjectScript.SectorName = SectorNameString;
-
-                            doorIsOpened = false;
-                            Destroy(DoorPanelInstance);
-                        });
-
-                        UpdateUIValuesDoor();
                     }
                 }
+                #endregion
+                #region Moving Platform
 
-                
-            }
-            #endregion
-            #region SpawnPoints
-            if (hit.collider != null && !spawnPointIsOpened)
-            {
-                if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("SpawnPoint"))
+                if (hit.collider != null && !mpIsOpened)
                 {
-                    spawnPointIsOpened = true;
-                    spawnPointSelectedObject = hit.collider.gameObject;
-                    spawnPointObjectScript = spawnPointSelectedObject.GetComponent<SpawnPoint>();
-                    spawnPointPanelInstance = Instantiate(spawnPointPanelPrefab, panelLocalization);
-
-                    if (spawnPointPanelInstance != null)
+                    if (hit.collider != null && hit.collider.CompareTag("MovingPlatform"))
                     {
-                        spawnPointInputField = spawnPointPanelInstance.GetComponentsInChildren<TMP_InputField>();
-                        foreach (TMP_InputField spawnPointInput in spawnPointInputField)
+                        mpIsOpened = true;
+                        mpSelectedObject = hit.collider.gameObject;
+                        platformControllerScript = mpSelectedObject.GetComponent<PlatformController>();
+                        mpPanelInstance = Instantiate(mpPanelPrefab, panelLocalization);
+
+                        if (mpPanelInstance != null)
                         {
-                            if (spawnPointInput.name == "SpawnPointID")
+                            mpToggles = mpPanelInstance.GetComponentsInChildren<Toggle>();
+
+                            foreach (Toggle toggle in mpToggles)
                             {
-                                spawnPointIDInput = spawnPointInput;
+                                if (toggle.name == "initial")
+                                {
+                                    mpIsInitialStarted = toggle;
+                                }
+                                else if (toggle.name == "isPingPong")
+                                {
+                                    mpIsPingPong = toggle;
+                                }
+                                else if (toggle.name == "isClosed")
+                                {
+                                    mpIsClosed = toggle;
+                                }
                             }
+
+                            mpInputField = mpPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                            foreach (TMP_InputField mpInput in mpInputField)
+                            {
+                                if (mpInput.name == "inputID")
+                                {
+                                    platformIDInput = mpInput;
+                                }
+                                else if (mpInput.name == "inputSpeed")
+                                {
+                                    speedInput = mpInput;
+                                }
+                                else if (mpInput.name == "inputStopDistance")
+                                {
+                                    stopDistanceInput = mpInput;
+                                }
+                            }
+
+
+                            mpButtons = mpPanelInstance.GetComponentsInChildren<Button>();
+                            foreach (Button button in mpButtons)
+                            {
+                                if (button.name == "BackButton")
+                                {
+                                    backButton = button;
+                                }
+                                else if (button.name == "OKButton")
+                                {
+                                    okButton = button;
+                                }
+                            }
+                            // Configurar eventos para botões
+                            backButton.onClick.AddListener(() =>
+                            {
+                                mpIsOpened = false;
+                                Destroy(mpPanelInstance);
+                            });
+
+                            okButton.onClick.AddListener(() =>
+                            {
+                                if (mpIsClosed.isOn)
+                                {
+                                    platformControllerScript.pathType = WaypointPathType.Closed;
+                                }
+                                else
+                                {
+                                    platformControllerScript.pathType = WaypointPathType.Open;
+                                }
+                                if (mpIsPingPong.isOn)
+                                {
+                                    platformControllerScript.behaviorType = WaypointBehaviorType.PingPong;
+                                }
+                                else
+                                {
+                                    platformControllerScript.behaviorType = WaypointBehaviorType.Loop;
+                                }
+                                platformControllerScript.initialStart = mpIsInitialStarted.isOn;
+                                platformControllerScript.platformMoveid = platformIDString.ToString();
+                                float speedValue;
+                                float stopDistanceValue;
+
+                                if (float.TryParse(speedString, out speedValue))
+                                {
+                                    platformControllerScript.moveSpeed = speedValue;
+                                }
+
+                                if (float.TryParse(stopDistanceString, out stopDistanceValue))
+                                {
+                                    platformControllerScript.stopDistance = stopDistanceValue;
+                                }
+
+                                mpIsOpened = false;
+                                Destroy(mpPanelInstance);
+                            });
+                            UpdateUIValuesMP();
                         }
-
-                        spawnPointButtons = spawnPointPanelInstance.GetComponentsInChildren<Button>();
-                        foreach (Button button in spawnPointButtons)
-                        {
-                            if (button.name == "BackButton")
-                            {
-                                spawnPointBackButton = button;
-                            }
-                            else if (button.name == "OKButton")
-                            {
-                                spawnPointOkButton = button;
-                            }
-                        }
-
-                        // Configurar eventos para botões
-                        spawnPointBackButton.onClick.AddListener(() =>
-                        {
-                            spawnPointIsOpened = false;
-                            Destroy(spawnPointPanelInstance);
-                        });
-
-                        spawnPointOkButton.onClick.AddListener(() =>
-                        {
-                            spawnPointObjectScript.SpawnPointID = spawnPointIDString;
-
-                            spawnPointIsOpened = false;
-                            Destroy(spawnPointPanelInstance);
-                        });
-
-                        UpdateUIValuesSpawnPoint();
                     }
                 }
+                #endregion
+                #region Doors
+                if (hit.collider != null && !doorIsOpened)
+                {
+                    if (hit.collider != null && hit.collider.CompareTag("ObjectObject") && hit.collider.gameObject.name.StartsWith("Door"))
+                    {
+                        doorIsOpened = true;
+                        DoorSelectedObject = hit.collider.gameObject;
+                        doorObjectScript = DoorSelectedObject.GetComponent<Door>();
+                        DoorPanelInstance = Instantiate(DoorPanelPrefab, panelLocalization);
+
+                        if (DoorPanelInstance != null)
+                        {
+                            doorToggles = DoorPanelInstance.GetComponentsInChildren<Toggle>();
+
+                            foreach (Toggle toggle in doorToggles)
+                            {
+                                if (toggle.name == "WithKey")
+                                {
+                                    WithKey = toggle;
+                                }
+                                if (toggle.name == "ToSector")
+                                {
+                                    ToSector = toggle;
+                                }
+                            }
+                            doorInputField = DoorPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                            foreach (TMP_InputField doorInput in doorInputField)
+                            {
+                                if (doorInput.name == "DoorID")
+                                {
+                                    DoorIDInput = doorInput;
+                                }
+                                if (doorInput.name == "SecondDoorID")
+                                {
+                                    SecondDoorIDInput = doorInput;
+                                }
+                                if (doorInput.name == "PositionPoint")
+                                {
+                                    PositionPointInput = doorInput;
+                                }
+                            }
+                            doorDropdowns = DoorPanelInstance.GetComponentsInChildren<TMP_Dropdown>();
+
+                            foreach (TMP_Dropdown DoorDropdowns in doorDropdowns)
+                            {
+                                if (DoorDropdowns.name == "SectorName")
+                                {
+                                    sectorDropdown = DoorDropdowns;
+
+                                    if (sectorDropdown != null)
+                                    {
+                                        // Chame o método para preencher o Dropdown com os setores
+                                        PopulateSectorDropdown();
+                                        // Registre o método como um ouvinte para o evento OnValueChanged do Dropdown
+                                        sectorDropdown.onValueChanged.AddListener(OnSectorDropdownValueChanged);
+
+                                        // Localize o índice correspondente à SectorNameString
+                                        int sectorIndex = GetSectorIndex(doorObjectScript.SectorName);
+
+                                        // Defina o índice do Dropdown
+                                        sectorDropdown.value = sectorIndex;
+                                    }
+                                }
+                            }
+
+                            doorButtons = DoorPanelInstance.GetComponentsInChildren<Button>();
+                            foreach (Button button in doorButtons)
+                            {
+                                if (button.name == "BackButton")
+                                {
+                                    doorBackButton = button;
+                                }
+                                else if (button.name == "OKButton")
+                                {
+                                    doorOkButton = button;
+                                }
+                            }
+
+                            // Configurar eventos para botões
+                            doorBackButton.onClick.AddListener(() =>
+                            {
+                                doorIsOpened = false;
+                                Destroy(DoorPanelInstance);
+                            });
+
+                            doorOkButton.onClick.AddListener(() =>
+                            {
+                                doorObjectScript.DoorID = DoorIDString;
+                                doorObjectScript.SecondDoorID = SecondDoorIDString;
+                                doorObjectScript.WithKey = WithKey.isOn;
+                                doorObjectScript.toSector = ToSector.isOn;
+                                doorObjectScript.PositionPoint = PositionPointString;
+                                doorObjectScript.SectorName = SectorNameString;
+
+                                doorIsOpened = false;
+                                Destroy(DoorPanelInstance);
+                            });
+
+                            UpdateUIValuesDoor();
+                        }
+                    }
 
 
+                }
+                #endregion
+                #region SpawnPoints
+                if (hit.collider != null && !spawnPointIsOpened)
+                {
+                    if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("SpawnPoint"))
+                    {
+                        spawnPointIsOpened = true;
+                        spawnPointSelectedObject = hit.collider.gameObject;
+                        spawnPointObjectScript = spawnPointSelectedObject.GetComponent<SpawnPoint>();
+                        spawnPointPanelInstance = Instantiate(spawnPointPanelPrefab, panelLocalization);
+
+                        if (spawnPointPanelInstance != null)
+                        {
+                            spawnPointInputField = spawnPointPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                            foreach (TMP_InputField spawnPointInput in spawnPointInputField)
+                            {
+                                if (spawnPointInput.name == "SpawnPointID")
+                                {
+                                    spawnPointIDInput = spawnPointInput;
+                                }
+                            }
+
+                            spawnPointButtons = spawnPointPanelInstance.GetComponentsInChildren<Button>();
+                            foreach (Button button in spawnPointButtons)
+                            {
+                                if (button.name == "BackButton")
+                                {
+                                    spawnPointBackButton = button;
+                                }
+                                else if (button.name == "OKButton")
+                                {
+                                    spawnPointOkButton = button;
+                                }
+                            }
+
+                            // Configurar eventos para botões
+                            spawnPointBackButton.onClick.AddListener(() =>
+                            {
+                                spawnPointIsOpened = false;
+                                Destroy(spawnPointPanelInstance);
+                            });
+
+                            spawnPointOkButton.onClick.AddListener(() =>
+                            {
+                                spawnPointObjectScript.SpawnPointID = spawnPointIDString;
+
+                                spawnPointIsOpened = false;
+                                Destroy(spawnPointPanelInstance);
+                            });
+
+                            UpdateUIValuesSpawnPoint();
+                        }
+                    }
+
+
+                }
+
+                #endregion
+
+                #region Keys
+                if (hit.collider != null && !KeyIsOpened)
+                {
+                    if (hit.collider != null && hit.collider.CompareTag("ObjectObject") && hit.collider.gameObject.name.StartsWith("Key"))
+                    {
+                        KeyIsOpened = true;
+                        KeySelectedObject = hit.collider.gameObject;
+                        KeyObjectScript = KeySelectedObject.GetComponent<Key>();
+                        KeyPanelInstance = Instantiate(KeyPanelPrefab, panelLocalization);
+
+                        if (KeyPanelInstance != null)
+                        {
+                            KeyInputField = KeyPanelInstance.GetComponentsInChildren<TMP_InputField>();
+                            foreach (TMP_InputField KeyInput in KeyInputField)
+                            {
+                                if (KeyInput.name == "KeyID")
+                                {
+                                    KeyIDInput = KeyInput;
+                                }
+                            }
+
+                            KeyButtons = KeyPanelInstance.GetComponentsInChildren<Button>();
+                            foreach (Button button in KeyButtons)
+                            {
+                                if (button.name == "BackButton")
+                                {
+                                    KeyBackButton = button;
+                                }
+                                else if (button.name == "OKButton")
+                                {
+                                    KeyOkButton = button;
+                                }
+                            }
+
+                            // Configurar eventos para botões
+                            KeyBackButton.onClick.AddListener(() =>
+                            {
+                                KeyIsOpened = false;
+                                Destroy(KeyPanelInstance);
+                            });
+
+                            KeyOkButton.onClick.AddListener(() =>
+                            {
+                                KeyObjectScript.keyID = KeyIDString;
+
+                                KeyIsOpened = false;
+                                Destroy(KeyPanelInstance);
+                            });
+
+                            UpdateUIValuesKey();
+                        }
+                    }
+
+
+                }
+
+                #endregion
             }
-
-            #endregion
         }
         #region particles
         if (isOpened)
@@ -565,6 +650,25 @@ public class MultipleObjectSelector : MonoBehaviour
             spawnPointSelectedObject = null;
             spawnPointPanelInstance = null;
             spawnPointObjectScript = null;
+        }
+        #endregion
+
+        #region Key
+        if (KeyIsOpened)
+        {
+            if (KeyPanelInstance != null)
+            {
+                if (KeyIDInput != null)
+                {
+                    KeyIDString = KeyIDInput.text;
+                }
+            }
+        }
+        else
+        {
+            KeySelectedObject = null;
+            KeyPanelInstance = null;
+            KeyObjectScript = null;
         }
         #endregion
     }
@@ -728,6 +832,19 @@ public class MultipleObjectSelector : MonoBehaviour
         {
             spawnPointIDString = spawnPointObjectScript.SpawnPointID;
             spawnPointIDInput.text = spawnPointObjectScript.SpawnPointID;
+        }
+    }
+    #endregion
+
+
+    #region Keys
+
+    void UpdateUIValuesKey()
+    {
+        if (KeyObjectScript != null)
+        {
+            KeyIDString = KeyObjectScript.keyID;
+            KeyIDInput.text = KeyObjectScript.keyID;
         }
     }
     #endregion
