@@ -30,22 +30,46 @@ public class Door : MonoBehaviour
     private bool isTeleporting = false;
     private float timeToTeleportAgain = 4f;
 
+    [SerializeField] private GameObject Lock;
+    [SerializeField] private Animator LockAnim;
+    private bool Locked;
+    private bool locksfx;
+    private bool Opensfx;
+    private float toAgainOpenSfx;
+    private float toAgainLockSfx;
+
     void Start()
     {
         isTeleporting = false;
+        if(WithKey && !keyOpened)
+        {
+            Lock.SetActive(true); 
+            Locked = true;
+        }
+        else
+        {
+            Lock.SetActive(false);
+            Locked = false;
+        }
     }
     void Update()
     {
+        if(Locked)
+        {
+            Lock.SetActive(true);
+        }
+        else
+        {
+            Lock.SetActive(false);
+        }
         if (waitingToOpen && !doorOpen && isOnDoor)
         {
             waitingToOpen = false;
-            doorOpen = true;
 
             // Verificar WithKey
             if (WithKey)
             {
                 List<Key> keysToRemove = new List<Key>();
-
 
                 foreach (Key key in thePlayer.followingKeys)
                 {
@@ -53,12 +77,27 @@ public class Door : MonoBehaviour
                     if (key.keyID == DoorID)
                     {
                         AnimKeyOpen.SetTrigger("OpenDoor");
+                        LockAnim.SetTrigger("RemoveLocked");
                         collectEffect.Play();
                         keyOpened = true;
                         key.gameObject.SetActive(false);
                         thePlayer.RemoveKey(key);
                         keysToRemove.Add(key);
                         key.keyDoorOpened = true;
+                        Locked = false;
+                        doorOpen = true;
+                    }
+                    else
+                    {
+                        LockAnim.SetTrigger("Locked");
+                        Locked = true;
+                        doorOpen = false;
+                        if(!locksfx)
+                        {
+                            AudioManager.instance.PlayOneShot(FMODEvents.instance.Locked, this.transform.position);
+                            locksfx = true;
+                            toAgainLockSfx = 5f;
+                        }
                     }
                 }
 
@@ -71,15 +110,32 @@ public class Door : MonoBehaviour
             else
             {
                 keyOpened = true;
+                doorOpen = true;
             }
         }
 
+        if (!keyOpened && Locked && !doorOpen && PlayerController.instance != null && PlayerController.instance.moveInputUp > 0.1f && isOnDoor && !isTeleporting)
+        {
+            LockAnim.SetTrigger("Locked"); 
+            if (!locksfx)
+            {
+                AudioManager.instance.PlayOneShot(FMODEvents.instance.Locked, this.transform.position);
+                locksfx = true;
+                toAgainLockSfx = 5f;
+            }
+        }
         if (keyOpened && doorOpen && PlayerController.instance.moveInputUp > 0.1f && isOnDoor && !isTeleporting)
         {
             isTeleporting = true;
             timeToTeleportAgain = 4f;
 
             DoorAnim.SetTrigger("Open");
+            if(!Opensfx)
+            {
+                AudioManager.instance.PlayOneShot(FMODEvents.instance.OpenDoor, this.transform.position);
+                Opensfx = true;
+                toAgainOpenSfx = 5f;
+            }
             StartCoroutine(Opened());
 
         }
@@ -92,13 +148,31 @@ public class Door : MonoBehaviour
         {
             isTeleporting = false;
         }
+
+        if(toAgainLockSfx >= 0f)
+        {
+            toAgainLockSfx -= Time.deltaTime;
+        }
+        if(toAgainLockSfx <= 0f)
+        {
+            locksfx = false;
+        }
+
+        if (toAgainOpenSfx >= 0f)
+        {
+            toAgainOpenSfx -= Time.deltaTime;
+        }
+        if (toAgainOpenSfx <= 0f)
+        {
+            Opensfx = false;
+        }
     }
+
     void MoveToSector(string sectorName, string positionPoint)
     {
         LoadSectorTransition.instance.sectorCloseTransition(sectorName, positionPoint);
     }
    
-
     void MoveToPosition(string positionPoint)
     {
         // Encontrar todos os objetos com a tag "SpawnPoint"

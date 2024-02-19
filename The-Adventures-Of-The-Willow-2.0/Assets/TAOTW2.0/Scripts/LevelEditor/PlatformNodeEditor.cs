@@ -48,6 +48,7 @@ public class PlatformNodeEditor : MonoBehaviour
         {
             instance = this;
         }
+        waypointsObjects.Clear();
         // Inicialmente, defina a sprite do botão com base no estado de isNodeEditor
         UpdateButtonSprite();
     }

@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     public Rigidbody2D RB;
-    private bool facingRight;
+    [HideInInspector] public bool facingRight;
     [SerializeField] private float sameGravityPlayer;
     private float normalGravity;
     public bool stopPlayer = false;

@@ -136,6 +136,7 @@ public class LevelEditorManager : MonoBehaviour
     //Nodes
 
     [SerializeField] private GameObject NodeObjectPrefab;
+    [SerializeField] private Transform nodesContainer;
 
     #region Gride
     public int gridWidth = 10; // Largura inicial da grelha
@@ -2318,6 +2319,19 @@ public class LevelEditorManager : MonoBehaviour
 
     public void LoadLevel(string worldName, string level, string sectorName)
     {
+        if (PlatformNodeEditor.instance != null)
+        {
+            PlatformNodeEditor.instance.waypointsObjects.Clear();
+        }
+        // Limpa os inimigos existentes
+        ClearEnemies();
+        // Limpa os objetos existentes
+        ClearObjects();
+        ClearGameObjects();
+        // Limpa os elementos decorativos existentes
+        ClearDecor();
+        ClearNodes();
+
         EnableAutoSave();
         StartAutoSaveCoroutine();
 
@@ -2415,14 +2429,6 @@ public class LevelEditorManager : MonoBehaviour
                     }
                     gridVisualizer.OnGridSizeUpdated();
 
-                    // Limpa os inimigos existentes
-                    ClearEnemies();
-                    // Limpa os objetos existentes
-                    ClearObjects();
-                    ClearGameObjects();
-                    // Limpa os elementos decorativos existentes
-                    ClearDecor();
-                    ClearNodes();
 
                     // Carrega os inimigos salvos
                     foreach (EnemySaveData enemyData in enemyList)
@@ -3086,14 +3092,6 @@ public class LevelEditorManager : MonoBehaviour
                         }
                         gridVisualizer.OnGridSizeUpdated();
 
-                        // Limpa os inimigos existentes
-                        ClearEnemies();
-                        // Limpa os objetos existentes
-                        ClearObjects();
-                        ClearGameObjects();
-                        // Limpa os elementos decorativos existentes
-                        ClearDecor();
-                        ClearNodes();
 
                         // Carrega os inimigos salvos
                         foreach (EnemySaveData enemyData in enemyList)
@@ -4073,6 +4071,7 @@ public class LevelEditorManager : MonoBehaviour
         {
             Destroy(node);
         }
+            
     }
     private void SetTilemapLayer(Tilemap tilemap, LayerMask layerMask)
     {

@@ -188,7 +188,14 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(toDie);
             if (LoadSectorTransition.instance != null)
             {
-                LoadSectorTransition.instance.sectorSimpleCloseTransition(LastSectorCheck, playerPosCheck);
+                if (!string.IsNullOrEmpty(LastSectorCheck))
+                {
+                    LoadSectorTransition.instance.sectorSimpleCloseTransition(LastSectorCheck, playerPosCheck);
+                }
+                else
+                {
+                    LoadSectorTransition.instance.sectorSimpleCloseTransition("Sector1", playerPosCheck);
+                }
             }
             isDeadNow = false;
             PlayerController.instance.stopPlayer = false;

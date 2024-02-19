@@ -77,6 +77,8 @@ public class FMODEvents : MonoBehaviour
     [field: Header("Objects")]
     [field: SerializeField] public EventReference FallingObject { get; private set; }
     [field: SerializeField] public EventReference PoofObject { get; private set; }
+    [field: SerializeField] public EventReference OpenDoor { get; private set; }
+    [field: SerializeField] public EventReference Locked { get; private set; }
 
 
     [field: Header("Enemies")]

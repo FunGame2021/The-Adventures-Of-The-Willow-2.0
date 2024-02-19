@@ -204,7 +204,7 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638427567396519069
+  lastModified: 638439664870935402
   FileSizes:
   - Name: Desktop
     Value: 7904
@@ -499,7 +499,7 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.assets.bank
   Name: Master.assets
   StudioPath: bank:/Master.assets
-  lastModified: 638427567396609697
+  lastModified: 638439664870985404
   FileSizes:
   - Name: Desktop
     Value: 494
@@ -548,12 +548,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/SFX.assets.bank
   Name: SFX.assets
   StudioPath: bank:/SFX.assets
-  lastModified: 638427567766424672
+  lastModified: 638439674458693815
   FileSizes:
   - Name: Desktop
-    Value: 2867168
+    Value: 2971712
   - Name: Mobile
-    Value: 5410592
+    Value: 5628864
   Exists: 1
 --- !u!114 &-4099481443579788325
 MonoBehaviour:
@@ -736,6 +736,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 104
+--- !u!114 &-2724416619625693933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Objects/Locked
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Objects/Locked
+  Guid:
+    Data1: 702056465
+    Data2: 1084280678
+    Data3: 987388051
+    Data4: 541356286
+  Banks:
+  - {fileID: -1316155249848695341}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2976
 --- !u!114 &-2364975153587298228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,12 +913,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638427567759441424
+  lastModified: 638439674457278294
   FileSizes:
   - Name: Desktop
-    Value: 59868
+    Value: 62390
   - Name: Mobile
-    Value: 59868
+    Value: 62390
   Exists: 1
 --- !u!114 &-1118635482416120303
 MonoBehaviour:
@@ -979,12 +1006,12 @@ MonoBehaviour:
   Path: Assets/Gizmos/FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638427567396719690
+  lastModified: 638439664871040080
   FileSizes:
   - Name: Desktop
-    Value: 4740
+    Value: 4816
   - Name: Mobile
-    Value: 4740
+    Value: 4816
   Exists: 1
 --- !u!114 &-413326299845429206
 MonoBehaviour:
@@ -1156,12 +1183,14 @@ MonoBehaviour:
   - {fileID: -2824921088928305566}
   - {fileID: 7192566821719190204}
   - {fileID: -1741868529543924743}
+  - {fileID: -2724416619625693933}
+  - {fileID: 3060256173561283780}
   EditorParameters: []
   MasterBanks:
   - {fileID: -7116817319431878045}
   StringsBanks:
   - {fileID: -510336797259339001}
-  cacheTime: 638427567766424672
+  cacheTime: 638439674458693815
   cacheVersion: 131605
 --- !u!114 &8231981627387293
 MonoBehaviour:
@@ -1636,6 +1665,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 800
+--- !u!114 &3060256173561283780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Objects/OpenDoor
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Objects/OpenDoor
+  Guid:
+    Data1: 1324658977
+    Data2: 1269908756
+    Data3: -1396747114
+    Data4: 999916873
+  Banks:
+  - {fileID: -1316155249848695341}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 6656
 --- !u!114 &3096367817761650862
 MonoBehaviour:
   m_ObjectHideFlags: 0
