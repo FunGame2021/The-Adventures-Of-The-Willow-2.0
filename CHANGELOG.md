@@ -7,24 +7,14 @@
   Please, if you are a Mac or Linux user, report if everything is working, it has not yet been tested on them. Also, if you are a Windows user, feel free to report any errors you may have.
   
   **Release Notes:**
-  - Removed the restriction of adding tiles only inside the grid (this now serves as an isolation reference so the camera does not deviate from the level so as not to show empty areas).
-  - Added sector loading when playing.
-  - Improvements in creating and opening sectors in the editor.
-  - Added doors to load/enter different sectors or use different points in the same sector.
-  - Improvements in Sector loading.
-  - Added playing and stopping music according to sectors.
-  - Improved transitions.
-  - Added Environmental particle time.
-  - Added Audio for the time countdown.
-  - Fixed Bug player falls after load Sector.
-  - Fixed Resize Grid is deleting tiles.
-  - Added Key Fuction.
+  - New sprites for the big and small player (missing wall jumping, powerups, worldmap).
+  - Improvements in the use of doors and keys
   
   - Added Level Editor ShortCuts:
   
   *Shortcuts*
         
-		CTRL + E  Delete Enemies Tool (ON/OFF)
+	CTRL + E  Delete Enemies Tool (ON/OFF)
         CTRL + T  Delete Tiles Tool (ON/OFF)
         CTRL + G  Snap Gride Size
         CTRL + Y  Snap Gride (ON/OFF)

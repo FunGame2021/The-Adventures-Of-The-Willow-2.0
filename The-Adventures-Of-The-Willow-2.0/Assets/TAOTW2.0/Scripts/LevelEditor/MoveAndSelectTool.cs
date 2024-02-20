@@ -80,7 +80,8 @@ public class MoveAndSelectTool : MonoBehaviour
 
         // Adiciona um listener para o evento onValueChanged
         dropdownSelectType.onValueChanged.AddListener(OnDropdownValueChanged);
-
+        isEnemy = true;
+        OnDropdownValueChanged(0);
     }
 
     void Update()

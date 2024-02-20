@@ -45,7 +45,7 @@ public class PlayerAnimatorController : MonoBehaviour
 
     private void PlayRandomIdleAnimation()
     {
-        if (!isIdle)
+        if (!isIdle && PlayerController.instance.Swimming || PlayerController.instance.isOnWater)
         {
             return;
         }
@@ -80,8 +80,8 @@ public class PlayerAnimatorController : MonoBehaviour
         }
         if (!FinishPoint.instance.isFinished)
         {
-            //se estiver no chão pode andar e parar
-            if (PlayerController.instance.isGrounded)
+            //se estiver no chão pode andar e parar //não está a nadar
+            if (PlayerController.instance.isGrounded && !PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
             {
                 animationPlayer.SetBool("JumpingV", false);
                 animationPlayer.SetBool("FallingV", false);
@@ -89,6 +89,8 @@ public class PlayerAnimatorController : MonoBehaviour
                 animationPlayer.SetBool("FallingH", false);
                 animationPlayer.SetBool("Climbing", false);
                 animationPlayer.SetBool("ClimbingIdle", false);
+                animationPlayer.SetBool("Swim", false);
+                animationPlayer.SetBool("IdleSwim", false);
 
                 //andar movimento
                 if (PlayerController.instance.RB.velocity.x != 0
@@ -96,95 +98,132 @@ public class PlayerAnimatorController : MonoBehaviour
                 {
                     isIdle = false;
                     animationPlayer.SetBool("Walking", true);
+                    animationPlayer.SetBool("Swim", false);
+                    animationPlayer.SetBool("IdleSwim", false);
                 }
                 else
                 {
                     animationPlayer.SetBool("Walking", false);
                     isIdle = true;
+                    animationPlayer.SetBool("Swim", false);
+                    animationPlayer.SetBool("IdleSwim", false);
+                }
+
+            }
+            else if (PlayerController.instance.Swimming || PlayerController.instance.isOnWater)//está a nadar
+            {
+                animationPlayer.SetBool("Climbing", false);
+                animationPlayer.SetBool("ClimbingIdle", false);
+                animationPlayer.SetBool("JumpingV", false);
+                animationPlayer.SetBool("FallingV", false);
+                animationPlayer.SetBool("JumpingH", false);
+                animationPlayer.SetBool("FallingH", false);
+                animationPlayer.SetBool("Walking", false);
+                isIdle = false;
+
+                if (PlayerController.instance.moveInput != 0 || PlayerController.instance.moveInputUp != 0)
+                {
+                    animationPlayer.SetBool("Swim", true);
+                    animationPlayer.SetBool("IdleSwim", false);
+                }
+                else //está idle na água
+                {
+                    animationPlayer.SetBool("IdleSwim", true);
+                    animationPlayer.SetBool("Swim", false);
+
                 }
             }
-            else //se não estiver no chão vai saltar
+            else if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater) //se não estiver no chão
             {
-                //Se velocidade for igual a 0 salta normal verticar.
-                if (PlayerController.instance.RB.velocity.x == 0 && !PlayerController.instance.isOnLadder)
+                if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
                 {
-                    animationPlayer.SetBool("Walking", false);
 
-                    if (PlayerController.instance.RB.velocity.y > 0)
+                    //Se velocidade for igual a 0 salta normal verticar.
+                    if (PlayerController.instance.RB.velocity.x == 0 && !PlayerController.instance.isOnLadder)
                     {
-                        isIdle = false;
-                        animationPlayer.SetBool("JumpingV", true);
-                        animationPlayer.SetBool("FallingV", false);
-                        animationPlayer.SetBool("JumpingH", false);
-                        animationPlayer.SetBool("FallingH", false);
-                        animationPlayer.SetBool("Climbing", false);
-                        animationPlayer.SetBool("ClimbingIdle", false);
-                    }
-                    if (PlayerController.instance.RB.velocity.y < 0)
-                    {
-                        isIdle = false;
-                        animationPlayer.SetBool("JumpingV", false);
-                        animationPlayer.SetBool("FallingV", true);
-                        animationPlayer.SetBool("JumpingH", false);
-                        animationPlayer.SetBool("FallingH", false);
-                        animationPlayer.SetBool("Climbing", false);
-                        animationPlayer.SetBool("ClimbingIdle", false);
-                    }
-                }
+                        animationPlayer.SetBool("Walking", false);
 
-                else if (PlayerController.instance.RB.velocity.x != 0 && !PlayerController.instance.isOnLadder)
-                {
-                    if (PlayerController.instance.RB.velocity.y > 0)
+                        if (PlayerController.instance.RB.velocity.y > 0)
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("JumpingV", true);
+                            animationPlayer.SetBool("FallingV", false);
+                            animationPlayer.SetBool("JumpingH", false);
+                            animationPlayer.SetBool("FallingH", false);
+                            animationPlayer.SetBool("Climbing", false);
+                            animationPlayer.SetBool("ClimbingIdle", false);
+                            animationPlayer.SetBool("IdleSwim", false);
+                            animationPlayer.SetBool("Swim", false);
+                        }
+                        if (PlayerController.instance.RB.velocity.y < 0)
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("JumpingV", false);
+                            animationPlayer.SetBool("FallingV", true);
+                            animationPlayer.SetBool("JumpingH", false);
+                            animationPlayer.SetBool("FallingH", false);
+                            animationPlayer.SetBool("Climbing", false);
+                            animationPlayer.SetBool("ClimbingIdle", false);
+                            animationPlayer.SetBool("IdleSwim", false);
+                            animationPlayer.SetBool("Swim", false);
+                        }
+                    }
+                    //Salto horizontal
+                    else if (PlayerController.instance.RB.velocity.x != 0 && !PlayerController.instance.isOnLadder)
                     {
-                        isIdle = false;
-                        animationPlayer.SetBool("JumpingV", false);
-                        animationPlayer.SetBool("FallingV", false);
-                        animationPlayer.SetBool("JumpingH", true);
-                        animationPlayer.SetBool("FallingH", false);
+                        if (PlayerController.instance.RB.velocity.y > 0)
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("JumpingV", false);
+                            animationPlayer.SetBool("FallingV", false);
+                            animationPlayer.SetBool("JumpingH", true);
+                            animationPlayer.SetBool("FallingH", false);
+                            animationPlayer.SetBool("Climbing", false);
+                            animationPlayer.SetBool("ClimbingIdle", false);
+                        }
+                        if (PlayerController.instance.RB.velocity.y < 0)
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("JumpingV", false);
+                            animationPlayer.SetBool("FallingV", false);
+                            animationPlayer.SetBool("JumpingH", false);
+                            animationPlayer.SetBool("FallingH", true);
+                            animationPlayer.SetBool("Climbing", false);
+                            animationPlayer.SetBool("ClimbingIdle", false);
+                        }
+                    }
+
+                    //escalando
+                    else if (PlayerController.instance.isClimbing)
+                    {
+                        if (PlayerController.instance.moveInputUp != 0)
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("Climbing", true);
+                            animationPlayer.SetBool("JumpingV", false);
+                            animationPlayer.SetBool("FallingV", false);
+                            animationPlayer.SetBool("JumpingH", false);
+                            animationPlayer.SetBool("FallingH", false);
+                            animationPlayer.SetBool("Walking", false);
+                            animationPlayer.SetBool("ClimbingIdle", false);
+                        }
+                        else
+                        {
+                            isIdle = false;
+                            animationPlayer.SetBool("JumpingV", false);
+                            animationPlayer.SetBool("FallingV", false);
+                            animationPlayer.SetBool("JumpingH", false);
+                            animationPlayer.SetBool("FallingH", false);
+                            animationPlayer.SetBool("Walking", false);
+                            animationPlayer.SetBool("Climbing", false);
+                            animationPlayer.SetBool("ClimbingIdle", true);
+                        }
+                    }
+                    else //não está a escalar
+                    {
                         animationPlayer.SetBool("Climbing", false);
                         animationPlayer.SetBool("ClimbingIdle", false);
                     }
-                    if (PlayerController.instance.RB.velocity.y < 0)
-                    {
-                        isIdle = false;
-                        animationPlayer.SetBool("JumpingV", false);
-                        animationPlayer.SetBool("FallingV", false);
-                        animationPlayer.SetBool("JumpingH", false);
-                        animationPlayer.SetBool("FallingH", true);
-                        animationPlayer.SetBool("Climbing", false);
-                        animationPlayer.SetBool("ClimbingIdle", false);
-                    }
-                }
-                
-                else if(PlayerController.instance.isClimbing)
-                {
-                    if (PlayerController.instance.moveInputUp != 0)
-                    {
-                        isIdle = false;
-                        animationPlayer.SetBool("Climbing", true);
-                        animationPlayer.SetBool("JumpingV", false);
-                        animationPlayer.SetBool("FallingV", false);
-                        animationPlayer.SetBool("JumpingH", false);
-                        animationPlayer.SetBool("FallingH", false);
-                        animationPlayer.SetBool("Walking", false);
-                        animationPlayer.SetBool("ClimbingIdle", false);
-                    }
-                    else
-                    {
-                        isIdle = false;
-                        animationPlayer.SetBool("JumpingV", false);
-                        animationPlayer.SetBool("FallingV", false);
-                        animationPlayer.SetBool("JumpingH", false);
-                        animationPlayer.SetBool("FallingH", false);
-                        animationPlayer.SetBool("Walking", false);
-                        animationPlayer.SetBool("Climbing", false);
-                        animationPlayer.SetBool("ClimbingIdle", true);
-                    }
-                }
-                else
-                {
-                    animationPlayer.SetBool("Climbing", false);
-                    animationPlayer.SetBool("ClimbingIdle", false);
                 }
             }
         }

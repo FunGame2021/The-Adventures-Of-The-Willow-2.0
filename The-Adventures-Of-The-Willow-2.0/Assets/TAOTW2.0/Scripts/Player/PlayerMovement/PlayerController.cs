@@ -84,8 +84,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask whatIsWater;
     private bool isTouchingWater;
 
-    private bool Swimming;
-    private bool isOnWater;
+    [HideInInspector] public bool Swimming;
+    [HideInInspector] public bool isOnWater;
     private float SwimGravity = 0f;
     private Vector2 swimMoveDirection;
     [SerializeField] private float SwimSpeed;

@@ -81,8 +81,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.081902415, y: -0.19434834}
-  m_Size: {x: 0.40339726, y: 0.6155033}
+  m_Offset: {x: -0.07455164, y: -0.014954448}
+  m_Size: {x: 0.48498738, y: 0.9742911}
   m_Direction: 0
 --- !u!61 &3876583545862505583
 BoxCollider2D:
@@ -116,7 +116,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.08242141, y: -0.26986364}
+  m_Offset: {x: -0.06439775, y: -0.2565752}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -127,7 +127,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3991213, y: 0.43368524}
+  m_Size: {x: 0.46273732, y: 0.46026212}
   m_EdgeRadius: 0
 --- !u!61 &3889837068287469320
 BoxCollider2D:
@@ -161,7 +161,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.087248266, y: -0.26281196}
+  m_Offset: {x: -0.0700305, y: -0.26281196}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -172,7 +172,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.55695415, y: 0.4529028}
+  m_Size: {x: 0.44641978, y: 0.4529028}
   m_EdgeRadius: 0
 --- !u!70 &1622869368492588601
 CapsuleCollider2D:
@@ -206,8 +206,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0876981, y: 0.020302534}
-  m_Size: {x: 0.56508994, y: 1.044657}
+  m_Offset: {x: -0.07641414, y: 0.07999998}
+  m_Size: {x: 0.48302907, y: 1.1}
   m_Direction: 0
 --- !u!70 &1952163072232265785
 CapsuleCollider2D:
@@ -241,8 +241,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.08542371, y: -0.48823074}
-  m_Size: {x: 0.5945079, y: 0.051525183}
+  m_Offset: {x: -0.053553496, y: -0.48823074}
+  m_Size: {x: 0.5160659, y: 0.051525183}
   m_Direction: 1
 --- !u!50 &6915230460424986886
 Rigidbody2D:
@@ -302,6 +302,7 @@ MonoBehaviour:
   boostedJumpTime: 0.5
   coyoteTime: 0.2
   RB: {fileID: 6915230460424986886}
+  facingRight: 0
   sameGravityPlayer: 2
   stopPlayer: 1
   autoMoveSpeed: 1.5
@@ -330,6 +331,8 @@ MonoBehaviour:
   whatIsWater:
     serializedVersion: 2
     m_Bits: 16
+  Swimming: 0
+  isOnWater: 0
   SwimSpeed: 5
   RotationSpeed: 360
   waterJumpForce: 10
@@ -530,6 +533,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KeyFollowPoint: {fileID: 8849194989297535051}
   followingKeys: []
+  spacing: 0.3
+  smoothTime: 0.3
+  delay: 1
 --- !u!1 &1224876652892615532
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 2289772188952401872}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.004, y: 0.1, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -667,7 +673,7 @@ SpriteRenderer:
   m_SortingLayerID: -105610191
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d7c80cb2b7d53b8438b727eba66ec2a3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 67beb56a212d2ee44bb5f7c74d09d771, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -969,6 +975,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.08297618, y: -0.5383984}
-  m_Size: {x: 0.5929369, y: 0.14812125}
+  m_Offset: {x: -0.04105301, y: -0.5383984}
+  m_Size: {x: 0.6601698, y: 0.14812125}
   m_Direction: 1

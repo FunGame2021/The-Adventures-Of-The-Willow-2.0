@@ -94,7 +94,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7809895897953338348}
   - component: {fileID: 3098322646698792520}
-  - component: {fileID: 7641680487236474916}
   m_Layer: 0
   m_Name: Layer-1 (1)
   m_TagString: Untagged
@@ -169,21 +168,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7641680487236474916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 616160916899873198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parallaxEffectX: 0.8
-  parallaxEffectY: 0.6
-  alwaysVisible: 0
 --- !u!1 &691963478960396060
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,8 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.4
-  parallaxEffectY: 0.4
+  parallaxEffectX: 0.3
+  parallaxEffectY: 0.25
   alwaysVisible: 0
 --- !u!1 &723192018189483771
 GameObject:
@@ -485,8 +469,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.65
-  parallaxEffectY: 0.46
+  parallaxEffectX: 0.4
+  parallaxEffectY: 0.35
   alwaysVisible: 0
 --- !u!1 &2256983143339389996
 GameObject:
@@ -1010,8 +994,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.8
-  parallaxEffectY: 0.6
+  parallaxEffectX: 0.5
+  parallaxEffectY: 0.45
   alwaysVisible: 0
 --- !u!1 &4496950936623184142
 GameObject:
@@ -1448,8 +1432,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.7
-  parallaxEffectY: 0.46
+  parallaxEffectX: 0.45
+  parallaxEffectY: 0.4
   alwaysVisible: 0
 --- !u!1 &5635214139898788411
 GameObject:
@@ -1886,8 +1870,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.3
-  parallaxEffectY: 0.3
+  parallaxEffectX: 0.25
+  parallaxEffectY: 0.2
   alwaysVisible: 0
 --- !u!1 &6520172219617121446
 GameObject:
@@ -2174,8 +2158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cd5432ae4a6e44f820be48ce7115aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectX: 0.6
-  parallaxEffectY: 0.45
+  parallaxEffectX: 0.35
+  parallaxEffectY: 0.3
   alwaysVisible: 0
 --- !u!1 &7730557111045531586
 GameObject:
