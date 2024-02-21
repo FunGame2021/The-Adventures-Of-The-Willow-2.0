@@ -2,8 +2,8 @@ name: LinuxBuild
 on: [push, pull_request]
 
 jobs:
-  buildForLinux:
-    name: Build for Linux
+  buildForLinux64:
+    name: Build for Linux 64-bit
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,5 +42,5 @@ jobs:
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
       - uses: actions/upload-artifact@v3
         with:
-          name: Build_Linux
+          name: Build_Linux64
           path: build
