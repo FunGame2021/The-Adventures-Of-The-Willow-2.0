@@ -33,7 +33,7 @@ public class RestartObjects : MonoBehaviour
     {
         if (rb != null)
         {
-            rb.velocity = Vector2.zero; // Define a velocidade vertical para zero
+            rb.linearVelocity = Vector2.zero; // Define a velocidade vertical para zero
             rb.gravityScale = 0f;
         }
         objectInRespawn = true;
@@ -81,7 +81,7 @@ public class RestartObjects : MonoBehaviour
 
         if (!IsOverlapping(initialPosition) && objectInRespawn)
         {
-            // Ajuste a posição para a posição inicial
+            // Ajuste a posiï¿½ï¿½o para a posiï¿½ï¿½o inicial
             transform.position = initialPosition;
             rb.gravityScale = actualGravity;
 
@@ -91,12 +91,12 @@ public class RestartObjects : MonoBehaviour
             objectInRespawn = false;
         }
 
-        // Verifique se o objeto está caindo
+        // Verifique se o objeto estï¿½ caindo
         if (IsFalling())
         {
             fallingTimer += Time.deltaTime;
 
-            // Se o objeto estiver caindo por mais de 10 segundos, faça respawn
+            // Se o objeto estiver caindo por mais de 10 segundos, faï¿½a respawn
             if (fallingTimer >= 10f)
             {
                 restartObject();
@@ -104,16 +104,16 @@ public class RestartObjects : MonoBehaviour
         }
         else
         {
-            // Reinicie o temporizador se o objeto não estiver mais caindo
+            // Reinicie o temporizador se o objeto nï¿½o estiver mais caindo
             fallingTimer = 0f;
         }
 
-        if(rb.velocity.y < -3 && !isBeingGrabbed && rb.velocity.y != 0 && !isplayedSFX && !isGrounded)
+        if(rb.linearVelocity.y < -3 && !isBeingGrabbed && rb.linearVelocity.y != 0 && !isplayedSFX && !isGrounded)
         {
             isplayedSFX = true;
             AudioManager.instance.PlayOneShot(FMODEvents.instance.FallingObject, this.transform.position);
         }
-        if(rb.velocity.y == 0)
+        if(rb.linearVelocity.y == 0)
         {
             isplayedSFX = false;
         }
@@ -142,7 +142,7 @@ public class RestartObjects : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Verifica se a camada do objeto colidido está na LayerMask targetLayers
+        // Verifica se a camada do objeto colidido estï¿½ na LayerMask targetLayers
         if (collision.gameObject.CompareTag("ground") || collision.gameObject.CompareTag("ObjectObject") && !isBeingGrabbed)
         {
             AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
@@ -153,9 +153,9 @@ public class RestartObjects : MonoBehaviour
             };
         }
 
-        int collisionLayer = collision.gameObject.layer; // Obtém a camada do objeto colidido
+        int collisionLayer = collision.gameObject.layer; // Obtï¿½m a camada do objeto colidido
 
-        // Verifique se a camada do objeto colidido está na LayerMask targetLayers
+        // Verifique se a camada do objeto colidido estï¿½ na LayerMask targetLayers
         if (targetLayers == (targetLayers | (1 << collisionLayer)) && !isBeingGrabbed)
         {
             AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
@@ -203,22 +203,22 @@ public class RestartObjects : MonoBehaviour
 
     private bool IsOverlapping(Vector3 positionToCheck)
     {
-        // Obtém o colisor da caixa atual
+        // Obtï¿½m o colisor da caixa atual
         BoxCollider2D myCollider = GetComponent<BoxCollider2D>();
 
         if (myCollider == null)
         {
-            // Se o objeto não tiver um colisor de caixa, não há sobreposição
+            // Se o objeto nï¿½o tiver um colisor de caixa, nï¿½o hï¿½ sobreposiï¿½ï¿½o
             return false;
         }
 
         // Calcula o tamanho da caixa com base no tamanho do colisor
         Vector2 boxSize = new Vector2(myCollider.size.x, myCollider.size.y);
 
-        // Verifica se há algum colisor na área da caixa de sobreposição
+        // Verifica se hï¿½ algum colisor na ï¿½rea da caixa de sobreposiï¿½ï¿½o
         Collider2D[] colliders = Physics2D.OverlapBoxAll(positionToCheck, boxSize, 0f);
 
-        // Remove o próprio colisor (caso exista)
+        // Remove o prï¿½prio colisor (caso exista)
         List<Collider2D> filteredColliders = new List<Collider2D>(colliders);
         filteredColliders.RemoveAll(c => c.gameObject == gameObject);
         filteredColliders.RemoveAll(c => c.gameObject.name == "CameraConfiner");
@@ -229,7 +229,7 @@ public class RestartObjects : MonoBehaviour
     private bool IsFalling()
     {
         // Verifica a velocidade vertical do objeto
-        if (rb != null && rb.velocity.y < fallingThreshold)
+        if (rb != null && rb.linearVelocity.y < fallingThreshold)
         {
             return true;
         }

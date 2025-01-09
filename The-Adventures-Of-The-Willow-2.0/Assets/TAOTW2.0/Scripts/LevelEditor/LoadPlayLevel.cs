@@ -6,7 +6,6 @@ using TMPro;
 using FMODUnity;
 using FMOD.Studio;
 using System.Collections;
-using static Cinemachine.DocumentationSortingAttribute;
 
 public class LoadPlayLevel : MonoBehaviour
 {

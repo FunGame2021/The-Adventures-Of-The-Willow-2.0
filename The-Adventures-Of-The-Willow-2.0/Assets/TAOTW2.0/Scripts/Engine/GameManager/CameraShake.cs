@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+using Unity.Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
@@ -36,16 +36,16 @@ public class CameraShake : MonoBehaviour
 
     private void SetupScreenShakeSettings(ScreenShakeProfile profile, CinemachineImpulseSource impulseSource)
     {
-        impulseDefinition = impulseSource.m_ImpulseDefinition;
+        impulseDefinition = impulseSource.ImpulseDefinition;
 
         //change the impulse source settings
-        impulseDefinition.m_ImpulseDuration = profile.impactTime;
-        impulseSource.m_DefaultVelocity = profile.defaultVelocity;
-        impulseDefinition.m_CustomImpulseShape = profile.impulseCurve;
+        impulseDefinition.ImpulseDuration = profile.impactTime;
+        impulseSource.DefaultVelocity = profile.defaultVelocity;
+        impulseDefinition.CustomImpulseShape = profile.impulseCurve;
 
         //change the impulse listener
-        impulseListener.m_ReactionSettings.m_AmplitudeGain = profile.listenerAmplitude;
-        impulseListener.m_ReactionSettings.m_FrequencyGain = profile.listenerFrequency;
-        impulseListener.m_ReactionSettings.m_Duration = profile.listenerDuration;
+        impulseListener.ReactionSettings.AmplitudeGain = profile.listenerAmplitude;
+        impulseListener.ReactionSettings.FrequencyGain = profile.listenerFrequency;
+        impulseListener.ReactionSettings.Duration = profile.listenerDuration;
     }
 }

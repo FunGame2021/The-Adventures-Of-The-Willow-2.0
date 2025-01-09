@@ -40,7 +40,7 @@ namespace Foliage
             if (grounded || airControl)
             {
                 // Move the character
-                GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+                GetComponent<Rigidbody2D>().linearVelocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().linearVelocity.y);
 
                 // If the input is moving the player right and the player is facing left...
                 if (move > 0 && !facingRight)

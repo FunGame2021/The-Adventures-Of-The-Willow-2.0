@@ -27,8 +27,8 @@ public class FinishPoint : MonoBehaviour
         if (!isStarted)
         {
             elapsedTime = 0;
-            PlayerController.instance.RB.velocity = new Vector2(PlayerController.instance.RB.velocity.x, jumpForce);
-            // Iniciar a Coroutine para movimento automático
+            PlayerController.instance.RB.linearVelocity = new Vector2(PlayerController.instance.RB.linearVelocity.x, jumpForce);
+            // Iniciar a Coroutine para movimento automï¿½tico
             StartCoroutine(ToStopFireworks());
             isStarted = true;
             isFinished = true;

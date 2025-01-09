@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +7,7 @@ public class CameraZoom : MonoBehaviour
 {
     public static CameraZoom instance;
 
-    [SerializeField] public CinemachineVirtualCamera _vCam;
+    [SerializeField] public CinemachineCamera _vCam;
     [SerializeField] private PolygonCollider2D polygonCollider;
     [SerializeField] private PolygonCollider2D ignoreCollider;
     private CinemachineConfiner2D confiner;
@@ -38,29 +38,29 @@ public class CameraZoom : MonoBehaviour
             instance = this;
         }
         zoomfinish = false;
-        _vCam = GetComponent<CinemachineVirtualCamera>();
+        _vCam = GetComponent<CinemachineCamera>();
         confiner = _vCam.GetComponent<CinemachineConfiner2D>();
 
         // Atribua o novo CinemachineFreeLook ao m_BoundingShape2D do confiner
-        confiner.m_BoundingShape2D = ignoreCollider;
+        confiner.BoundingShape2D = ignoreCollider;
 
         float targetZoom = 55;
         float targetZoomWorld = 90;
 
         if (isWorldmap)
         {
-            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, 1);
+            _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, 1);
         }
         else
         {
-            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, 1);
+            _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, 1);
         }
     }
 
 
     public void AdjustGridColliderSize()
     {
-        // Calcula os vértices do retângulo com base no tamanho do Tilemap
+        // Calcula os vï¿½rtices do retï¿½ngulo com base no tamanho do Tilemap
         Vector2[] vertices = new Vector2[4];
         vertices[0] = Vector2.zero;
         if (GameStates.instance.isNormalGame)
@@ -76,7 +76,7 @@ public class CameraZoom : MonoBehaviour
             vertices[3] = new Vector2(0, LoadPlayLevel.instance.GridHeight);
         }
 
-        // Define os vértices do PolygonCollider2D para formar o retângulo
+        // Define os vï¿½rtices do PolygonCollider2D para formar o retï¿½ngulo
         polygonCollider.SetPath(0, vertices);
 
         // Atualiza o tamanho do container da CinemachineVirtualCamera
@@ -87,16 +87,16 @@ public class CameraZoom : MonoBehaviour
     {
         if (confiner != null && polygonCollider != null)
         {
-            // Obtém os vértices atualizados do retângulo
+            // Obtï¿½m os vï¿½rtices atualizados do retï¿½ngulo
             Vector2[] vertices = polygonCollider.GetPath(0);
 
-            // Cria uma lista de polígonos para definir a área de confinamento
+            // Cria uma lista de polï¿½gonos para definir a ï¿½rea de confinamento
             List<Vector2> polygon = new List<Vector2>();
             polygon.AddRange(vertices);
 
-            // Define a área de confinamento do CinemachineConfiner2D com o polígono atualizado
-            confiner.m_BoundingShape2D = polygonCollider;
-            confiner.InvalidateCache();
+            // Define a ï¿½rea de confinamento do CinemachineConfiner2D com o polï¿½gono atualizado
+            confiner.BoundingShape2D = polygonCollider;
+            confiner.InvalidateBoundingShapeCache();
         }
     }
 
@@ -107,44 +107,44 @@ public class CameraZoom : MonoBehaviour
 
         if (isWorldmap)
         {
-            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, smoothTime);
+            _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoomWorld, ref _currentZoomVelocity, smoothTime);
         }
         else
         {
-            _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+            _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
         }
     }
 
     public void ZoomOut()
     {
         float targetZoom = 60;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
     }
 
     public void ZoomOutJump()
     {
         float targetZoom = 65;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
     }
 
     public void ZoomOutFinish()
     {
         zoomfinish = true;
         float targetZoom = 74;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
     }
 
     public void SwimmingZoomOut()
     {
         float targetZoom = 60;
-        _vCam.m_Lens.FieldOfView = Mathf.SmoothDamp(_vCam.m_Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
+        _vCam.Lens.FieldOfView = Mathf.SmoothDamp(_vCam.Lens.FieldOfView, targetZoom, ref _currentZoomVelocity, smoothTime);
     }
 
     private void LateUpdate()
     {
         if (playerRb != null && !zoomfinish)
         {
-            if (Mathf.Abs(playerRb.velocity.magnitude) < 8)
+            if (Mathf.Abs(playerRb.linearVelocity.magnitude) < 8)
             {
                 waitCounter += Time.deltaTime;
                 if (waitCounter > waitTime)
@@ -158,7 +158,7 @@ public class CameraZoom : MonoBehaviour
                 waitCounter = 0;
             }
 
-            if (Mathf.Abs(playerRb.velocity.y) < 8)
+            if (Mathf.Abs(playerRb.linearVelocity.y) < 8)
             {
                 waitCounter += Time.deltaTime;
                 if (waitCounter > waitTime)

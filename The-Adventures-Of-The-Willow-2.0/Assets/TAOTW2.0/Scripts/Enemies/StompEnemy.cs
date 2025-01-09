@@ -16,13 +16,13 @@ public class StompEnemy : MonoBehaviour
     {
         if (collision.CompareTag("PlayerFoots"))
         {
-            // Verifica qual é o lado do box collider 2D que foi tocado
+            // Verifica qual ï¿½ o lado do box collider 2D que foi tocado
             Vector2 normal = bc2D.bounds.center - transform.position;
-            // Realiza a ação desejada
+            // Realiza a aï¿½ï¿½o desejada
             if (normal.y < 0)
             {
                 enemyObjectToChangeTag.tag = "Untagged";
-                PlayerController.instance.RB.velocity = new Vector2(PlayerController.instance.RB.velocity.x, PlayerController.instance.stompForce);
+                PlayerController.instance.RB.linearVelocity = new Vector2(PlayerController.instance.RB.linearVelocity.x, PlayerController.instance.stompForce);
                 // Tocou no lado superior
                 isStomped = true;
             }
@@ -32,13 +32,13 @@ public class StompEnemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("PlayerFoots"))
         {
-            // Verifica qual é o lado do box collider 2D que foi tocado
+            // Verifica qual ï¿½ o lado do box collider 2D que foi tocado
             Vector2 normal = bc2D.bounds.center - transform.position;
-            // Realiza a ação desejada
+            // Realiza a aï¿½ï¿½o desejada
             if (normal.y < 0)
             {
                 enemyObjectToChangeTag.tag = "Untagged";
-                PlayerController.instance.RB.velocity = new Vector2(PlayerController.instance.RB.velocity.x, PlayerController.instance.stompForce);
+                PlayerController.instance.RB.linearVelocity = new Vector2(PlayerController.instance.RB.linearVelocity.x, PlayerController.instance.stompForce);
                 // Tocou no lado superior
                 isStomped = true;
             }

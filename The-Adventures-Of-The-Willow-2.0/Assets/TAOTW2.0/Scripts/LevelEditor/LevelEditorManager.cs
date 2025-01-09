@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using UnityEngine.Rendering;
 using UnityEditor;
+using static UnityEngine.Collider2D;
 
 
 public class LevelEditorManager : MonoBehaviour
@@ -257,7 +258,7 @@ public class LevelEditorManager : MonoBehaviour
         GenerateGrid();
         DrawGridOutline();
 
-        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
             levelEditorCamera.UpdateCameraBounds();
@@ -837,7 +838,7 @@ public class LevelEditorManager : MonoBehaviour
                 if (tilemapCollider2D != null)
                 {
                     // Ativa o "Used by Composite" no TilemapCollider2D
-                    tilemapCollider2D.usedByComposite = true;
+                    tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                 }
 
                 // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
@@ -1367,7 +1368,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         gridVisualizer.OnGridSizeUpdated();
         gridVisualizer.OnSnapGridSizeUpdated();
-        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
             levelEditorCamera.UpdateCameraBounds();
@@ -1438,7 +1439,7 @@ public class LevelEditorManager : MonoBehaviour
         gridVisualizer.OnGridSizeUpdated();
         gridVisualizer.OnSnapGridSizeUpdated();
         gridPanel.SetActive(false);
-        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        LevelEditorCamera levelEditorCamera = FindAnyObjectByType <LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
             levelEditorCamera.UpdateCameraBounds();
@@ -1633,6 +1634,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         WarnExitSavePanel.SetActive(false);
         SaveSuccessfullPanel.SetActive(true);
+        ClearAllScene();
     }
 
     #endregion
@@ -2422,7 +2424,7 @@ public class LevelEditorManager : MonoBehaviour
                     // Gera o grid com o novo tamanho
                     GenerateGrid();
                     DrawGridOutline();
-                    LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+                    LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
                     if (levelEditorCamera != null)
                     {
                         levelEditorCamera.UpdateCameraBounds();
@@ -2949,7 +2951,7 @@ public class LevelEditorManager : MonoBehaviour
                             if (tilemapCollider2D != null)
                             {
                                 // Ativa o "Used by Composite" no TilemapCollider2D
-                                tilemapCollider2D.usedByComposite = true;
+                                tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                             }
 
                             // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
@@ -3085,7 +3087,7 @@ public class LevelEditorManager : MonoBehaviour
                         // Gera o grid com o novo tamanho
                         GenerateGrid();
                         DrawGridOutline();
-                        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+                        LevelEditorCamera levelEditorCamera = FindFirstObjectByType<LevelEditorCamera>();
                         if (levelEditorCamera != null)
                         {
                             levelEditorCamera.UpdateCameraBounds();
@@ -3395,7 +3397,7 @@ public class LevelEditorManager : MonoBehaviour
                                 if (tilemapCollider2D != null)
                                 {
                                     // Ativa o "Used by Composite" no TilemapCollider2D
-                                    tilemapCollider2D.usedByComposite = true;
+                                    tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                                 }
 
                                 // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
@@ -3677,6 +3679,21 @@ public class LevelEditorManager : MonoBehaviour
 
     public void LoadWorld(string worldName)
     {
+        if (PlatformNodeEditor.instance != null)
+        {
+            PlatformNodeEditor.instance.waypointsObjects.Clear();
+        }
+
+
+        // Limpa os inimigos existentes
+        ClearEnemies();
+        // Limpa os objetos existentes
+        ClearObjects();
+        ClearGameObjects();
+        // Limpa os elementos decorativos existentes
+        ClearDecor();
+        ClearNodes();
+
         EnableAutoSave();
         StartAutoSaveCoroutine();
 
@@ -3711,9 +3728,6 @@ public class LevelEditorManager : MonoBehaviour
                 List<TilemapData> tilemapDataList = tilemapDataWrapper.tilemapDataList;
 
 
-                // Limpa os Tilemaps existentes
-                ClearTilemaps();
-
 
                 LevelSettings.instance.SetMusicID(tilemapDataWrapper.levelPreferences.MusicID);
                 // Restaura o tamanho do grid
@@ -3723,15 +3737,8 @@ public class LevelEditorManager : MonoBehaviour
                 // Gera o grid com o novo tamanho
                 GenerateGrid();
                 DrawGridOutline();
-
-                // Limpa os inimigos existentes
-                ClearEnemies();
-                // Limpa os objetos existentes
-                ClearObjects();
-                ClearGameObjects();
-                // Limpa os elementos decorativos existentes
-                ClearDecor();
-                ClearNodes();
+                // Limpa os Tilemaps existentes
+                ClearTilemaps();
 
                 foreach (GameObjectSaveData gameObjectData in gameObjectList)
                 {
@@ -3836,7 +3843,7 @@ public class LevelEditorManager : MonoBehaviour
                         if (tilemapCollider2D != null)
                         {
                             // Ativa o "Used by Composite" no TilemapCollider2D
-                            tilemapCollider2D.usedByComposite = true;
+                            tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                         }
 
                         // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir
@@ -3918,6 +3925,11 @@ public class LevelEditorManager : MonoBehaviour
                 string defaultJson = JsonUtility.ToJson(defaultWorldData);
                 File.WriteAllText(loadPath, defaultJson);
 
+                if (PlatformNodeEditor.instance != null)
+                {
+                    PlatformNodeEditor.instance.waypointsObjects.Clear();
+                }
+
                 // Limpa os inimigos existentes
                 ClearEnemies();
                 // Limpa os objetos existentes
@@ -3926,8 +3938,11 @@ public class LevelEditorManager : MonoBehaviour
                 // Limpa os elementos decorativos existentes
                 ClearDecor();
                 ClearNodes();
+                ClearTilemaps();
+
                 // Carrega o mundo recém-criado
                 //LoadSelectedWorld(defaultWorldData);
+                LoadWorld(worldName);
             }
         }
         else
@@ -3985,7 +4000,19 @@ public class LevelEditorManager : MonoBehaviour
 
         // Remove todos os listeners dos botões
         RemoveTilemapButtonListeners();
+
+        ClearTilemapContainer(tilemapContainer);
+
     }
+    void ClearTilemapContainer(GameObject tilemapContainer)
+    {
+        // Itera sobre os filhos do Transform associado ao GameObject
+        foreach (Transform child in tilemapContainer.transform)
+        {
+            Destroy(child.gameObject); // Destroi o objeto filho
+        }
+    }
+
     void RemoveTilemapButtonListeners()
     {
         // Remova os ouvintes dos botões do Tilemap
@@ -4077,6 +4104,7 @@ public class LevelEditorManager : MonoBehaviour
     {
         tilemap.gameObject.layer = LayerMaskToLayer(layerMask);
     }
+
     private string GetShortLayerName(int layerID)
     {
         // Encontre o nome correspondente ao ID do short layer no objeto atual
@@ -4113,6 +4141,11 @@ public class LevelEditorManager : MonoBehaviour
         // Limpa os elementos decorativos existentes
         ClearDecor();
         ClearNodes();
+        if (PlatformNodeEditor.instance != null)
+        {
+            PlatformNodeEditor.instance.waypointsObjects.Clear();
+        }
+
     }
     public void DeleteCurrentLevel(string worldName)
     {

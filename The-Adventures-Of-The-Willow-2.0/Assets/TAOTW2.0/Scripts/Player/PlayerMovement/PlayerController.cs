@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header ("Walk")]
     [HideInInspector] public float moveInput;
     [SerializeField] private float moveSpeed = 3f; 
-    [SerializeField] private float speedChangeSmoothTime = 0.2f; // Tempo de interpolação suave para mudança de velocidade
+    [SerializeField] private float speedChangeSmoothTime = 0.2f; // Tempo de interpolaï¿½ï¿½o suave para mudanï¿½a de velocidade
     [SerializeField] private float boostSpeed = 3f;
     private bool speedBoost;
 
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sameGravityPlayer;
     private float normalGravity;
     public bool stopPlayer = false;
-    public float autoMoveSpeed = 5f; // Velocidade do movimento automático
+    public float autoMoveSpeed = 5f; // Velocidade do movimento automï¿½tico
 
     [SerializeField] public PhysicsMaterial2D withFriction2;
     [SerializeField] public PhysicsMaterial2D withFriction;
@@ -94,22 +94,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float waterJumpForce = 10f;
     private bool canJumpingOutOfWater; 
     [SerializeField] private float SwimBoostSpeed = 6f;
-    private float waterExitTime = 0f; // Tempo de saída da água em segundos
+    private float waterExitTime = 0f; // Tempo de saï¿½da da ï¿½gua em segundos
     private bool isHeadFirst = false;
-    private float rotationSpeed = 5f; // interpolação da rotação
+    private float rotationSpeed = 5f; // interpolaï¿½ï¿½o da rotaï¿½ï¿½o
     private float canJumpWaterNow = 0;
     
     [SerializeField] private bool afterWaterOutside;
-    [SerializeField] private Transform castOrigin; // O ponto de origem do lançamento da caixa
-    [SerializeField] private Vector2 castSize;     // O tamanho da caixa de colisão
-    [SerializeField] private LayerMask whatIsHit;  // A camada de objetos que queremos verificar colisões
+    [SerializeField] private Transform castOrigin; // O ponto de origem do lanï¿½amento da caixa
+    [SerializeField] private Vector2 castSize;     // O tamanho da caixa de colisï¿½o
+    [SerializeField] private LayerMask whatIsHit;  // A camada de objetos que queremos verificar colisï¿½es
     private Vector3 originalRotation;
 	
     #endregion
 
     //stomp
     #region enemies
-    public float stompForce = 10f; // Ajuste a força do salto conforme necessário.
+    public float stompForce = 10f; // Ajuste a forï¿½a do salto conforme necessï¿½rio.
     #endregion
 
     #region states
@@ -154,8 +154,8 @@ public class PlayerController : MonoBehaviour
     public bool isOnStickyPlatform;
     public bool isOnIcePlatform;
 
-    public float iceSlideMaxSpeed = 5f; // velocidade máxima quando escorregando
-    public float iceSlideAccelAmount = 2.5f; // aceleração quando escorregando
+    public float iceSlideMaxSpeed = 5f; // velocidade mï¿½xima quando escorregando
+    public float iceSlideAccelAmount = 2.5f; // aceleraï¿½ï¿½o quando escorregando
     public float iceSlipFactor = 0.5f;
 
     public float stickyPlatformSlowdownFactor = 2f;
@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
             instance = this;
         }
         _originalParent = transform.parent;
-        // Inicialize a câmera ou realize outras ações, se necessário.
+        // Inicialize a cï¿½mera ou realize outras aï¿½ï¿½es, se necessï¿½rio.
         if (CameraZoom.instance != null)
         {
             CameraZoom.instance.playerRb = RB;
@@ -336,7 +336,7 @@ public class PlayerController : MonoBehaviour
         }
         moveInput = UserInput.instance.moveInput.x;
         moveInputUp = UserInput.instance.moveInput.y;
-        // Verifica se o jogador está colidindo com uma parede
+        // Verifica se o jogador estï¿½ colidindo com uma parede
         IsCollidingWithWall();
         if (!isWallJumping && !stopPlayer)
         {
@@ -368,13 +368,13 @@ public class PlayerController : MonoBehaviour
             if (isGrounded || coyoteTimeCounter > 0 && !Swimming)
             {
                 jump = true;
-                RB.velocity = new Vector2(RB.velocity.x, jumpPower);
+                RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
                 jumpTimeCounter = 0;
             }
             if (isClimbing && !Swimming)
             {
                 jump = true;
-                RB.velocity = new Vector2(RB.velocity.x, jumpPower);
+                RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
                 jumpTimeCounter = 0;
                 isClimbing = false;
             }
@@ -385,9 +385,9 @@ public class PlayerController : MonoBehaviour
             {
                 jump = false;
                 jumpTimeCounter = 0;
-                if (RB.velocity.y > 0)
+                if (RB.linearVelocity.y > 0)
                 {
-                    RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.6f);
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, RB.linearVelocity.y * 0.6f);
                 }
             }
 
@@ -405,7 +405,7 @@ public class PlayerController : MonoBehaviour
             speedBoost = false;
             targetMoveSpeed = moveSpeed;
         }
-        // Interpolação suave da velocidade atual em relação à velocidade alvo
+        // Interpolaï¿½ï¿½o suave da velocidade atual em relaï¿½ï¿½o ï¿½ velocidade alvo
         currentMoveSpeed = Mathf.SmoothDamp(currentMoveSpeed, targetMoveSpeed, ref moveSpeedSmoothVelocity, speedChangeSmoothTime);
         
         WallSlide();
@@ -458,13 +458,13 @@ public class PlayerController : MonoBehaviour
             canJumpingOutOfWater = false;
         }
 
-        // Verifica colisões para cada direção separadamente
+        // Verifica colisï¿½es para cada direï¿½ï¿½o separadamente
         RaycastHit2D groundHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.down, 0.01f, whatIsHit);
         RaycastHit2D ceilingHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.up, 0.01f, whatIsHit);
         RaycastHit2D leftHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.left, 0.01f, whatIsHit);
         RaycastHit2D rightHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.right, 0.01f, whatIsHit);
 
-        if (isHeadFirst && !isGrounded && RB.velocity.y < 0 && !Swimming && !isWallJumping && !isOnLadder && afterWaterOutside)
+        if (isHeadFirst && !isGrounded && RB.linearVelocity.y < 0 && !Swimming && !isWallJumping && !isOnLadder && afterWaterOutside)
         {
             
             if (moveInput != 0)
@@ -520,12 +520,12 @@ public class PlayerController : MonoBehaviour
         {
             deathAnimationTimer += Time.deltaTime;
 
-            // Realize a animação de morte aqui, como interpolação da posição do personagem para o centro da tela.
+            // Realize a animaï¿½ï¿½o de morte aqui, como interpolaï¿½ï¿½o da posiï¿½ï¿½o do personagem para o centro da tela.
 
             if (deathAnimationTimer >= deathAnimationDuration)
             {
-                // Quando a animação de morte estiver completa
-                // Ative uma tela de "Game Over" ou execute outras ações necessárias
+                // Quando a animaï¿½ï¿½o de morte estiver completa
+                // Ative uma tela de "Game Over" ou execute outras aï¿½ï¿½es necessï¿½rias
                 BackToLife();
             }
         }
@@ -561,16 +561,16 @@ public class PlayerController : MonoBehaviour
             {
                 if (!isOnIcePlatform && !isOnStickyPlatform)
                 {
-                    RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
                 }
                 else if (isOnIcePlatform)
                 {
                     float targetVelocity = Mathf.Clamp(moveInput * iceSlideMaxSpeed, -iceSlideMaxSpeed, iceSlideMaxSpeed);
-                    RB.velocity = new Vector2(Mathf.MoveTowards(RB.velocity.x, targetVelocity * 10, iceSlideAccelAmount * Time.deltaTime), RB.velocity.y);
+                    RB.linearVelocity = new Vector2(Mathf.MoveTowards(RB.linearVelocity.x, targetVelocity * 10, iceSlideAccelAmount * Time.deltaTime), RB.linearVelocity.y);
 
                     // Reduz a velocidade do jogador enquanto escorrega no gelo
-                    RB.AddForce(Vector2.left * RB.velocity.x * iceSlipFactor * Time.deltaTime);
-                    if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(_lastVelocity.x))
+                    RB.AddForce(Vector2.left * RB.linearVelocity.x * iceSlipFactor * Time.deltaTime);
+                    if (Mathf.Sign(RB.linearVelocity.x) != Mathf.Sign(_lastVelocity.x))
                     {
                         if (facingRight)
                         {
@@ -592,8 +592,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (isOnStickyPlatform)
                 {
-                    // Simular aderência na plataforma pegajosa
-                    RB.velocity = new Vector2(moveInput * currentMoveSpeed * stickyPlatformSlowdownFactor, RB.velocity.y);
+                    // Simular aderï¿½ncia na plataforma pegajosa
+                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed * stickyPlatformSlowdownFactor, RB.linearVelocity.y);
                 }
             }
             else
@@ -601,11 +601,11 @@ public class PlayerController : MonoBehaviour
                 if(platform != null)
                 {
                     //RB.velocity = platform.GetComponent<Rigidbody2D>().velocity;
-                    RB.velocity = new Vector2(moveInput * currentMoveSpeed + platform.velocity.x, RB.velocity.y);
+                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed + platform.linearVelocity.x, RB.linearVelocity.y);
                 }
                 else
                 {
-                    RB.velocity = new Vector2(moveInput * currentMoveSpeed, RB.velocity.y);
+                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
                 }
             }
             //FinishPoint
@@ -614,25 +614,25 @@ public class PlayerController : MonoBehaviour
                 if (FinishPole.instance.isFinishPoleRightEnter)
                 {
                     Turn(false); // Vire para a direita
-                    RB.velocity = new Vector2(autoMoveSpeed, RB.velocity.y);
+                    RB.linearVelocity = new Vector2(autoMoveSpeed, RB.linearVelocity.y);
                 }
                 else
                 {
                     Turn(true); // Vire para a esquerda
-                    RB.velocity = new Vector2(-autoMoveSpeed, RB.velocity.y);
+                    RB.linearVelocity = new Vector2(-autoMoveSpeed, RB.linearVelocity.y);
                 }
             }
             //Jump
             if (jumpBoost && !stopPlayer && !isDead)
             {
-                jumpTime = boostedJumpTime; // Usar duração de salto aumentada
+                jumpTime = boostedJumpTime; // Usar duraï¿½ï¿½o de salto aumentada
             }
             else
             {
                 jumpTime = normalJumpTime;
             }
 
-            if (RB.velocity.y > 0 && jump)
+            if (RB.linearVelocity.y > 0 && jump)
             {
                 jumpTimeCounter += Time.deltaTime;
                 if (jumpTimeCounter > jumpTime)
@@ -646,12 +646,12 @@ public class PlayerController : MonoBehaviour
                 {
                     currentJumpM = jumpMultiplier * (1 - t);
                 }
-                RB.velocity += vecGravity * currentJumpM * Time.deltaTime;
+                RB.linearVelocity += vecGravity * currentJumpM * Time.deltaTime;
             }
 
-            if (RB.velocity.y < 0)
+            if (RB.linearVelocity.y < 0)
             {
-                RB.velocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
+                RB.linearVelocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
                 //RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
             }
             #endregion
@@ -659,7 +659,7 @@ public class PlayerController : MonoBehaviour
             if (isClimbing && !Swimming)
             {
                 RB.gravityScale = 0;
-                RB.velocity = new Vector2(RB.velocity.x, moveInputUp * upSpeed);
+                RB.linearVelocity = new Vector2(RB.linearVelocity.x, moveInputUp * upSpeed);
             }
             else
             {
@@ -698,12 +698,12 @@ public class PlayerController : MonoBehaviour
         // Inicializar o contador de tempo
         knockbackTimer = knockbackDuration;
 
-        // Aplicar a força de knockback horizontal
+        // Aplicar a forï¿½a de knockback horizontal
         Vector2 knockbackDirection = knockFromRight ? Vector2.right : Vector2.left;
-        RB.velocity = new Vector2(knockbackDirection.x * knockbackForce, RB.velocity.y);
+        RB.linearVelocity = new Vector2(knockbackDirection.x * knockbackForce, RB.linearVelocity.y);
 
-        // Aplicar a força de knockback vertical
-        RB.velocity += Vector2.up * knockbackUpForce;
+        // Aplicar a forï¿½a de knockback vertical
+        RB.linearVelocity += Vector2.up * knockbackUpForce;
     }
 
     public void Turn(bool faceRight)
@@ -780,7 +780,7 @@ public class PlayerController : MonoBehaviour
         if(IsCollidingWithWall() && !isGrounded && moveInput != 0f)
         {
             isWallSliding = true;
-            RB.velocity = new Vector2(RB.velocity.x, Mathf.Clamp(RB.velocity.y, -wallSlidingSpeed, float.MaxValue));
+            RB.linearVelocity = new Vector2(RB.linearVelocity.x, Mathf.Clamp(RB.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
@@ -818,11 +818,11 @@ public class PlayerController : MonoBehaviour
 
                 if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() && wallJumpingCounter > 0f && !Swimming)
                 {
-                    RB.velocity = new Vector2(wallJumpingDirection * wallJumpingBoostPower.x, wallJumpingBoostPower.y);
+                    RB.linearVelocity = new Vector2(wallJumpingDirection * wallJumpingBoostPower.x, wallJumpingBoostPower.y);
                 }
                 else
                 {
-                    RB.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+                    RB.linearVelocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
                 }
 
                 if (transform.localScale.x != wallJumpingDirection)
@@ -843,13 +843,13 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerDie()
     {
-        /*/Quando o personagem morrer, desativa o Rigidbody para evitar que ele seja afetado pela física do jogo.
-        Ativa a animação para o personagem está morto.
-Alterar os colisores do personagem para Trigger para garantir que ele não colida com outros objetos durante a animação.
-Inicie a animação de morte.
-Durante a animação de morte,  mover o GameObject do personagem para o centro da tela.
-        Usar uma abordagem de interpolação suave, como a função Vector3.Lerp, para animar o movimento.
-Quando a animação de morte estiver completa e o personagem estiver no centro da tela, você pode realizar qualquer ação adicional necessária, 
+        /*/Quando o personagem morrer, desativa o Rigidbody para evitar que ele seja afetado pela fï¿½sica do jogo.
+        Ativa a animaï¿½ï¿½o para o personagem estï¿½ morto.
+Alterar os colisores do personagem para Trigger para garantir que ele nï¿½o colida com outros objetos durante a animaï¿½ï¿½o.
+Inicie a animaï¿½ï¿½o de morte.
+Durante a animaï¿½ï¿½o de morte,  mover o GameObject do personagem para o centro da tela.
+        Usar uma abordagem de interpolaï¿½ï¿½o suave, como a funï¿½ï¿½o Vector3.Lerp, para animar o movimento.
+Quando a animaï¿½ï¿½o de morte estiver completa e o personagem estiver no centro da tela, vocï¿½ pode realizar qualquer aï¿½ï¿½o adicional necessï¿½ria, 
         como exibir uma tela de "Game Over" ou permitir que o jogador reinicie o jogo.
        
         /*/
@@ -858,9 +858,9 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
             isDead = true; 
             PlayerAnimatorController.instance.PlayDeathAnimation();
 
-            // Desativar o Rigidbody para parar a física
+            // Desativar o Rigidbody para parar a fï¿½sica
             RB.simulated = false;
-            RB.velocity = Vector2.zero;
+            RB.linearVelocity = Vector2.zero;
 
             // Defina todos os colisores como Trigger
             foreach (Collider2D collider in SmallColliders)
@@ -882,7 +882,7 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
             isDead = false;
             PlayerAnimatorController.instance.StopDeathAnimation();
 
-            // Reativar o Rigidbody para permitir que o personagem seja afetado pela física novamente
+            // Reativar o Rigidbody para permitir que o personagem seja afetado pela fï¿½sica novamente
             RB.simulated = true;
 
             // Defina todos os colisores como Trigger
@@ -908,9 +908,9 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(groundCheck.position, new Vector3(sizeCapsule.x, sizeCapsule.y, 0.1f));
 
-        // Define o tamanho e a posição de origem do raio
-        float raycastDistance = 0.5f; // Distância do raio para detectar a colisão com a parede
-        Vector2 raycastOrigin = transform.position; // Posição de origem do raio
+        // Define o tamanho e a posiï¿½ï¿½o de origem do raio
+        float raycastDistance = 0.5f; // Distï¿½ncia do raio para detectar a colisï¿½o com a parede
+        Vector2 raycastOrigin = transform.position; // Posiï¿½ï¿½o de origem do raio
 
         // Desenha o raio
         Gizmos.DrawRay(raycastOrigin, transform.right * raycastDistance);
@@ -955,10 +955,10 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
             Swimming = true;
             isOnWater = true;
             //evitar ele afundar;
-            RB.drag = 20f;
+            RB.linearDamping = 20f;
 			jump = false;
-			// O jogador está na água, então ajuste sua velocidade de queda
-            RB.velocity = new Vector2(RB.velocity.x, 0f); // Define a velocidade vertical como zero 		 
+			// O jogador estï¿½ na ï¿½gua, entï¿½o ajuste sua velocidade de queda
+            RB.linearVelocity = new Vector2(RB.linearVelocity.x, 0f); // Define a velocidade vertical como zero 		 
 			if (canJumpWaterNow <= 0)
             {
                 RB.gravityScale = SwimGravity;
@@ -1000,13 +1000,13 @@ Quando a animação de morte estiver completa e o personagem estiver no centro da 
             Swimming = false;
             //Bubble.Stop();
             RB.gravityScale = normalGravity;
-            RB.drag = 0f;
+            RB.linearDamping = 0f;
             if (canJumpingOutOfWater && canJumpWaterNow == 0)
             {
                 canJumpWaterNow = 1.5f;
                 transform.localRotation = Quaternion.Euler(0, 0, 0);
                 canJumpingOutOfWater = false;
-                RB.velocity = new Vector2(RB.velocity.x, waterJumpForce);
+                RB.linearVelocity = new Vector2(RB.linearVelocity.x, waterJumpForce);
                 waterExitTime = 1f;
             }
         }

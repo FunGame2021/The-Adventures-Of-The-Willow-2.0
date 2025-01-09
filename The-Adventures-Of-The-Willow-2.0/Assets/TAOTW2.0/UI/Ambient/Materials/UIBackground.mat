@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 9
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -102,9 +102,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Center_X: 0.1073921
-    - Center_Y: 0.38410637
-    - Radius: 1.0005748
+    - Center_X: 0.5464689
+    - Center_Y: -0.24827667
+    - Radius: -0.012312624
     - Smooth: 0.03
     - _EnableExternalAlpha: 0
     - _QueueControl: 0
@@ -117,3 +117,4 @@ Material:
     - _MoveDirection: {r: -0.005, g: 0.005, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

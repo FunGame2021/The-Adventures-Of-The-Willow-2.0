@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+using Unity.Cinemachine;
 
 public class MenuCamera : MonoBehaviour
 {
-    public CinemachineVirtualCamera currentCamera;
+    public CinemachineCamera currentCamera;
 	
     void Start()
     {
         currentCamera.Priority++;
     }
 
-    public void UpdateCamera(CinemachineVirtualCamera target)
+    public void UpdateCamera(CinemachineCamera target)
 	{
 		currentCamera.Priority--;
 		currentCamera = target;

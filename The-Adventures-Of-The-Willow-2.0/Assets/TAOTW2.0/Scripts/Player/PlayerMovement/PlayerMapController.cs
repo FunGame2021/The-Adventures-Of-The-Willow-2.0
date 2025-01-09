@@ -36,11 +36,11 @@ public class PlayerMapController : MonoBehaviour
         // Calcula o vetor de movimento com base na entrada do jogador
         Vector2 movement = new Vector2(horizontalInput, verticalInput);
 
-        // Normaliza o vetor de movimento para evitar movimento mais rápido na diagonal
+        // Normaliza o vetor de movimento para evitar movimento mais rï¿½pido na diagonal
         movement.Normalize();
 
-        // Aplica a força de movimento ao Rigidbody2D
-        rb.velocity = movement * moveSpeed;
+        // Aplica a forï¿½a de movimento ao Rigidbody2D
+        rb.linearVelocity = movement * moveSpeed;
 
         if (horizontalInput < 0)
         {

@@ -13,16 +13,8 @@ MonoBehaviour:
   m_Name: Localization-String-Tables-Portuguese (pt)
   m_EditorClassIdentifier: 
   m_GroupName: Localization-String-Tables-Portuguese (pt)
-  m_Data:
-    m_SerializedData: []
   m_GUID: 3478ac80bc7b19341ab09b21b8ffe5d1
   m_SerializeEntries:
-  - m_GUID: d88f0a255a8f8dd469bcca2a1ca60ab9
-    m_Address: Messages_pt
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-pt
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e8cddd470ed62347b768e409f571e76
     m_Address: Intro_Languages_pt
     m_ReadOnly: 1
@@ -31,6 +23,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d80321127dc111f47be9ef00b11261ec
     m_Address: Menu_pt
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-pt
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d88f0a255a8f8dd469bcca2a1ca60ab9
+    m_Address: Messages_pt
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-pt

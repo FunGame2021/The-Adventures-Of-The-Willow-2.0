@@ -8,11 +8,11 @@ public class PlayerAnimatorController : MonoBehaviour
 
     [SerializeField] private ParticleSystem getPowerUp;
 
-    [SerializeField] private int numberOfIdleAnimations = 3; // Número total de animações Idle disponíveis
-    [SerializeField] private string[] idleAnimationTriggers = { "Idle", "Idle2", "Idle3" }; // Triggers das animações Idle
+    [SerializeField] private int numberOfIdleAnimations = 3; // Nï¿½mero total de animaï¿½ï¿½es Idle disponï¿½veis
+    [SerializeField] private string[] idleAnimationTriggers = { "Idle", "Idle2", "Idle3" }; // Triggers das animaï¿½ï¿½es Idle
 
 
-    private bool hasRandomizedIdle = false; // Flag para verificar se já foi feita a randomização da animação Idle
+    private bool hasRandomizedIdle = false; // Flag para verificar se jï¿½ foi feita a randomizaï¿½ï¿½o da animaï¿½ï¿½o Idle
     private bool isIdle;
     public bool isJump;
     public bool isMoving;
@@ -25,19 +25,19 @@ public class PlayerAnimatorController : MonoBehaviour
             instance = this;
         }
     }
-    // Evento chamado no final da animação Idle 1
+    // Evento chamado no final da animaï¿½ï¿½o Idle 1
     public void OnIdle1AnimationEnd()
     {
         hasRandomizedIdle = false;
     }
 
-    // Evento chamado no final da animação Idle 2
+    // Evento chamado no final da animaï¿½ï¿½o Idle 2
     public void OnIdle2AnimationEnd()
     {
         hasRandomizedIdle = false;
     }
 
-    // Evento chamado no final da animação Idle 3
+    // Evento chamado no final da animaï¿½ï¿½o Idle 3
     public void OnIdle3AnimationEnd()
     {
         hasRandomizedIdle = false;
@@ -50,10 +50,10 @@ public class PlayerAnimatorController : MonoBehaviour
             return;
         }
 
-        // Escolhe um índice aleatório para o Trigger de animação Idle
+        // Escolhe um ï¿½ndice aleatï¿½rio para o Trigger de animaï¿½ï¿½o Idle
         int randomIndex = Random.Range(0, idleAnimationTriggers.Length);
 
-        // Reproduz a animação Idle correspondente ao Trigger aleatório
+        // Reproduz a animaï¿½ï¿½o Idle correspondente ao Trigger aleatï¿½rio
         string randomTrigger = idleAnimationTriggers[randomIndex];
         animationPlayer.SetTrigger(randomTrigger);
 
@@ -62,7 +62,7 @@ public class PlayerAnimatorController : MonoBehaviour
 
     void Update()
     {
-        // Randomiza uma nova animação Idle se estiver parado e ainda não tiver sido randomizado
+        // Randomiza uma nova animaï¿½ï¿½o Idle se estiver parado e ainda nï¿½o tiver sido randomizado
         if (!hasRandomizedIdle)
         {
             PlayRandomIdleAnimation();
@@ -80,7 +80,7 @@ public class PlayerAnimatorController : MonoBehaviour
         }
         if (!FinishPoint.instance.isFinished)
         {
-            //se estiver no chão pode andar e parar //não está a nadar
+            //se estiver no chï¿½o pode andar e parar //nï¿½o estï¿½ a nadar
             if (PlayerController.instance.isGrounded && !PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
             {
                 animationPlayer.SetBool("JumpingV", false);
@@ -93,7 +93,7 @@ public class PlayerAnimatorController : MonoBehaviour
                 animationPlayer.SetBool("IdleSwim", false);
 
                 //andar movimento
-                if (PlayerController.instance.RB.velocity.x != 0
+                if (PlayerController.instance.RB.linearVelocity.x != 0
                     && PlayerController.instance.moveInput != 0)
                 {
                     isIdle = false;
@@ -110,7 +110,7 @@ public class PlayerAnimatorController : MonoBehaviour
                 }
 
             }
-            else if (PlayerController.instance.Swimming || PlayerController.instance.isOnWater)//está a nadar
+            else if (PlayerController.instance.Swimming || PlayerController.instance.isOnWater)//estï¿½ a nadar
             {
                 animationPlayer.SetBool("Climbing", false);
                 animationPlayer.SetBool("ClimbingIdle", false);
@@ -126,24 +126,24 @@ public class PlayerAnimatorController : MonoBehaviour
                     animationPlayer.SetBool("Swim", true);
                     animationPlayer.SetBool("IdleSwim", false);
                 }
-                else //está idle na água
+                else //estï¿½ idle na ï¿½gua
                 {
                     animationPlayer.SetBool("IdleSwim", true);
                     animationPlayer.SetBool("Swim", false);
 
                 }
             }
-            else if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater) //se não estiver no chão
+            else if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater) //se nï¿½o estiver no chï¿½o
             {
                 if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
                 {
 
                     //Se velocidade for igual a 0 salta normal verticar.
-                    if (PlayerController.instance.RB.velocity.x == 0 && !PlayerController.instance.isOnLadder)
+                    if (PlayerController.instance.RB.linearVelocity.x == 0 && !PlayerController.instance.isOnLadder)
                     {
                         animationPlayer.SetBool("Walking", false);
 
-                        if (PlayerController.instance.RB.velocity.y > 0)
+                        if (PlayerController.instance.RB.linearVelocity.y > 0)
                         {
                             isIdle = false;
                             animationPlayer.SetBool("JumpingV", true);
@@ -155,7 +155,7 @@ public class PlayerAnimatorController : MonoBehaviour
                             animationPlayer.SetBool("IdleSwim", false);
                             animationPlayer.SetBool("Swim", false);
                         }
-                        if (PlayerController.instance.RB.velocity.y < 0)
+                        if (PlayerController.instance.RB.linearVelocity.y < 0)
                         {
                             isIdle = false;
                             animationPlayer.SetBool("JumpingV", false);
@@ -169,9 +169,9 @@ public class PlayerAnimatorController : MonoBehaviour
                         }
                     }
                     //Salto horizontal
-                    else if (PlayerController.instance.RB.velocity.x != 0 && !PlayerController.instance.isOnLadder)
+                    else if (PlayerController.instance.RB.linearVelocity.x != 0 && !PlayerController.instance.isOnLadder)
                     {
-                        if (PlayerController.instance.RB.velocity.y > 0)
+                        if (PlayerController.instance.RB.linearVelocity.y > 0)
                         {
                             isIdle = false;
                             animationPlayer.SetBool("JumpingV", false);
@@ -181,7 +181,7 @@ public class PlayerAnimatorController : MonoBehaviour
                             animationPlayer.SetBool("Climbing", false);
                             animationPlayer.SetBool("ClimbingIdle", false);
                         }
-                        if (PlayerController.instance.RB.velocity.y < 0)
+                        if (PlayerController.instance.RB.linearVelocity.y < 0)
                         {
                             isIdle = false;
                             animationPlayer.SetBool("JumpingV", false);
@@ -219,7 +219,7 @@ public class PlayerAnimatorController : MonoBehaviour
                             animationPlayer.SetBool("ClimbingIdle", true);
                         }
                     }
-                    else //não está a escalar
+                    else //nï¿½o estï¿½ a escalar
                     {
                         animationPlayer.SetBool("Climbing", false);
                         animationPlayer.SetBool("ClimbingIdle", false);

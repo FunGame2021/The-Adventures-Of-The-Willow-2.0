@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Cinemachine;
+using Unity.Cinemachine;
 using static System.TimeZoneInfo;
 
 public class ScreenAspectRatio : MonoBehaviour

@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+using Unity.Cinemachine;
 
 public class CinemachineShake : MonoBehaviour
 {
     public static CinemachineShake Instance { get; private set; }
 
     private GameObject CameraObj;
-    private CinemachineVirtualCamera cinemachineVirtualCamera;
+    private CinemachineCamera cinemachineVirtualCamera;
     private float shakeTimer;
     private float shakeTimerTotal;
     public float startingIntensity;
@@ -20,15 +20,15 @@ public class CinemachineShake : MonoBehaviour
 	private void Start()
 	{
 		CameraObj = GameObject.FindGameObjectWithTag("CinemachineCamera");
-		cinemachineVirtualCamera = CameraObj.GetComponent<CinemachineVirtualCamera>();
+		cinemachineVirtualCamera = CameraObj.GetComponent<CinemachineCamera>();
 	}
 
     public void ShakeCamera(float intensity, float time)
     {
         CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
-        cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        cinemachineVirtualCamera.GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
 
-        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+        cinemachineBasicMultiChannelPerlin.AmplitudeGain = intensity;
 
         startingIntensity = intensity;
         shakeTimerTotal = time;
@@ -41,9 +41,9 @@ public class CinemachineShake : MonoBehaviour
         {
             shakeTimer -= Time.deltaTime;
             CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
-                cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+                cinemachineVirtualCamera.GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
 
-            cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 
+            cinemachineBasicMultiChannelPerlin.AmplitudeGain = 
                 Mathf.Lerp(startingIntensity, 0f, shakeTimer / shakeTimerTotal);
             
         }

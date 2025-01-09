@@ -62,15 +62,18 @@ public class GridCursor : MonoBehaviour
     }
 
     void MoveCursorToCell(Vector3Int cell)
-    {
-        // Obtém o tamanho real do quadrado da célula
-        float cellSize = LevelEditorManager.instance.selectedTilemap.cellSize.x;
+    { 
+        if (LevelEditorManager.instance.selectedTilemap != null)
+        {
+            // Obtém o tamanho real do quadrado da célula
+            float cellSize = LevelEditorManager.instance.selectedTilemap.cellSize.x;
+        
+            // Ajusta a posição para o centro do quadrado de snap, levando em consideração a escala
+            Vector3 cellCenterPos = LevelEditorManager.instance.selectedTilemap.GetCellCenterWorld(cell);
 
-        // Ajusta a posição para o centro do quadrado de snap, levando em consideração a escala
-        Vector3 cellCenterPos = LevelEditorManager.instance.selectedTilemap.GetCellCenterWorld(cell);
-
-        // Se a grelha de snap estiver desativada, ajusta a posição para o centro da célula normal
-        cursor.transform.position = cellCenterPos;
+            // Se a grelha de snap estiver desativada, ajusta a posição para o centro da célula normal
+            cursor.transform.position = cellCenterPos;
+        }
 
     }
 

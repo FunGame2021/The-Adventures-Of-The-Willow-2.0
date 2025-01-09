@@ -35,14 +35,14 @@ public class CaptainMushroomRed : MonoBehaviour
 
     private bool incremented;
 
-    [SerializeField] private LayerMask groundLayer; // Configure no Inspector para incluir a layer do chão.
-    [SerializeField] private float overlapRadius = 0.2f; // Raio de sobreposição para verificar colisões.
+    [SerializeField] private LayerMask groundLayer; // Configure no Inspector para incluir a layer do chï¿½o.
+    [SerializeField] private float overlapRadius = 0.2f; // Raio de sobreposiï¿½ï¿½o para verificar colisï¿½es.
 
 
     [SerializeField] private Transform leftObjectCheck;
     [SerializeField] private Transform rightObjectCheck;
     [SerializeField] private Transform castObjectPos;
-    [SerializeField] private LayerMask colliderObjectsLayer; // Configure no Inspector para incluir a layer do chão.
+    [SerializeField] private LayerMask colliderObjectsLayer; // Configure no Inspector para incluir a layer do chï¿½o.
 
     private void Awake()
     {
@@ -92,7 +92,7 @@ public class CaptainMushroomRed : MonoBehaviour
                 StartCoroutine(ToStartEnemy());
             }
         }
-        // Verificar se o ponto central do jogador está dentro de algum colisor de chão
+        // Verificar se o ponto central do jogador estï¿½ dentro de algum colisor de chï¿½o
         if (IsInsideGround() || IsBetweenObjects() && !enemyStopped)
         {
             DestroyGameObject();
@@ -134,17 +134,17 @@ public class CaptainMushroomRed : MonoBehaviour
     }
     bool IsInsideGround()
     {
-        // Verificar se há algum colisor de chão dentro do raio de sobreposição
+        // Verificar se hï¿½ algum colisor de chï¿½o dentro do raio de sobreposiï¿½ï¿½o
         Collider2D overlap = Physics2D.OverlapCircle(transform.position, overlapRadius, groundLayer);
 
         return overlap != null;
     }
     bool IsBetweenObjects()
     {
-        // Verificar se está atingindo um objeto à esquerda
+        // Verificar se estï¿½ atingindo um objeto ï¿½ esquerda
         bool hittingLeftObject = Physics2D.Linecast(leftObjectCheck.position, castObjectPos.position, colliderObjectsLayer);
 
-        // Verificar se está atingindo um objeto à direita
+        // Verificar se estï¿½ atingindo um objeto ï¿½ direita
         bool hittingRightObject = Physics2D.Linecast(rightObjectCheck.position, castObjectPos.position, colliderObjectsLayer);
 
         return hittingLeftObject && hittingRightObject;
@@ -158,13 +158,13 @@ public class CaptainMushroomRed : MonoBehaviour
     {
         if (!enemyStopped)
         {
-            rb2d.velocity += Physics2D.gravity * Time.fixedDeltaTime;
-            float rigidbodyDrag = Mathf.Clamp01(1.0f - (rb2d.drag * Time.fixedDeltaTime));
-            rb2d.velocity *= rigidbodyDrag;
+            rb2d.linearVelocity += Physics2D.gravity * Time.fixedDeltaTime;
+            float rigidbodyDrag = Mathf.Clamp01(1.0f - (rb2d.linearDamping * Time.fixedDeltaTime));
+            rb2d.linearVelocity *= rigidbodyDrag;
 
             float vX = moveSpeed * (facingDirection == LEFT ? -1 : 1);
 
-            rb2d.velocity = new Vector2(vX, rb2d.velocity.y);
+            rb2d.linearVelocity = new Vector2(vX, rb2d.linearVelocity.y);
         }
 
         if (IsHittingWall() || IsNearEdge() || IsHittingEnemy() || IsHittingBox())
@@ -242,11 +242,11 @@ public class CaptainMushroomRed : MonoBehaviour
         Debug.DrawLine(castPos.position, targetPos, Color.blue);
 
 
-        // Desenhar uma esfera gizmo para representar a área de sobreposição
+        // Desenhar uma esfera gizmo para representar a ï¿½rea de sobreposiï¿½ï¿½o
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, overlapRadius);
 
-        // Desenhar as linhas de verificação para objetos à esquerda e à direita
+        // Desenhar as linhas de verificaï¿½ï¿½o para objetos ï¿½ esquerda e ï¿½ direita
         Gizmos.color = Color.red;
         Gizmos.DrawLine(leftObjectCheck.position, castObjectPos.position);
         Gizmos.DrawLine(rightObjectCheck.position, castObjectPos.position);
