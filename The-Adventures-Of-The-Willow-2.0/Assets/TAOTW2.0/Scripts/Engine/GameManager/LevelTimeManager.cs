@@ -67,7 +67,7 @@ public class LevelTimeManager : MonoBehaviour
                 LoadPlayLevel.instance.SpeedMusicNormal();
             }
         }
-        if (remainingDuration <= 20 && remainingDuration >= 0 && !countdownPlayed && !started)
+        if (remainingDuration < 60 && remainingDuration <= 20 && remainingDuration >= 0 && !countdownPlayed && !started)
         {
             countdownPlayed = true;
             AudioManager.instance.PlayOneShotNo3D(FMODEvents.instance.Countdown);
@@ -78,7 +78,7 @@ public class LevelTimeManager : MonoBehaviour
         {
             lastSecond = currentSecond;
 
-            if (currentSecond <= 10 && currentSecond > 0)
+            if (remainingDuration < 60 && currentSecond <= 10 && currentSecond > 0)
             {
                 PlayCountdownSound();
             }
