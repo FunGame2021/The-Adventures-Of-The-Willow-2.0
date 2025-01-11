@@ -7,7 +7,6 @@ using FMODUnity;
 using FMOD.Studio;
 using System.Collections;
 using static UnityEngine.Collider2D;
-using UnityEditor.Build;
 
 public class playLevel : MonoBehaviour
 {

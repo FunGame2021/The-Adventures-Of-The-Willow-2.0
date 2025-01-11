@@ -34,6 +34,8 @@ public class ScreenAspectRatio : MonoBehaviour
     private bool isTransitioning = false;
 
 
+    [SerializeField]
+    private GameObject PlayUIButton;
 
     //LevelInfo
     [SerializeField] private Animator LevelInfoAnimator;
@@ -163,6 +165,10 @@ public class ScreenAspectRatio : MonoBehaviour
         {
             m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
         }
+        if (PlayUIButton != null)
+        {
+            PlayUIButton.SetActive(true);
+        }
     }
     public void CloseRadiusTransition()
     {
@@ -171,6 +177,10 @@ public class ScreenAspectRatio : MonoBehaviour
         if (m_target == null)
         {
             m_target = new GameObject(); // Crie um objeto vazio (0,0,0) como m_target
+        }
+        if (PlayUIButton != null)
+        {
+            PlayUIButton.SetActive(false);
         }
     }
     public void GetStartCharacterPosition()

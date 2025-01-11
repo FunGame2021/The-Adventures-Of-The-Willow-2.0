@@ -7,7 +7,6 @@ using FMODUnity;
 using FMOD.Studio;
 using System.Collections;
 using static UnityEngine.Collider2D;
-using UnityEditor.Build;
 
 public class LoadPlayLevel : MonoBehaviour
 {
@@ -113,6 +112,7 @@ public class LoadPlayLevel : MonoBehaviour
 
     [SerializeField] private GameObject DeathZonePrefab;
     public bool isPlayingLevel;
+
 
     #region Sectors
     [SerializeField] private Transform Sector1;

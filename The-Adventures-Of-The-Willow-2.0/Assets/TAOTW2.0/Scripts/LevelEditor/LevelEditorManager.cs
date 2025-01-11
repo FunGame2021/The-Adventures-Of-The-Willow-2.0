@@ -26,6 +26,8 @@ public class LevelEditorManager : MonoBehaviour
     public GameObject objectsContainer;
     public GameObject nodesLineRendererContainer;
 
+    public RectTransform tilemapRectContent;
+
     public Toggle enemyToggle;
     public Toggle decorToggle;
     public Toggle tilemapToggle;
@@ -670,6 +672,15 @@ public class LevelEditorManager : MonoBehaviour
         {
             SelectTilemap(0);
         }
+
+        // Atualiza o tamanho horizontal do Content do ScrollView de acordo com o número de botões de mundos
+        float buttonWidth = tilemapButtonPrefab.GetComponent<RectTransform>().rect.width;
+        float spacing = 100f; // O valor de spacing do seu Horizontal Layout Group
+        float totalWidth = (tilemaps.Count * buttonWidth) + (spacing * (tilemaps.Count - 1));
+
+        // Ajusta a largura (X) do RectTransform do Content
+        tilemapRectContent.sizeDelta = new Vector2(totalWidth, tilemapRectContent.sizeDelta.y);
+
     }
 
     public void SelectTilemap(int index)

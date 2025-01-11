@@ -95,7 +95,8 @@ public class WorldSelect : MonoBehaviour
 
         // Atualiza o tamanho vertical do Content do ScrollView de acordo com o número de botões de mundos
         float buttonHeight = worldButtonPrefab.GetComponent<RectTransform>().rect.height;
-        float totalHeight = availableWorlds.Count * buttonHeight;
+        float spacing = 130f; // O valor de spacing do seu Horizontal Layout Group
+        float totalHeight = (availableWorlds.Count * buttonHeight) + (spacing * (availableWorlds.Count - 1));
         worldContent.sizeDelta = new Vector2(worldContent.sizeDelta.x, totalHeight);
 
         // Fecha o painel atual
@@ -253,7 +254,8 @@ public class WorldSelect : MonoBehaviour
 
             // Atualiza o tamanho vertical do Content do ScrollView de acordo com o número de botões
             float buttonHeight = levelButtonPrefab.GetComponent<RectTransform>().rect.height;
-            float totalHeight = levelFiles.Length * buttonHeight;
+            float spacing = 130f; // O valor de spacing do seu Horizontal Layout Group
+            float totalHeight = (levelFiles.Length * buttonHeight) + (spacing * (levelFiles.Length - 1));
             levelContent.sizeDelta = new Vector2(levelContent.sizeDelta.x, totalHeight);
         }
         else
