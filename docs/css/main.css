@@ -42,6 +42,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+    pointer-events: none; /* Impede que as camadas interceptem cliques */
 }
 .layer-1 {
 	transform: translateZ(780px) scale(1.06);
@@ -80,33 +81,170 @@ body {
 	transform: translateZ(50px) scale(.9);
 }
 .hero-content {
-	font-size: calc(var(--index) * 2.9);
-	text-align: center;
-	text-transform: uppercase;
-	letter-spacing: calc(var(--index) * -.15);
-	line-height: 1.35em;
-	margin-top: calc(var(--index) * 5.5);
-
+    font-size: calc(var(--index) * 2.9);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: calc(var(--index) * -0.15);
+    line-height: 1.35em;
+	z-index: 3000; /* Garantir que está acima das outras camadas */
+    margin-top: calc(var(--index) * 15); /* Espaço entre o título e as imagens acima */
 }
 .hero-content span {
 	display: block;
 }
-
-.button-start {
-	font-family: Arial;
-	font-weight: 600;
-	text-transform: uppercase;
-	font-size: calc(var(--index) * .71);
-	letter-spacing: -.02vw;
-	padding: calc(var(--index) * .7) calc(var(--index) * 1.25);
-	background-color: transparent;
-	color: #fff;
-	border-radius: 10em;
-	border: rgb(255 255 255 / .4) 3px solid;
-	outline: none;
-	cursor: pointer;
-	margin-top: calc(var(--index) * 2.5);
+.hero-content h1 {
+    margin-bottom: calc(var(--index) * 3); /* Espaçamento entre o título e os botões */
 }
+
+.stacked-buttons {
+    display: flex;
+    flex-direction: column; /* Empilha os botões verticalmente */
+    align-items: center;    /* Centraliza os botões horizontalmente */
+    gap: calc(var(--index) * 1.5); /* Espaçamento entre os botões */
+}
+
+.button-info {
+    font-family: Arial;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: calc(var(--index) * 0.6);
+    letter-spacing: -0.02vw;
+    padding: calc(var(--index) * 0.5) calc(var(--index) * 1);
+    background-color: transparent;
+    color: #fff;
+    border-radius: 10em;
+    border: rgb(255 255 255 / 0.4) 2px solid;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+.button-how-to-play {
+    font-family: Arial;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: calc(var(--index) * 0.6);
+    letter-spacing: -0.02vw;
+    padding: calc(var(--index) * 0.5) calc(var(--index) * 1);
+    background-color: transparent;
+    color: #fff;
+    border-radius: 10em;
+    border: rgb(255 255 255 / 0.4) 2px solid;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+
+
+/* Ajustes para o botão "Download Game" */
+.button-start {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+	position: relative;
+	z-index: 2;
+	padding: 0px 30px;
+	color: #fff;
+	font-size: 30px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 4px;
+	background-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 200px;
+	transition: background-color 0.4s;
+    height: 85px; /* Ajuste da altura */
+}
+/* Efeito de hover */
+.button-start:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #b1efff;
+    transform: scale(1.05);
+}
+/* Ajustes para o botão "button-how-to-play" */
+.button-how-to-play {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+	position: relative;
+	z-index: 2;
+	padding: 0px 30px;
+	color: #fff;
+	font-size: 30px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 4px;
+	background-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 200px;
+	transition: background-color 0.4s;
+    height: 85px; /* Ajuste da altura */
+}
+/* Efeito de hover */
+.button-how-to-play:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #b1efff;
+    transform: scale(1.05);
+}
+/* Ajustes para o botão "button-info" */
+.button-info {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+	position: relative;
+	z-index: 2;
+	padding: 0px 30px;
+	color: #fff;
+	font-size: 30px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 4px;
+	background-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 200px;
+	transition: background-color 0.4s;
+    height: 85px; /* Ajuste da altura */
+}
+/* Efeito de hover */
+.button-info:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #b1efff;
+    transform: scale(1.05);
+}
+a
+{
+	text-decoration: none;
+}
+
+
+
+
+
+/* Botões empilhados no container */
+.stacked-buttons {
+    display: flex;
+    flex-direction: column; /* Empilhar os botões verticalmente */
+    align-items: center;
+    gap: calc(var(--index) * 1.2); /* Ajuste o espaçamento entre os botões */
+}
+
+
+.layer-3 .hero-content {
+    pointer-events: auto; /* Permite interação apenas no conteúdo do hero */
+    z-index: 3000; /* Garante que está acima das outras camadas */
+    position: relative;
+}
+
 .layer-4, .layer-5, .layer-6, .layer-7, .layer-8, .layer-9, .layer-10, .layer-11 {
 	pointer-events: none;
 }

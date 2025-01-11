@@ -10,6 +10,7 @@ public class PlayerHealth : MonoBehaviour
     private Vector3 startPlayerPos;
     private bool isDeadNow;
     public bool isDead;
+    private bool restartDie;
 
     private bool isInvulnerable = false; // Flag para controlar se o jogador está invulnerável
     [SerializeField] private float invulnerabilityDuration = 3.0f; // Duração da invulnerabilidade em segundos
@@ -87,7 +88,7 @@ public class PlayerHealth : MonoBehaviour
             invulnerabilityTimer = invulnerabilityDuration;
             // O jogador está com "Power Up"
             playerStates.SetBigState(true);
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+            PlayDeathSound();
             // Além disso, inicia a corrotina para fazer o jogador piscar
             StartCoroutine(FlashPlayerColor());
         }
@@ -98,7 +99,7 @@ public class PlayerHealth : MonoBehaviour
             invulnerabilityTimer = invulnerabilityDuration;
             // O jogador está com "Power Up"
             playerStates.SetBigState(true);
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+            PlayDeathSound();
             StartCoroutine(FlashPlayerColor());
         }
         else if (playerStates.isBig)
@@ -108,7 +109,7 @@ public class PlayerHealth : MonoBehaviour
             invulnerabilityTimer = invulnerabilityDuration;
             // O jogador está no estado "Big"
             playerStates.SetSmallState(true);
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+            PlayDeathSound();
             StartCoroutine(FlashPlayerColor());
         }
         else if (playerStates.isSmall)
@@ -118,6 +119,14 @@ public class PlayerHealth : MonoBehaviour
             TakeDamage();
         }
     }
+    private void PlayDeathSound()
+    {
+        if (!isDeadNow)
+        {
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+        }
+    }
+
 
     // Corrotina para fazer o jogador piscar de cor
     private IEnumerator FlashPlayerColor()
@@ -146,19 +155,20 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (!isDeadNow)
+        if (!isDeadNow) // Garante que o dano seja aplicado apenas uma vez
         {
-            // Inicie o temporizador de invulnerabilidade
+            isDeadNow = true; // Evita que outros métodos chamem TakeDamage novamente
             isInvulnerable = true;
             invulnerabilityTimer = invulnerabilityDuration;
+
             if (PlayerManager.instance != null)
             {
                 PlayerManager.instance.IncrementDeaths();
             }
+
             if (CoinCollect.instance.coin >= 25 && playerPosCheck != null)
             {
                 isDead = true;
-                isDeadNow = true;
                 CoinCollect.instance.ChangeMinusCoin(25);
                 PlayerController.instance.stopPlayer = true;
                 CheckDie();
@@ -166,19 +176,19 @@ public class PlayerHealth : MonoBehaviour
             else
             {
                 isDead = true;
-                isDeadNow = true;
                 PlayerController.instance.stopPlayer = true;
                 Die();
             }
         }
     }
 
+
     //Die and restart to checkpoint pos if have coins >= 25 and remove 25 coins, if 0 restart to initial pos
 
     void CheckDie()
     {
         PlayerController.instance.PlayerDie();
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+        PlayDeathSound();
         StartCoroutine(RestartCheckpointDie());
     }
     IEnumerator RestartCheckpointDie()
@@ -214,27 +224,37 @@ public class PlayerHealth : MonoBehaviour
     {
         PlayerController.instance.PlayerDie();
         //PlayerController.instance.isDead = true;
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.Dead, this.transform.position);
+        PlayDeathSound();
         StartCoroutine(RestartDie());
     }
     void Restart()
     {
-        //playerAnimatiorController.PlayerStart();
-        //PlayerController.instance.isDead = false;
         if (LoadSectorTransition.instance != null)
         {
             LoadSectorTransition.instance.sectorSimpleCloseTransition("Sector1", startPlayerPos);
         }
-        isDeadNow = false;
-        PlayerController.instance.stopPlayer = false;
+        StartCoroutine(RestartValues());
+    }
+    IEnumerator RestartValues()
+    {
+        yield return new WaitForSeconds(2.0f);
         LevelTimeManager.instance.RestartTimer();
+        PlayerController.instance.stopPlayer = false;
+        //playerAnimatiorController.PlayerStart();
+        //PlayerController.instance.isDead = false;
+        isDeadNow = false;
         isDead = false;
+        restartDie = false;
     }
 
     IEnumerator RestartDie()
     {
-        yield return new WaitForSeconds(toDie);
-        Restart();
+        if (!restartDie)
+        {
+            restartDie = true;
+            yield return new WaitForSeconds(toDie);
+            Restart();
+        }
     }
 
     #region colliders and triggers

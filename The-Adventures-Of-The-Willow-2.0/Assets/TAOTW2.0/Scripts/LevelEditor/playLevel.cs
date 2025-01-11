@@ -6,6 +6,8 @@ using TMPro;
 using FMODUnity;
 using FMOD.Studio;
 using System.Collections;
+using static UnityEngine.Collider2D;
+using UnityEditor.Build;
 
 public class playLevel : MonoBehaviour
 {
@@ -39,7 +41,7 @@ public class playLevel : MonoBehaviour
     public DecorData ScriptableDecorData;
     public Decor2Data ScriptableDecor2Data;
     #endregion
-
+    private Vector3 PosPlayer;
     #region Objects
     public ObjectsData ScriptableObjectData;
     #endregion
@@ -245,6 +247,9 @@ public class playLevel : MonoBehaviour
                 PlayMusic(MusicIDSector1);
                 LevelTimeManager.instance.Begin(gameLevelTime);
                 GameStates.instance.isLevelStarted = true;
+
+                // Após o tempo de espera, instancie o jogador na posição especificada.
+                PlayerPrefab = Instantiate(PlayerPrefab, PosPlayer, Quaternion.identity);
                 ScreenAspectRatio.instance.StartTransitionNow();
                 PressStartInfo.SetActive(false);
             }
@@ -526,7 +531,7 @@ public class playLevel : MonoBehaviour
             GridWidthCameraSector5 = gridSizeData.currentGridWidth;
             GridHeightCameraSector5 = gridSizeData.currentGridHeight;
         }
-        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
             levelEditorCamera.UpdateCameraBounds();
@@ -569,7 +574,7 @@ public class playLevel : MonoBehaviour
                 if (tilemapCollider2D != null)
                 {
                     // Ativa o "Used by Composite" no TilemapCollider2D
-                    tilemapCollider2D.usedByComposite = true;
+                    tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                 }
 
 
@@ -1095,8 +1100,7 @@ public class playLevel : MonoBehaviour
 
         PressStartInfo.SetActive(true);
         canStart = true;
-        // Após o tempo de espera, instancie o jogador na posição especificada.
-        PlayerPrefab = Instantiate(PlayerPrefab, playerPosition, Quaternion.identity);
+        PosPlayer = playerPosition;
         ScreenAspectRatio.instance.m_target = PlayerPrefab;
         ScreenAspectRatio.instance.GetCharacterPosition();
     }
@@ -1542,7 +1546,7 @@ public class playLevel : MonoBehaviour
                         if (tilemapCollider2D != null)
                         {
                             // Ativa o "Used by Composite" no TilemapCollider2D
-                            tilemapCollider2D.usedByComposite = true;
+                            tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                         }
 
                         // Adiciona um CompositeCollider2D ao Tilemap se ainda não existir

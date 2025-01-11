@@ -6,6 +6,8 @@ using TMPro;
 using FMODUnity;
 using FMOD.Studio;
 using System.Collections;
+using static UnityEngine.Collider2D;
+using UnityEditor.Build;
 
 public class LoadPlayLevel : MonoBehaviour
 {
@@ -75,6 +77,7 @@ public class LoadPlayLevel : MonoBehaviour
     #region Player
     public GameObject PlayerPrefab;
     public Transform PlayerPos;
+    private Vector3 PosPlayer;
     #endregion
 
     #region Tilemap
@@ -188,6 +191,9 @@ public class LoadPlayLevel : MonoBehaviour
                 PlayMusic(MusicIDSector1);
                 LevelTimeManager.instance.Begin(gameLevelTime);
                 GameStates.instance.isLevelStarted = true;
+
+                // Após o tempo de espera, instancie o jogador na posição especificada.
+                PlayerPrefab = Instantiate(PlayerPrefab, PosPlayer, Quaternion.identity);
                 ScreenAspectRatio.instance.StartTransitionNow();
                 PressStartInfo.SetActive(false);
             }
@@ -455,7 +461,7 @@ public class LoadPlayLevel : MonoBehaviour
             GridWidthCameraSector5 = gridSizeData.currentGridWidth;
             GridHeightCameraSector5 = gridSizeData.currentGridHeight;
         }
-        LevelEditorCamera levelEditorCamera = FindObjectOfType<LevelEditorCamera>();
+        LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
         if (levelEditorCamera != null)
         {
             levelEditorCamera.UpdateCameraBounds();
@@ -498,7 +504,8 @@ public class LoadPlayLevel : MonoBehaviour
                 if (tilemapCollider2D != null)
                 {
                     // Ativa o "Used by Composite" no TilemapCollider2D
-                    tilemapCollider2D.usedByComposite = true;
+
+                    tilemapCollider2D.compositeOperation = CompositeOperation.Merge;
                 }
 
 
@@ -1023,8 +1030,7 @@ public class LoadPlayLevel : MonoBehaviour
 
         PressStartInfo.SetActive(true);
         canStart = true;
-        // Após o tempo de espera, instancie o jogador na posição especificada.
-        PlayerPrefab = Instantiate(PlayerPrefab, playerPosition, Quaternion.identity);
+        PosPlayer = playerPosition;
 
     }
     private void LoadTimeWeather(string timeWeather, Transform sectorTransform)

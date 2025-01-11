@@ -554,10 +554,10 @@ public class PlayerController : MonoBehaviour
         }
 
         #region Jump and walk
-        if (!knocked)
+        if (!knocked && !stopPlayer)
         {
             //Walk
-            if (!isWallJumping && !Swimming && !stopPlayer && !isDead && !isOnPlatform)
+            if (!isWallJumping && !Swimming && !isDead && !isOnPlatform)
             {
                 if (!isOnIcePlatform && !isOnStickyPlatform)
                 {
