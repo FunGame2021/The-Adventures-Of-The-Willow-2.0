@@ -100,7 +100,7 @@ public class SaveGameManager : MonoBehaviour
         {
             SetCurrentWorldAndLevel(PlayWorld.instance.selectedWorldName, PlayWorld.instance.selectedLevelName);
         }
-        CoinCollect coinCollect = FindObjectOfType<CoinCollect>();
+        CoinCollect coinCollect = FindAnyObjectByType<CoinCollect>();
         if (coinCollect != null)
         {
             CoinCollect.instance = coinCollect;
@@ -150,6 +150,14 @@ public class SaveGameManager : MonoBehaviour
         {
             currentWorld = new SaveWorldData { worldName = currentWorldName };
             saveData.worlds.Add(currentWorld);
+            saveData.player = new SavePlayerData
+            {
+                isBig = true,  // Valor padrão para o estado inicial
+                isSmall = false,
+                isFirePower = false,
+                isAirPower = false,
+                isBubblePower = false
+            };
         }
 
         // Verificar se um nível está ativo antes de salvá-lo
@@ -248,6 +256,23 @@ public class SaveGameManager : MonoBehaviour
                     currentLevelCompletionTime = level.completionTime
                 }).ToList();
             }
+        }
+        else
+        {
+            // Arquivo de salvamento não existe. Inicialize valores padrão.
+            saveData = new SaveGameData
+            {
+                player = new SavePlayerData
+                {
+                    isBig = true,  // Valor padrão para o estado inicial
+                    isSmall = false,
+                    isFirePower = false,
+                    isAirPower = false,
+                    isBubblePower = false
+                }
+            };
+
+            Debug.Log("Novo jogo iniciado com valores padrão.");
         }
     }
 

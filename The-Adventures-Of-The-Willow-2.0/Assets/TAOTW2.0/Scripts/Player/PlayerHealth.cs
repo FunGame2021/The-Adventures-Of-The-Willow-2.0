@@ -8,9 +8,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float toDie = 1f;
     [HideInInspector] public Vector3 playerPosCheck;
     private Vector3 startPlayerPos;
-    private bool isDeadNow;
+    public bool isDeadNow;
     public bool isDead;
-    private bool restartDie;
+    public bool restartDie;
 
     private bool isInvulnerable = false; // Flag para controlar se o jogador está invulnerável
     [SerializeField] private float invulnerabilityDuration = 3.0f; // Duração da invulnerabilidade em segundos
@@ -80,6 +80,8 @@ public class PlayerHealth : MonoBehaviour
     }
     private void changeState()
     {
+        Debug.Log($"Current States - FirePower: {playerStates.isFirePower}, AirPower: {playerStates.isAirPower}, Big: {playerStates.isBig}, Small: {playerStates.isSmall}");
+
         // Verifica se o jogador está com "Power Up"
         if (playerStates.isFirePower)
         {
@@ -110,6 +112,7 @@ public class PlayerHealth : MonoBehaviour
             // O jogador está no estado "Big"
             playerStates.SetSmallState(true);
             PlayDeathSound();
+            Debug.Log("isbig");
             StartCoroutine(FlashPlayerColor());
         }
         else if (playerStates.isSmall)

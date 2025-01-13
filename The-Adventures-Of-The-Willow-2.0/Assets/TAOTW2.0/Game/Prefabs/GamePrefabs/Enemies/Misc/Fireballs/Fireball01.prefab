@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 343308551823712777}
   - component: {fileID: 4799102836008441998}
   - component: {fileID: 1506018461793981089}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Fireball01
-  m_TagString: Player
+  m_TagString: Fireball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -194,6 +194,7 @@ MonoBehaviour:
   rb: {fileID: 8391137999831533458}
   exploson: {fileID: 152780, guid: c567772e91d4e8542959a8867cfbab82, type: 3}
   velocity: {x: 0, y: 0}
+  stopThreshold: 0.1
 --- !u!199 &4799102836008441998
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -5004,7 +5005,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6125816473943592758}
   - component: {fileID: 1536229561427912449}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}

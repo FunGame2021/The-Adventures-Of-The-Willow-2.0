@@ -1428,6 +1428,11 @@ public class playLevel : MonoBehaviour
                 // Restaura o tamanho do grid
                 currentGridWidth = gridSizeData.currentGridWidth;
                 currentGridHeight = gridSizeData.currentGridHeight;
+                LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
+                if (levelEditorCamera != null)
+                {
+                    levelEditorCamera.UpdateCameraBounds();
+                }
 
                 foreach (GameObjectSaveData gameObjectData in gameObjectList)
                 {

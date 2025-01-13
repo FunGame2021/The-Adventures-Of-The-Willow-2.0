@@ -57,7 +57,7 @@ jobs:
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
 
       # Upload do build como artefato
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: TheAdventuresOfTheWillow_Mac.zip
           path: build
@@ -101,7 +101,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: TheAdventuresOfTheWillow_Linux.zip
           path: build
@@ -145,7 +145,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: TheAdventuresOfTheWillow_Windows32.zip
           path: build
@@ -189,7 +189,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: TheAdventuresOfTheWillow_Windows64.zip
           path: build

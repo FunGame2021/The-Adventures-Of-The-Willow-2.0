@@ -20,6 +20,7 @@ public class RestartObjects : MonoBehaviour
     bool isplayedSFX;
     bool isGrounded;
     bool isSimulated;
+    bool puffParticlesisPlayed = false;
 
     void Start()
     {
@@ -36,7 +37,6 @@ public class RestartObjects : MonoBehaviour
             rb.linearVelocity = Vector2.zero; // Define a velocidade vertical para zero
             rb.gravityScale = 0f;
         }
-        objectInRespawn = true;
         // Define the color SpriteRenderer to alpha 0.
         Color newColor = spriteRenderer.color;
         newColor.a = 0f;
@@ -69,15 +69,11 @@ public class RestartObjects : MonoBehaviour
         {
             if (PlayerHealth.instance.isDead && !IsOverlapping(initialPosition))
             {
+                objectInRespawn = true;
                 restartObject();
             }
         }
 
-        if (objectInRespawn && IsOverlapping(initialPosition))
-        {
-            restartObject();
-            objectInRespawn = true;
-        }
 
         if (!IsOverlapping(initialPosition) && objectInRespawn)
         {
@@ -87,6 +83,7 @@ public class RestartObjects : MonoBehaviour
 
             animStarted = true;
             animator.SetTrigger("Puff");
+            toOriginalColor();
 
             objectInRespawn = false;
         }
@@ -99,6 +96,7 @@ public class RestartObjects : MonoBehaviour
             // Se o objeto estiver caindo por mais de 10 segundos, fa�a respawn
             if (fallingTimer >= 10f)
             {
+                objectInRespawn = true;
                 restartObject();
             }
         }
@@ -108,7 +106,7 @@ public class RestartObjects : MonoBehaviour
             fallingTimer = 0f;
         }
 
-        if(rb.linearVelocity.y < -3 && !isBeingGrabbed && rb.linearVelocity.y != 0 && !isplayedSFX && !isGrounded)
+        if(rb.linearVelocity.y < -3 && !isBeingGrabbed && rb.linearVelocity.y != 0 && !isplayedSFX && !isGrounded && !objectInRespawn)
         {
             isplayedSFX = true;
             AudioManager.instance.PlayOneShot(FMODEvents.instance.FallingObject, this.transform.position);
@@ -120,18 +118,23 @@ public class RestartObjects : MonoBehaviour
         if(isBeingGrabbed)
         {
             isGrounded = false;
+            puffParticlesisPlayed = false;
         }
     }
 
     //Call on animation 
     public void startPuffParticles()
     {
-        AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
-        // Iterate through the puffParticles array and play each ParticleSystem
-        foreach (ParticleSystem particles in puffParticles)
+        if (!puffParticlesisPlayed)
         {
-            particles.Play();
-        };
+            puffParticlesisPlayed = true;
+            AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
+            // Iterate through the puffParticles array and play each ParticleSystem
+            foreach (ParticleSystem particles in puffParticles)
+            {
+                particles.Play();
+            };
+        }
     }
     public void toOriginalColor()
     {
@@ -145,12 +148,8 @@ public class RestartObjects : MonoBehaviour
         // Verifica se a camada do objeto colidido est� na LayerMask targetLayers
         if (collision.gameObject.CompareTag("ground") || collision.gameObject.CompareTag("ObjectObject") && !isBeingGrabbed)
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
-            
-            foreach (ParticleSystem particles in puffParticles)
-            {
-                particles.Play();
-            };
+            startPuffParticles();
+            puffParticlesisPlayed = false;
         }
 
         int collisionLayer = collision.gameObject.layer; // Obt�m a camada do objeto colidido
@@ -158,15 +157,11 @@ public class RestartObjects : MonoBehaviour
         // Verifique se a camada do objeto colidido est� na LayerMask targetLayers
         if (targetLayers == (targetLayers | (1 << collisionLayer)) && !isBeingGrabbed)
         {
-            AudioManager.instance.PlayOneShot(FMODEvents.instance.PoofObject, this.transform.position);
-
-            foreach (ParticleSystem particles in puffParticles)
-            {
-                particles.Play();
-            };
+            startPuffParticles();
         }
         if (collision.gameObject.CompareTag("immediate_death"))
         {
+            objectInRespawn = true;
             restartObject();
         }
     }
@@ -176,6 +171,7 @@ public class RestartObjects : MonoBehaviour
         if(collision.gameObject.CompareTag("ground") || collision.gameObject.CompareTag("ObjectObject"))
         {
             isGrounded = true;
+            puffParticlesisPlayed = false;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
@@ -189,6 +185,7 @@ public class RestartObjects : MonoBehaviour
     {
         if (collision.CompareTag("immediate_death"))
         {
+            objectInRespawn = true;
             restartObject();
         }
     }
@@ -197,6 +194,7 @@ public class RestartObjects : MonoBehaviour
     {
         if (collision.CompareTag("immediate_death"))
         {
+            objectInRespawn = true;
             restartObject();
         }
     }

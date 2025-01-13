@@ -51,7 +51,7 @@ jobs:
           customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
 
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build_Android
           path: build
