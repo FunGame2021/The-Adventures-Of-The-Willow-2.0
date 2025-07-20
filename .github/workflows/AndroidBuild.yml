@@ -2,6 +2,7 @@ name: AndroidBuild
 on:
   push:
   pull_request:
+  workflow_dispatch:
     branches:
       - main
 

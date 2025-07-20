@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{97c36a49-5813-42f7-9cd8-5046fd6d67a7}">
 		<property name="name">
 			<value>PropellerHatDownLoop</value>
@@ -60,13 +60,13 @@
 	<object class="MarkerTrack" id="{d332e2df-7c62-48a3-8540-aca089c40a8e}" />
 	<object class="GroupTrack" id="{70ce536c-3780-4ee7-97e6-fcecd9237ac6}">
 		<relationship name="modules">
-			<destination>{3898ea83-c4c1-4c0a-9fa7-c86a155944d7}</destination>
-			<destination>{99519da4-3d58-4636-acbb-4e0f4df89fb7}</destination>
-			<destination>{dd2cf142-fa64-43a4-b56e-451373691cf6}</destination>
 			<destination>{6d9ee389-04b1-499a-8847-d3cefbeff50a}</destination>
+			<destination>{3898ea83-c4c1-4c0a-9fa7-c86a155944d7}</destination>
+			<destination>{9978aeed-c82e-4e72-abb0-fa7318ea3071}</destination>
+			<destination>{dd2cf142-fa64-43a4-b56e-451373691cf6}</destination>
+			<destination>{99519da4-3d58-4636-acbb-4e0f4df89fb7}</destination>
 			<destination>{f360e2c8-bfc3-4f1d-8b4d-6e3fc8ee9b8a}</destination>
 			<destination>{3faf9c5e-83ea-43e9-b1ee-86662829fd5a}</destination>
-			<destination>{9978aeed-c82e-4e72-abb0-fa7318ea3071}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{3301c0fd-80b2-4bf1-b8db-90df464fd9a4}</destination>
@@ -100,6 +100,23 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{5614b08a-0f9d-4288-b339-be1aa69b1002}" />
+	<object class="SingleSound" id="{6d9ee389-04b1-499a-8847-d3cefbeff50a}">
+		<property name="start">
+			<value>0.47999999999999998</value>
+		</property>
+		<property name="length">
+			<value>0.16</value>
+		</property>
+		<property name="timelockedOffset">
+			<value>0.040000000000000001</value>
+		</property>
+		<property name="pitch">
+			<value>-1.60000002</value>
+		</property>
+		<relationship name="audioFile">
+			<destination>{d8af7961-b5ee-48db-97c1-2124ab13dc95}</destination>
+		</relationship>
+	</object>
 	<object class="SingleSound" id="{3898ea83-c4c1-4c0a-9fa7-c86a155944d7}">
 		<property name="length">
 			<value>0.16</value>
@@ -114,9 +131,9 @@
 			<destination>{d8af7961-b5ee-48db-97c1-2124ab13dc95}</destination>
 		</relationship>
 	</object>
-	<object class="SingleSound" id="{99519da4-3d58-4636-acbb-4e0f4df89fb7}">
+	<object class="SingleSound" id="{9978aeed-c82e-4e72-abb0-fa7318ea3071}">
 		<property name="start">
-			<value>0.16</value>
+			<value>0.96000000000000008</value>
 		</property>
 		<property name="length">
 			<value>0.16</value>
@@ -148,9 +165,9 @@
 			<destination>{d8af7961-b5ee-48db-97c1-2124ab13dc95}</destination>
 		</relationship>
 	</object>
-	<object class="SingleSound" id="{6d9ee389-04b1-499a-8847-d3cefbeff50a}">
+	<object class="SingleSound" id="{99519da4-3d58-4636-acbb-4e0f4df89fb7}">
 		<property name="start">
-			<value>0.47999999999999998</value>
+			<value>0.16</value>
 		</property>
 		<property name="length">
 			<value>0.16</value>
@@ -185,23 +202,6 @@
 	<object class="SingleSound" id="{3faf9c5e-83ea-43e9-b1ee-86662829fd5a}">
 		<property name="start">
 			<value>0.80000000000000004</value>
-		</property>
-		<property name="length">
-			<value>0.16</value>
-		</property>
-		<property name="timelockedOffset">
-			<value>0.040000000000000001</value>
-		</property>
-		<property name="pitch">
-			<value>-1.60000002</value>
-		</property>
-		<relationship name="audioFile">
-			<destination>{d8af7961-b5ee-48db-97c1-2124ab13dc95}</destination>
-		</relationship>
-	</object>
-	<object class="SingleSound" id="{9978aeed-c82e-4e72-abb0-fa7318ea3071}">
-		<property name="start">
-			<value>0.96000000000000008</value>
 		</property>
 		<property name="length">
 			<value>0.16</value>

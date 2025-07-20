@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{18b3cde3-6759-4b27-a657-3e167c895f61}">
 		<property name="name">
 			<value>Rain</value>
@@ -174,17 +174,9 @@
 			<destination>{b10f5447-3430-4724-9fb6-3e528f2060bf}</destination>
 		</relationship>
 		<relationship name="automationPoints">
-			<destination>{412bc4e6-2ecd-4a81-9133-6402f310756e}</destination>
 			<destination>{aac6c425-2b18-4250-ba73-6d1577e2df7f}</destination>
+			<destination>{412bc4e6-2ecd-4a81-9133-6402f310756e}</destination>
 		</relationship>
-	</object>
-	<object class="AutomationPoint" id="{412bc4e6-2ecd-4a81-9133-6402f310756e}">
-		<property name="position">
-			<value>0</value>
-		</property>
-		<property name="value">
-			<value>-80</value>
-		</property>
 	</object>
 	<object class="AutomationPoint" id="{aac6c425-2b18-4250-ba73-6d1577e2df7f}">
 		<property name="position">
@@ -192,6 +184,14 @@
 		</property>
 		<property name="value">
 			<value>0</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{412bc4e6-2ecd-4a81-9133-6402f310756e}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>-80</value>
 		</property>
 	</object>
 </objects>
