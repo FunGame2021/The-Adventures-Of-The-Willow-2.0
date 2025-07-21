@@ -55,7 +55,7 @@ public class GameObjectButton : MonoBehaviour
     public void DeselectAllGameObjects()
     {
         // Percorrer todos os botões de inimigo
-        GameObjectButton[] gameObjectButtons = FindObjectsOfType<GameObjectButton>();
+        GameObjectButton[] gameObjectButtons = Object.FindObjectsByType<GameObjectButton>(FindObjectsSortMode.None);
         foreach (GameObjectButton gameObjectButton in gameObjectButtons)
         {
             // Desmarcar o botão se for diferente deste

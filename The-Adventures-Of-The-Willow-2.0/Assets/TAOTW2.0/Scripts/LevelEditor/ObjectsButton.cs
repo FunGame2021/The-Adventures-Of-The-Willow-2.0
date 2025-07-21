@@ -24,7 +24,7 @@ public class ObjectsButton : MonoBehaviour
         uiImage.sprite = SpriteImageToUI;
     }
 
-    private void OnClick()
+    public void OnClick()
     {
         DeselectAllObjects();
 
@@ -50,7 +50,7 @@ public class ObjectsButton : MonoBehaviour
     }
     private void DeselectAllObjects()
     {
-        ObjectsButton[] objectsButtons = FindObjectsOfType<ObjectsButton>();
+        ObjectsButton[] objectsButtons = Object.FindObjectsByType<ObjectsButton>(FindObjectsSortMode.None);
         foreach (ObjectsButton objectsButton in objectsButtons)
         {
             if (objectsButton != this)

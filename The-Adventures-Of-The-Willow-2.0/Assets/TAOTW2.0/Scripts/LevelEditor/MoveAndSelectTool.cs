@@ -1,21 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using TMPro;
-using System.Linq;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using System.Linq;
 
 public class MoveAndSelectTool : MonoBehaviour
 {
     public static MoveAndSelectTool instance;
 
-    [SerializeField] private Color selectedColor; // Variável para armazenar a cor escolhida no Inspetor
-    [SerializeField] private Color originalColor; // Variável para armazenar a cor escolhida no Inspetor
+    [SerializeField] private Color selectedColor;
+    [SerializeField] private Color originalColor;
+
     private SpriteRenderer selectedEnemySpriteRenderer;
     private Color originalEnemyColor;
 
-    // Move Decor without collider / Duple prefab one with script for in-game editor another for in-game play
     public delegate void MouseClick();
     public static event MouseClick OnMouseClick;
     public delegate void MouseClick2();
@@ -25,22 +24,22 @@ public class MoveAndSelectTool : MonoBehaviour
     public static GameObject selectedDecorObject;
     Vector3 DecorOffset;
 
-    //Decor 2
     public static GameObject selectedDecor2Object;
     Vector3 Decor2Offset;
 
     private MoveableObject currentMoveableObject;
     private MoveableObjectDecor2 currentMoveable2Object;
 
-    //Move GameObjects with colliders
+    // Objetos selecionados para gameobjects, enemies e objects
     public Transform selectedGameObjectSprite;
     public Transform GameObjectParent;
 
-    //Move objects and enemies with colliders
     public Transform selectedEnemySprite;
     public Transform selectedObjectSprite;
     public Transform enemyParent;
     public Transform objectParent;
+
+    // Offset usado no drag
     public Vector3 offset;
     private bool isDragging = false;
 
@@ -52,8 +51,7 @@ public class MoveAndSelectTool : MonoBehaviour
     public bool isDecor;
     public bool isDecor2;
 
-
-    // Change z-pos and shortLayer
+    // UI
     public GameObject PanelToHideValues;
 
     private int shortLayer = 0;
@@ -63,22 +61,15 @@ public class MoveAndSelectTool : MonoBehaviour
     public TMP_Dropdown dropdownShortLayerList;
     public TMP_InputField scaleInput;
 
-
-    //For level editor info
     public string stringInfo;
 
-    //Hide option decor shortlayer pos
     [SerializeField] private GameObject shortLayerPosUI;
     [SerializeField] private GameObject shortLayerPosTextUI;
 
     private void Start()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
+        if (instance == null) instance = this;
 
-        // Adiciona um listener para o evento onValueChanged
         dropdownSelectType.onValueChanged.AddListener(OnDropdownValueChanged);
         isEnemy = true;
         OnDropdownValueChanged(0);
@@ -86,154 +77,110 @@ public class MoveAndSelectTool : MonoBehaviour
 
     void Update()
     {
+        Vector2 inputPosition = Vector2.zero;
+        bool inputStarted = false;
+        bool inputHeld = false;
+        bool inputEnded = false;
+
+        // Detecta input mouse
         if (Mouse.current != null)
         {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            if (mousePos != null)
-            {
-                mousePosition = LevelEditorManager.instance.mainCamera.ScreenToWorldPoint(mousePos);
-            }
+            inputPosition = Mouse.current.position.ReadValue();
+            inputStarted = Mouse.current.leftButton.wasPressedThisFrame;
+            inputHeld = Mouse.current.leftButton.isPressed;
+            inputEnded = Mouse.current.leftButton.wasReleasedThisFrame;
         }
+
+        // Detecta input touch, sobrepõe mouse se houver toque
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        {
+            var touch = Touchscreen.current.touches[0];
+            inputPosition = touch.position.ReadValue();
+
+            var phase = touch.phase.ReadValue();
+
+            if (phase == UnityEngine.InputSystem.TouchPhase.Began) inputStarted = true;
+            else if (phase == UnityEngine.InputSystem.TouchPhase.Moved || phase == UnityEngine.InputSystem.TouchPhase.Stationary) inputHeld = true;
+            else if (phase == UnityEngine.InputSystem.TouchPhase.Ended || phase == UnityEngine.InputSystem.TouchPhase.Canceled) inputEnded = true;
+        }
+
+        // Atualiza posição do input no mundo
+        Vector3 inputWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 0));
+        mousePosition = inputWorldPos;
 
         if (LevelEditorManager.instance.isActiveSelectPoint)
         {
-            // Verifica se o clique foi realizado em um elemento do UI
+            // Ignora clique se for na UI
             if (EventSystem.current.IsPointerOverGameObject())
             {
-                selectedEnemySprite = null;
-                selectedObjectSprite = null;
-                selectedGameObjectSprite = null;
-                selectedDecorObject = null;
-                selectedDecor2Object = null;
-                return; // Sai da função se o clique foi no UI
+                ClearSelections();
+                return;
             }
 
-            if (isEnemy)
+            // -- SELEÇÃO ENEMY --
+            if (isEnemy && inputStarted)
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(inputPosition), Vector2.zero);
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("Enemy"))
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
-                    if (hit.collider != null)
-                    {
-                        GameObject hitObject = hit.collider.gameObject;
-
-                        // Verifique se o objeto atingido é um sprite
-                        if (hitObject.CompareTag("Enemy"))
-                        {
-                            // Desmarcar o objeto selecionado anterior, se houver
-                            if (selectedEnemySpriteRenderer != null)
-                            {
-                                // Restaurar a cor original de todos os objetos parentes
-                                ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
-                            }
-
-                            selectedEnemySprite = hitObject.transform;
-                            stringInfo = selectedEnemySprite.name;
-                            enemyParent = GetEnemyParent(selectedEnemySprite);
-                            offset = enemyParent.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-                            isDragging = true;
-
-                            // Salvar o novo objeto selecionado e alterar sua cor
-                            selectedEnemySpriteRenderer = hitObject.GetComponent<SpriteRenderer>();
-                            if (selectedEnemySpriteRenderer != null)
-                            {
-                                // Armazenar a cor original antes de alterá-la
-                                originalEnemyColor = GetOriginalColor(selectedEnemySpriteRenderer.transform);
-
-                                // Aplicar a cor selecionada em todos os objetos parentes
-                                ChangeParentColors(selectedEnemySpriteRenderer.transform, selectedColor);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Aqui também, ao invés de setar para null apenas o renderer do objeto, precisamos descolorir todos os objetos pai
-                        ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
-                        selectedEnemySprite = null;
-                    }
+                    SelectEnemy(hit.collider.gameObject.transform, inputPosition);
+                }
+                else
+                {
+                    DeselectEnemy();
                 }
             }
 
-
-            if (isGameObject)
+            // -- SELEÇÃO GAMEOBJECT --
+            if (isGameObject && inputStarted)
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(inputPosition), Vector2.zero);
+                if (hit.collider != null && (hit.collider.gameObject.CompareTag("GameObject") || hit.collider.gameObject.CompareTag("LevelDot")))
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
-                    if (hit.collider != null)
-                    {
-                        GameObject hitObject = hit.collider.gameObject;
-
-                        // Verifique se o objeto atingido é um sprite
-                        if (hitObject.CompareTag("GameObject") || hitObject.CompareTag("LevelDot"))
-                        {
-                            selectedGameObjectSprite = hitObject.transform;
-                            stringInfo = selectedGameObjectSprite.name;
-                            if(hitObject.CompareTag("LevelDot"))
-                            {
-                                GameObjectParent = hitObject.transform;
-                            }
-                            else
-                            {
-                                GameObjectParent = GetGameObjectParent(selectedGameObjectSprite);
-                            }
-                            offset = GameObjectParent.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-                            isDragging = true;
-                        }
-                    }
-                    else
-                    {
-                        selectedGameObjectSprite = null;
-                    }
+                    SelectGameObject(hit.collider.gameObject.transform, inputPosition);
+                }
+                else
+                {
+                    selectedGameObjectSprite = null;
+                    isDragging = false;
                 }
             }
 
-            if (isObject)
+            // -- SELEÇÃO OBJECT --
+            if (isObject && inputStarted)
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(inputPosition), Vector2.zero);
+                if (hit.collider != null && hit.collider.gameObject.CompareTag("ObjectObject"))
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
-                    if (hit.collider != null)
-                    {
-                        GameObject hitObject = hit.collider.gameObject;
-
-                        // Verifique se o objeto atingido é um sprite de objeto
-                        if (hitObject.CompareTag("ObjectObject"))
-                        {
-                            selectedObjectSprite = hitObject.transform;
-                            stringInfo = selectedObjectSprite.name;
-                            objectParent = GetObjectParent(selectedObjectSprite);
-                            offset = objectParent.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-                            isDragging = true;
-                        }
-                    }
-                    else
-                    {
-                        selectedObjectSprite = null;
-                    }
+                    SelectObject(hit.collider.gameObject.transform, inputPosition);
+                }
+                else
+                {
+                    selectedObjectSprite = null;
+                    isDragging = false;
                 }
             }
 
+            // -- SELEÇÃO DECOR --
             if (isDecor)
             {
-                if (OnMouseClick != null && Mouse.current.leftButton.wasPressedThisFrame)
+                if (OnMouseClick != null && inputStarted)
                 {
                     OnMouseClick();
-                    if (selectedDecorObject)
+                    if (selectedDecorObject != null)
                     {
                         DecorOffset = selectedDecorObject.transform.position - mousePosition;
                         stringInfo = selectedDecorObject.name;
                         UpdateUIWithSelectedObjectData();
                     }
                 }
-                else if (OnMouseClick != null && Mouse.current.leftButton.isPressed)
+                else if (OnMouseClick != null && inputHeld)
                 {
-                    if (selectedDecorObject)
+                    if (selectedDecorObject != null)
                     {
-                        Vector3 newPosition = mousePosition + DecorOffset;
-                        newPosition.z = selectedDecorObject.transform.position.z; // Mantém o valor do ZPos
-                        selectedDecorObject.transform.position = newPosition;
+                        Vector3 newPos = mousePosition + DecorOffset;
+                        newPos.z = selectedDecorObject.transform.position.z;
+                        selectedDecorObject.transform.position = newPos;
                         UpdateUIWithSelectedObjectData();
                     }
                 }
@@ -244,29 +191,31 @@ public class MoveAndSelectTool : MonoBehaviour
                 currentMoveableObject = null;
             }
 
+            // -- SELEÇÃO DECOR2 --
             if (isDecor2)
             {
-                if (OnMouseClick2 != null && Mouse.current.leftButton.wasPressedThisFrame)
+                if (OnMouseClick2 != null && inputStarted)
                 {
                     OnMouseClick2();
-                    if (selectedDecor2Object)
+                    if (selectedDecor2Object != null)
                     {
                         Decor2Offset = selectedDecor2Object.transform.position - mousePosition;
                         stringInfo = selectedDecor2Object.name;
                         UpdateUIWithSelectedObjectData2();
                     }
                 }
-                else if (OnMouseClick2 != null && Mouse.current.leftButton.isPressed)
+                else if (OnMouseClick2 != null && inputHeld)
                 {
-                    if (selectedDecor2Object)
+                    if (selectedDecor2Object != null)
                     {
-                        Vector3 newPosition = mousePosition + Decor2Offset;
-                        newPosition.z = selectedDecor2Object.transform.position.z; // Mantém o valor do ZPos
-                        selectedDecor2Object.transform.position = newPosition;
+                        Vector3 newPos = mousePosition + Decor2Offset;
+                        newPos.z = selectedDecor2Object.transform.position.z;
+                        selectedDecor2Object.transform.position = newPos;
                         UpdateUIWithSelectedObjectData2();
                     }
                 }
-                if(OnMouseClick2 != null && Mouse.current.rightButton.wasPressedThisFrame)
+
+                if (OnMouseClick2 != null && Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
                 {
                     selectedDecor2Object = null;
                 }
@@ -279,226 +228,247 @@ public class MoveAndSelectTool : MonoBehaviour
         }
         else
         {
-            selectedEnemySprite = null;
-            selectedObjectSprite = null;
-            selectedGameObjectSprite = null;
-            selectedDecorObject = null;
-            selectedDecor2Object = null;
+            ClearSelections();
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        if (inputEnded)
         {
             isDragging = false;
-            //selectedDecorObject = null;
-            //selectedDecor2Object = null;
-
-            // Desmarcar o objeto selecionado e voltar à cor original
             if (selectedEnemySpriteRenderer != null)
             {
-                selectedEnemySpriteRenderer.color = originalColor; // Volta à cor original
+                selectedEnemySpriteRenderer.color = originalColor;
                 selectedEnemySpriteRenderer = null;
             }
         }
 
-
-        // Verifica se a tecla "Delete" foi pressionada
+        // Deletar com Delete
         if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.Delete.WasPerformedThisFrame())
         {
-            // Verifica se há algum objeto selecionado e o apaga
-            if (isEnemy && selectedEnemySprite != null)
-            {
-                Destroy(selectedEnemySprite.gameObject); // Destrua o objeto selecionado diretamente
-                selectedEnemySprite = null;
-            }
-            else if (isGameObject && selectedGameObjectSprite != null)
-            {
-                Destroy(selectedGameObjectSprite.gameObject); // Destrua o objeto selecionado diretamente
-                selectedGameObjectSprite = null;
-            }
-            else if (isObject && selectedObjectSprite != null)
-            {
-                Destroy(selectedObjectSprite.gameObject); // Destrua o objeto selecionado diretamente
-                selectedObjectSprite = null;
-            }
-            else if (isDecor && selectedDecorObject != null)
-            {
-                Destroy(selectedDecorObject.gameObject); // Destrua o objeto selecionado diretamente
-                selectedDecorObject = null;
-            }
-            else if (isDecor2 && selectedDecor2Object != null)
-            {
-                Destroy(selectedDecor2Object.gameObject); // Destrua o objeto selecionado diretamente
-                selectedDecor2Object = null;
-            }
+            DeleteSelected();
         }
-
     }
 
+    private void LateUpdate()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
+        Vector3 inputPos = Vector3.zero;
+
+        if (Mouse.current != null)
+            inputPos = Mouse.current.position.ReadValue();
+        else if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+            inputPos = Touchscreen.current.touches[0].position.ReadValue();
+        else return;
+
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPos.x, inputPos.y, 0));
+
+        // Aplica o offset para movimento suave e correto
+
+        if (isEnemy && isDragging && enemyParent != null)
+        {
+            enemyParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, enemyParent.position.z);
+        }
+
+        if (isGameObject && isDragging && GameObjectParent != null)
+        {
+            GameObjectParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, GameObjectParent.position.z);
+        }
+
+        if (isObject && isDragging && objectParent != null)
+        {
+            objectParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, objectParent.position.z);
+        }
+
+        if (isDecor && selectedDecorObject != null && Mouse.current != null && Mouse.current.leftButton.isPressed)
+        {
+            Vector3 newPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + DecorOffset;
+            newPos.z = selectedDecorObject.transform.position.z;
+            selectedDecorObject.transform.position = newPos;
+
+            var mo = selectedDecorObject.GetComponent<MoveableObject>();
+            if (mo != null)
+            {
+                mo.ZPos = newPos.z;
+                mo.ShortLayer = selectedDecorObject.GetComponent<SpriteRenderer>().sortingOrder;
+                mo.floatScale = selectedDecorObject.transform.localScale.x;
+            }
+
+            UpdateUIWithSelectedObjectData();
+        }
+
+        if (isDecor2 && selectedDecor2Object != null && Mouse.current != null && Mouse.current.leftButton.isPressed)
+        {
+            Vector3 newPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + Decor2Offset;
+            newPos.z = selectedDecor2Object.transform.position.z;
+            selectedDecor2Object.transform.position = newPos;
+
+            var mo2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
+            if (mo2 != null)
+            {
+                mo2.ZPos = newPos.z;
+                mo2.ShortLayer = mo2.GetComponentInChildren<SpriteRenderer>().sortingOrder;
+                mo2.floatScale = mo2.transform.localScale.x;
+            }
+
+            UpdateUIWithSelectedObjectData2();
+        }
+    }
+
+    private void SelectEnemy(Transform enemyTransform, Vector2 inputPosition)
+    {
+        if (selectedEnemySpriteRenderer != null)
+            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
+
+        selectedEnemySprite = enemyTransform;
+        stringInfo = selectedEnemySprite.name;
+
+        enemyParent = GetEnemyParent(selectedEnemySprite);
+
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, enemyParent.position.z));
+        offset = enemyParent.position - worldPoint;
+
+        isDragging = true;
+
+        selectedEnemySpriteRenderer = enemyTransform.GetComponent<SpriteRenderer>();
+        if (selectedEnemySpriteRenderer != null)
+        {
+            originalEnemyColor = GetOriginalColor(selectedEnemySpriteRenderer.transform);
+            ChangeParentColors(selectedEnemySpriteRenderer.transform, selectedColor);
+        }
+    }
+
+    private void DeselectEnemy()
+    {
+        if (selectedEnemySpriteRenderer != null)
+            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
+
+        selectedEnemySprite = null;
+        isDragging = false;
+    }
+
+    private void SelectGameObject(Transform gameObjectTransform, Vector2 inputPosition)
+    {
+        selectedGameObjectSprite = gameObjectTransform;
+        stringInfo = selectedGameObjectSprite.name;
+
+        if (gameObjectTransform.CompareTag("LevelDot"))
+            GameObjectParent = gameObjectTransform;
+        else
+            GameObjectParent = GetGameObjectParent(selectedGameObjectSprite);
+
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, GameObjectParent.position.z));
+        offset = GameObjectParent.position - worldPoint;
+
+        isDragging = true;
+    }
+
+    private void SelectObject(Transform objectTransform, Vector2 inputPosition)
+    {
+        selectedObjectSprite = objectTransform;
+        stringInfo = selectedObjectSprite.name;
+
+        objectParent = GetObjectParent(selectedObjectSprite);
+
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, objectParent.position.z));
+        offset = objectParent.position - worldPoint;
+
+        isDragging = true;
+    }
+
+    private void DeleteSelected()
+    {
+        if (isEnemy && selectedEnemySprite != null)
+        {
+            Destroy(selectedEnemySprite.gameObject);
+            selectedEnemySprite = null;
+        }
+        else if (isGameObject && selectedGameObjectSprite != null)
+        {
+            Destroy(selectedGameObjectSprite.gameObject);
+            selectedGameObjectSprite = null;
+        }
+        else if (isObject && selectedObjectSprite != null)
+        {
+            Destroy(selectedObjectSprite.gameObject);
+            selectedObjectSprite = null;
+        }
+        else if (isDecor && selectedDecorObject != null)
+        {
+            Destroy(selectedDecorObject.gameObject);
+            selectedDecorObject = null;
+        }
+        else if (isDecor2 && selectedDecor2Object != null)
+        {
+            Destroy(selectedDecor2Object.gameObject);
+            selectedDecor2Object = null;
+        }
+    }
+
+    private void ClearSelections()
+    {
+        selectedEnemySprite = null;
+        selectedObjectSprite = null;
+        selectedGameObjectSprite = null;
+        selectedDecorObject = null;
+        selectedDecor2Object = null;
+        isDragging = false;
+
+        if (selectedEnemySpriteRenderer != null)
+        {
+            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
+            selectedEnemySpriteRenderer = null;
+        }
+    }
 
     private void ChangeParentColors(Transform objTransform, Color color)
     {
-        if (objTransform == null)
-        {
-            return;
-        }
+        if (objTransform == null) return;
 
-        SpriteRenderer objRenderer = objTransform.GetComponent<SpriteRenderer>();
-        if (objRenderer != null)
-        {
-            objRenderer.color = color;
-        }
+        SpriteRenderer sr = objTransform.GetComponent<SpriteRenderer>();
+        if (sr != null) sr.color = color;
 
-        // Recursivamente chama a função para os objetos pai até chegar ao objeto raiz
         ChangeParentColors(objTransform.parent, color);
     }
 
     private Color GetOriginalColor(Transform objTransform)
     {
-        SpriteRenderer objRenderer = objTransform.GetComponent<SpriteRenderer>();
-        if (objRenderer != null)
-        {
-            return objRenderer.color;
-        }
-        return Color.white; // Caso não encontre o componente SpriteRenderer, retorna a cor branca como padrão.
-    }
-
-    private void LateUpdate()
-    {
-        Vector3 mousePosition = Mouse.current.position.ReadValue();
-
-        // Verifica se o clique foi realizado em um elemento do UI
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return; // Sai da função se o clique foi no UI
-        }
-
-        if (isEnemy)
-        {
-            if (isDragging && enemyParent != null)
-            {
-                Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition) + offset;
-                enemyParent.position = new Vector3(newPosition.x, newPosition.y, enemyParent.position.z);
-            }
-        }
-
-
-        if (isGameObject)
-        {
-            if (isDragging && GameObjectParent != null)
-            {
-                Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition) + offset;
-                GameObjectParent.position = new Vector3(newPosition.x, newPosition.y, GameObjectParent.position.z);
-            }
-        }
-
-        if (isObject)
-        {
-            if (isDragging && objectParent != null)
-            {
-                Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition) + offset;
-                objectParent.position = new Vector3(newPosition.x, newPosition.y, objectParent.position.z);
-            }
-        }
-
-        if(isDecor)
-        {
-            if (selectedDecorObject != null && Mouse.current.leftButton.isPressed)
-            {
-                Vector3 newPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + DecorOffset;
-                newPosition.z = selectedDecorObject.transform.position.z; // Mantém o valor do ZPos
-                selectedDecorObject.transform.position = newPosition;
-
-                // Obtém o componente MoveableObject do objeto selecionado
-                MoveableObject moveableObject = selectedDecorObject.GetComponent<MoveableObject>();
-
-                // Verifica se o componente MoveableObject existe no objeto selecionado
-                if (moveableObject != null)
-                {
-                    // Atualiza as propriedades ZPos e ShortLayer do MoveableObject
-                    moveableObject.ZPos = newPosition.z;
-                    moveableObject.ShortLayer = selectedDecorObject.GetComponent<SpriteRenderer>().sortingOrder;
-                    moveableObject.floatScale = selectedDecorObject.transform.localScale.x;
-                }
-
-                UpdateUIWithSelectedObjectData();
-            }
-        }
-
-        if (isDecor2)
-        {
-            if (selectedDecor2Object != null && Mouse.current.leftButton.isPressed)
-            {
-                Vector3 newPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + Decor2Offset;
-                newPosition.z = selectedDecor2Object.transform.position.z; // Mantém o valor do ZPos
-                selectedDecor2Object.transform.position = newPosition;
-
-                // Obtém o componente MoveableObject do objeto selecionado
-                MoveableObjectDecor2 moveableObject2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
-
-                UpdateUIWithSelectedObjectData2();
-                // Verifica se o componente MoveableObject existe no objeto selecionado
-                if (moveableObject2 != null)
-                {
-                    moveableObject2.ZPos = newPosition.z;
-                    moveableObject2.ShortLayer = moveableObject2.GetComponentInChildren<SpriteRenderer>().sortingOrder;
-                    moveableObject2.floatScale = moveableObject2.transform.localScale.x;
-                }
-            }
-        }
+        SpriteRenderer sr = objTransform.GetComponent<SpriteRenderer>();
+        return sr != null ? sr.color : Color.white;
     }
 
     private Transform GetEnemyParent(Transform spriteTransform)
     {
         Transform parent = spriteTransform.parent;
-
         while (parent != null)
         {
-            if (parent.CompareTag("EnemyObject"))
-            {
-                return parent;
-            }
-
+            if (parent.CompareTag("EnemyObject")) return parent;
             parent = parent.parent;
         }
-
         return null;
     }
 
-    private Transform GetGameObjectParent(Transform GameObjectSpriteTransform)
+    private Transform GetGameObjectParent(Transform spriteTransform)
     {
-        Transform parent = GameObjectSpriteTransform;
-
+        Transform parent = spriteTransform;
         while (parent != null)
         {
-            if (parent.CompareTag("GameObject"))
-            {
-                return parent;
-            }
-
+            if (parent.CompareTag("GameObject")) return parent;
             parent = parent.parent;
         }
-
         return null;
     }
 
-    private Transform GetObjectParent(Transform spriteObjectTransform)
+    private Transform GetObjectParent(Transform spriteTransform)
     {
-        Transform parent = spriteObjectTransform;
-
-        // Verifica se o objeto atual ou algum de seus pais tem a tag "ObjectObject"
+        Transform parent = spriteTransform;
         while (parent != null)
         {
-            if (parent.CompareTag("ObjectObject"))
-            {
-                return parent;
-            }
-
+            if (parent.CompareTag("ObjectObject")) return parent;
             parent = parent.parent;
         }
-
         return null;
     }
+
 
 
 

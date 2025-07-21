@@ -47,7 +47,7 @@ public class DecorButton : MonoBehaviour
     }
     private void DeselectAllObjects()
     {
-        DecorButton[] decorButtons = FindObjectsOfType<DecorButton>();
+        DecorButton[] decorButtons = Object.FindObjectsByType<DecorButton>(FindObjectsSortMode.None);
         foreach (DecorButton decorButton in decorButtons)
         {
             // Desmarcar o botão se for diferente deste

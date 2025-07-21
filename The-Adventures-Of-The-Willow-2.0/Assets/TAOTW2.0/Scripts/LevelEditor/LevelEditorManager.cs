@@ -512,7 +512,168 @@ public class LevelEditorManager : MonoBehaviour
                 }
             }
         }
+        // Instanciar com touch (adicionado)
+        if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
+        {
+            var touch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0];
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+            {
+                if (isActiveSelectPoint || PlatformNodeEditor.instance.isNodeEditor
+                    || eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy)
+                {
+                    return;
+                }
 
+                // Verifica se o toque foi em UI
+                if (IsTouchOverUI(touch.screenPosition))
+                {
+                    return;
+                }
+
+                Vector2 touchPos = touch.screenPosition;
+
+                // Reproduz a mesma lógica que no mouse, mas com touchPos no lugar do Mouse.current.position
+                if (!string.IsNullOrEmpty(selectedEnemyName))
+                {
+                    if (TileButton.instance.selectedTile != null || !string.IsNullOrEmpty(selectedDecorName) ||
+                        !string.IsNullOrEmpty(selectedDecor2Name) || !string.IsNullOrEmpty(selectedObjectName)
+                        || !string.IsNullOrEmpty(selectedGameObjectName))
+                    {
+                        return;
+                    }
+
+                    GameObject enemyPrefab = FindEnemyPrefabByName(selectedEnemyName);
+                    selectedStringInfo = selectedEnemyName;
+
+                    if (enemyPrefab != null)
+                    {
+                        Debug.Log("Enemy selecionado");
+                        TouchAddObjectToScene(enemyPrefab, touchPos);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(selectedDecorName))
+                {
+                    if (TileButton.instance.selectedTile != null || !string.IsNullOrEmpty(selectedEnemyName) ||
+                        !string.IsNullOrEmpty(selectedDecor2Name) || !string.IsNullOrEmpty(selectedObjectName)
+                        || !string.IsNullOrEmpty(selectedGameObjectName))
+                    {
+                        return;
+                    }
+
+                    GameObject decorPrefab = FindDecorPrefabByName(selectedDecorName);
+                    selectedStringInfo = selectedDecorName;
+
+                    if (decorPrefab != null)
+                    {
+                        TouchAddObjectToScene(decorPrefab, touchPos);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(selectedDecor2Name))
+                {
+                    if (TileButton.instance.selectedTile != null || !string.IsNullOrEmpty(selectedEnemyName) ||
+                        !string.IsNullOrEmpty(selectedDecorName) || !string.IsNullOrEmpty(selectedObjectName)
+                        || !string.IsNullOrEmpty(selectedGameObjectName))
+                    {
+                        return;
+                    }
+
+                    GameObject decor2Prefab = FindDecor2PrefabByName(selectedDecor2Name);
+                    selectedStringInfo = selectedDecor2Name;
+
+                    if (decor2Prefab != null)
+                    {
+                        TouchAddObjectToScene(decor2Prefab, touchPos);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(selectedObjectName))
+                {
+                    if (TileButton.instance.selectedTile != null || !string.IsNullOrEmpty(selectedEnemyName) ||
+                        !string.IsNullOrEmpty(selectedDecor2Name) || !string.IsNullOrEmpty(selectedDecorName)
+                        || !string.IsNullOrEmpty(selectedGameObjectName))
+                    {
+                        return;
+                    }
+
+                    GameObject objectPrefab = FindObjectPrefabByName(selectedObjectName);
+                    selectedStringInfo = selectedObjectName;
+
+                    if (objectPrefab != null)
+                    {
+                        TouchAddObjectToScene(objectPrefab, touchPos);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(selectedGameObjectName))
+                {
+                    if (TileButton.instance.selectedTile != null || !string.IsNullOrEmpty(selectedEnemyName) ||
+                        !string.IsNullOrEmpty(selectedDecor2Name) || !string.IsNullOrEmpty(selectedDecorName)
+                        || !string.IsNullOrEmpty(selectedObjectName))
+                    {
+                        return;
+                    }
+
+                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(touchPos.x, touchPos.y, 0));
+                    worldPos.z = 0f;
+
+                    if (selectedGameObjectName == "PlayerPos")
+                    {
+                        GameObject existingPlayerPos = GameObject.Find("PlayerPos(Clone)");
+                        if (existingPlayerPos != null)
+                        {
+                            if (snapGrid)
+                            {
+                                // Snap grid logic igual do mouse
+                                if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
+                                {
+                                    worldPos.x = Mathf.Floor(worldPos.x / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                                    worldPos.y = Mathf.Floor(worldPos.y / SnapGridSize) * SnapGridSize + SnapGridSize / 1f;
+                                }
+                                else
+                                {
+                                    worldPos.x = Mathf.Floor(worldPos.x / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                                    worldPos.y = Mathf.Floor(worldPos.y / SnapGridSize) * SnapGridSize + SnapGridSize / 2f;
+                                }
+                            }
+                            existingPlayerPos.transform.position = worldPos;
+                        }
+                        else
+                        {
+                            GameObject gameObjectPrefab = FindGameObjectPrefabByName(selectedGameObjectName);
+
+                            selectedStringInfo = selectedGameObjectName;
+
+                            if (gameObjectPrefab != null && SectorManager.instance.currentSectorName == "Sector1")
+                            {
+                                if (snapGrid)
+                                {
+                                    float gridSize = 1.0f;
+                                    if (UserInput.instance.playerMoveAndExtraActions.UI.ShiftClick.IsPressed())
+                                    {
+                                        worldPos.x = Mathf.Floor(worldPos.x / gridSize) * gridSize + gridSize / 1f;
+                                        worldPos.y = Mathf.Floor(worldPos.y / gridSize) * gridSize + gridSize / 1f;
+                                    }
+                                    else
+                                    {
+                                        worldPos.x = Mathf.Floor(worldPos.x / gridSize) * gridSize + gridSize / 2f;
+                                        worldPos.y = Mathf.Floor(worldPos.y / gridSize) * gridSize + gridSize / 2f;
+                                    }
+                                }
+                                GameObject instantiatedObject = Instantiate(gameObjectPrefab, worldPos, Quaternion.identity);
+                                instantiatedObject.transform.SetParent(GameObjectsContainer.transform);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        GameObject gameObjectPrefab = FindGameObjectPrefabByName(selectedGameObjectName);
+                        selectedStringInfo = selectedGameObjectName;
+                        if (gameObjectPrefab != null)
+                        {
+                            TouchAddObjectToScene(gameObjectPrefab, touchPos);
+                        }
+                    }
+                }
+            }
+        }
         if (objectTemp != null)
         {
             UpdateDragTempObjectPos();
@@ -612,6 +773,17 @@ public class LevelEditorManager : MonoBehaviour
         }
         #endregion
     }
+    private bool IsTouchOverUI(Vector2 touchPosition)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current);
+        pointerData.position = touchPosition;
+
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+        return raycastResults.Count > 0;
+    }
+
     private void AddTilemapButtonListeners()
     {
         // Adiciona um listener para cada botão de Tilemap existente
@@ -1319,6 +1491,43 @@ public class LevelEditorManager : MonoBehaviour
         // Destroi o objeto temporário
         Destroy(objectTemp);
     }
+    private void TouchAddObjectToScene(GameObject prefab, Vector2 screenPosition)
+    {
+        Vector3 screenPos = new Vector3(screenPosition.x, screenPosition.y, Camera.main.nearClipPlane);
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        worldPos.z = 0f;
+
+        GameObject instantiatedObject = Instantiate(prefab, worldPos, Quaternion.identity);
+        Debug.Log("Instanciado: " + prefab.name);
+
+        if (instantiatedObject.CompareTag("MovingPlatform"))
+        {
+            string uniqueID = System.Guid.NewGuid().ToString();
+            instantiatedObject.name = selectedObjectName + "_" + uniqueID;
+        }
+
+        // Associa ao container certo
+        switch (currentSelectedObjectType)
+        {
+            case SelectedObjectType.Enemy:
+                instantiatedObject.transform.SetParent(enemyContainer.transform);
+                break;
+            case SelectedObjectType.Decor1:
+                instantiatedObject.transform.SetParent(decorContainer.transform);
+                break;
+            case SelectedObjectType.Decor2:
+                instantiatedObject.transform.SetParent(decor2Container.transform);
+                break;
+            case SelectedObjectType.Object:
+                instantiatedObject.transform.SetParent(objectsContainer.transform);
+                break;
+            case SelectedObjectType.GameObject:
+                instantiatedObject.transform.SetParent(GameObjectsContainer.transform);
+                break;
+        }
+    }
+
+
     private void AddObjectToScene(GameObject prefab)
     {
         if (objectTemp != null)

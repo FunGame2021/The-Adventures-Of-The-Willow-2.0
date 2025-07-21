@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.InputSystem;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class TileButton : MonoBehaviour
 {
@@ -37,7 +38,10 @@ public class TileButton : MonoBehaviour
     private bool isObjectSelected = false;
 
     [SerializeField] private GameObject TilesPanel;
-    [SerializeField] private GameObject WorldTilesPanel;
+    [SerializeField] private GameObject WorldTilesPanel; 
+    
+    [SerializeField] private EasyJoystick.Joysticknew joystickUI;
+
     private void Start()
     {
         if (instance == null)
@@ -228,6 +232,22 @@ public class TileButton : MonoBehaviour
         if (!eraserTool.isActiveEraserEnemy && !eraserTool.isActiveEraserTile && !TileSelectionTool.instance.isActive
             && !LevelEditorManager.instance.isActiveSelectPoint)
         {
+            if (Touch.activeTouches.Count > 0)
+            {
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    if (!isObjectSelected
+                        && !eraserTool.isActiveEraserEnemy
+                        && !eraserTool.isActiveEraserTile
+                        && !TileSelectionTool.instance.isActive
+                        && !LevelEditorManager.instance.isActiveSelectPoint
+                        && selectedTile != null)
+                    {
+                        HandleTouchPainting();
+                    }
+                }
+            }
+
             if (selectedTile != null && Mouse.current.leftButton.isPressed)
             {
                 if (LevelEditorManager.instance != null)
@@ -289,6 +309,93 @@ public class TileButton : MonoBehaviour
                     }*/
                 }
             }
+        }
+    }
+
+    private Vector2 lastTouchPos;
+
+    private const float touchMoveThreshold = 10f; // pixels
+
+    private bool hasClickedOnce = false; // para evitar pintar repetido no toque parado
+
+    private void HandleTouchPainting()
+    {
+        if (Touch.activeTouches.Count == 0)
+        {
+            hasClickedOnce = false;
+            return;
+        }
+        if (joystickUI != null && joystickUI.IsTouching)
+        {
+            return;
+        }
+
+        var touch = Touch.activeTouches[0];
+
+        Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(LevelEditorManager.instance.mainCamera.ScreenToWorldPoint(touch.screenPosition));
+
+        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+        {
+            hasClickedOnce = false;
+
+            if (LevelEditorManager.instance != null)
+                LevelEditorManager.instance.StopDragTempObject();
+
+            if (isFillEnabled)
+            {
+                TileBase startTile = LevelEditorManager.instance.selectedTilemap.GetTile(cellPos);
+                FillTiles(cellPos, startTile);
+            }
+            else
+            {
+                LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
+            }
+        }
+        else if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)
+        {
+            float distance = Vector2.Distance(touch.screenPosition, lastTouchPos);
+
+            if (distance > touchMoveThreshold)
+            {
+                if (LevelEditorManager.instance != null)
+                    LevelEditorManager.instance.StopDragTempObject();
+
+                if (isFillEnabled)
+                {
+                    TileBase startTile = LevelEditorManager.instance.selectedTilemap.GetTile(cellPos);
+                    FillTiles(cellPos, startTile);
+                }
+                else
+                {
+                    LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
+                }
+
+                lastTouchPos = touch.screenPosition;
+                hasClickedOnce = false; // pode pintar enquanto arrasta
+            }
+        }
+        else if (touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
+        {
+            if (!hasClickedOnce)
+            {
+                if (LevelEditorManager.instance != null)
+                    LevelEditorManager.instance.StopDragTempObject();
+
+                if (isFillEnabled)
+                {
+                    TileBase startTile = LevelEditorManager.instance.selectedTilemap.GetTile(cellPos);
+                    FillTiles(cellPos, startTile);
+                }
+                else
+                {
+                    LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, selectedTile);
+                }
+                hasClickedOnce = true; // para não pintar repetido parado
+            }
+        }
+        else if (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled)
+        {
+            hasClickedOnce = false;
         }
     }
 

@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "PlayerMoveAndExtraActions",
     "maps": [
         {
@@ -702,6 +703,24 @@
                     "type": "Button",
                     "id": "1cef28cb-6217-4248-8691-86c68b0a95c4",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ClickOrTouch",
+                    "type": "Button",
+                    "id": "a143e757-e6af-4800-906d-55f24ce795ad",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "f956ab26-bddf-4dd7-9c49-0fdf34c58921",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1431,6 +1450,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "T",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52bab149-da3f-41fc-bd28-89230e681200",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClickOrTouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "471c6369-7df2-4e47-ab75-de64d22d050b",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

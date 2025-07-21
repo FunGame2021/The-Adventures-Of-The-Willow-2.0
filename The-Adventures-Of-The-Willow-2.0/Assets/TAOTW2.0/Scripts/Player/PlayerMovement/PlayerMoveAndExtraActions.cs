@@ -792,6 +792,24 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ClickOrTouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""a143e757-e6af-4800-906d-55f24ce795ad"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""f956ab26-bddf-4dd7-9c49-0fdf34c58921"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1520,6 +1538,28 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
                     ""action"": ""T"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52bab149-da3f-41fc-bd28-89230e681200"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClickOrTouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""471c6369-7df2-4e47-ab75-de64d22d050b"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1585,6 +1625,8 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         m_UI_D = m_UI.FindAction("D", throwIfNotFound: true);
         m_UI_R = m_UI.FindAction("R", throwIfNotFound: true);
         m_UI_T = m_UI.FindAction("T", throwIfNotFound: true);
+        m_UI_ClickOrTouch = m_UI.FindAction("ClickOrTouch", throwIfNotFound: true);
+        m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
     }
 
     ~@PlayerMoveAndExtraActions()
@@ -1865,6 +1907,8 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
     private readonly InputAction m_UI_D;
     private readonly InputAction m_UI_R;
     private readonly InputAction m_UI_T;
+    private readonly InputAction m_UI_ClickOrTouch;
+    private readonly InputAction m_UI_Newaction;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -2025,6 +2069,14 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         /// </summary>
         public InputAction @T => m_Wrapper.m_UI_T;
         /// <summary>
+        /// Provides access to the underlying input action "UI/ClickOrTouch".
+        /// </summary>
+        public InputAction @ClickOrTouch => m_Wrapper.m_UI_ClickOrTouch;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Newaction".
+        /// </summary>
+        public InputAction @Newaction => m_Wrapper.m_UI_Newaction;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -2161,6 +2213,12 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @T.started += instance.OnT;
             @T.performed += instance.OnT;
             @T.canceled += instance.OnT;
+            @ClickOrTouch.started += instance.OnClickOrTouch;
+            @ClickOrTouch.performed += instance.OnClickOrTouch;
+            @ClickOrTouch.canceled += instance.OnClickOrTouch;
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
         }
 
         /// <summary>
@@ -2283,6 +2341,12 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
             @T.started -= instance.OnT;
             @T.performed -= instance.OnT;
             @T.canceled -= instance.OnT;
+            @ClickOrTouch.started -= instance.OnClickOrTouch;
+            @ClickOrTouch.performed -= instance.OnClickOrTouch;
+            @ClickOrTouch.canceled -= instance.OnClickOrTouch;
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
         }
 
         /// <summary>
@@ -2665,5 +2729,19 @@ public partial class @PlayerMoveAndExtraActions: IInputActionCollection2, IDispo
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnT(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ClickOrTouch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnClickOrTouch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }

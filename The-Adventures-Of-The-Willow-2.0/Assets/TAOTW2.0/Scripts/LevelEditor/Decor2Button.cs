@@ -49,7 +49,7 @@ public class Decor2Button : MonoBehaviour
     }
     private void DeselectAllObjects()
     {
-        Decor2Button[] decor2Buttons = FindObjectsOfType<Decor2Button>();
+        Decor2Button[] decor2Buttons = Object.FindObjectsByType<Decor2Button>(FindObjectsSortMode.None);
         foreach (Decor2Button decor2Button in decor2Buttons)
         {
             // Desmarcar o botão se for diferente deste

@@ -34,10 +34,11 @@ public class AnyKeyPressed : MonoBehaviour
 
     void Update()
     {
-        if ((Keyboard.current.anyKey.isPressed || UserInput.instance.playerMoveAndExtraActions.UI.ScrollWheel.WasPerformedThisFrame()
+        if ((UserInput.instance.playerMoveAndExtraActions.UI.ClickOrTouch.WasPerformedThisFrame() || Keyboard.current.anyKey.isPressed || UserInput.instance.playerMoveAndExtraActions.UI.ScrollWheel.WasPerformedThisFrame()
             || UserInput.instance.playerMoveAndExtraActions.UI.RightClick.WasPerformedThisFrame() || UserInput.instance.playerMoveAndExtraActions.UI.MiddleClick.WasPerformedThisFrame()
             || UserInput.instance.playerMoveAndExtraActions.UI.LeftClick.WasPerformedThisFrame()) && !gameStarted)
         {
+            Debug.Log("Has touched");
             textPressed.SetActive(false);
             Buttons.SetActive(true);
             Anim.SetBool("entered", false);

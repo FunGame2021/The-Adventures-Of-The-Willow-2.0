@@ -26,7 +26,7 @@ public class EnemyButton : MonoBehaviour
         uiImage.sprite = SpriteImageToUI;
     }
    
-    private void OnClick()
+    public void OnClick()
     {
         if (DecorButton.instance != null)
         {
@@ -52,7 +52,8 @@ public class EnemyButton : MonoBehaviour
     public void DeselectAllEnemies()
     {
         // Percorrer todos os botões de inimigo
-        EnemyButton[] enemyButtons = FindObjectsOfType<EnemyButton>();
+        EnemyButton[] enemyButtons = Object.FindObjectsByType<EnemyButton>(FindObjectsSortMode.None);
+
         foreach (EnemyButton enemyButton in enemyButtons)
         {
             // Desmarcar o botão se for diferente deste
