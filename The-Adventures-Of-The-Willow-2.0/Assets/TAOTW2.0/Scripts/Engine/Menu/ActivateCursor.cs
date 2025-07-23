@@ -6,6 +6,10 @@ public class ActivateCursor : MonoBehaviour
 {
     void Update()
     {
-        CursorManager.instance.cursorAppear();
+        if (Application.platform != RuntimePlatform.Android ||
+    Application.platform != RuntimePlatform.IPhonePlayer)
+        {
+            CursorManager.instance.cursorAppear();
+        }
     }
 }

@@ -46,5 +46,19 @@ public class OptionsMenuUI : MonoBehaviour
         volumeObj.SetActive(true);
         CursorManager.instance.cursorAppear();
     }
+    public void UnFreeze()
+    {
+        Time.timeScale = 1;
+    }
+    public void Freeze()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void ReloadScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.buildIndex);
+    }
 
 }

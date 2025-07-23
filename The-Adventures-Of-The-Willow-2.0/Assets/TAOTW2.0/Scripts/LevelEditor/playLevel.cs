@@ -237,7 +237,8 @@ public class playLevel : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
+            UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
             if (!StartedLevel && canStart && !isWorld)
             {
