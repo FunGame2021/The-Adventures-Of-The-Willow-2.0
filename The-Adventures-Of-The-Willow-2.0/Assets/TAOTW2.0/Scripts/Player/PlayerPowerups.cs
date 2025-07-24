@@ -17,7 +17,7 @@ public class PlayerPowerups : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() && canShoot)
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() || UserInput.instance.shootButtonPressed && canShoot)
         {
 
             GameObject go = (GameObject)Instantiate(projectile, (Vector2)transform.position + offset * transform.localScale.x, Quaternion.identity);

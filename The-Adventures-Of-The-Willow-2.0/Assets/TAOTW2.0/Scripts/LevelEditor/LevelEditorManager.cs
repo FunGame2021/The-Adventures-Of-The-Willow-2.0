@@ -228,6 +228,11 @@ public class LevelEditorManager : MonoBehaviour
         {
             instance = this;
         }
+
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            snapGridButton.gameObject.SetActive(false);
+        }
         CanPlayLevelTrue();
         shouldAutoSave = false;
 
@@ -283,6 +288,28 @@ public class LevelEditorManager : MonoBehaviour
 
     private void Update()
     {
+        if (isWorldMapEditor)
+        {
+            foreach (GameObject panel in PanelWorldEditor)
+            {
+                panel.SetActive(true);
+            }
+            foreach (GameObject panel in PanelLevelEditor)
+            {
+                panel.SetActive(false);
+            }
+        }
+        else
+        {
+            foreach (GameObject panel in PanelWorldEditor)
+            {
+                panel.SetActive(false);
+            }
+            foreach (GameObject panel in PanelLevelEditor)
+            {
+                panel.SetActive(true);
+            }
+        }
         // Verifica se o botão direito do mouse foi clicado
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
@@ -700,28 +727,6 @@ public class LevelEditorManager : MonoBehaviour
         // Atualizar valores temporários das opções do tilemap
         UpdateTempValues();
 
-        if (isWorldMapEditor)
-        {
-            foreach (GameObject panel in PanelWorldEditor)
-            {
-                panel.SetActive(true);
-            }
-            foreach (GameObject panel in PanelLevelEditor)
-            {
-                panel.SetActive(false);
-            }
-        }
-        else
-        {
-            foreach (GameObject panel in PanelWorldEditor)
-            {
-                panel.SetActive(false);
-            }
-            foreach (GameObject panel in PanelLevelEditor)
-            {
-                panel.SetActive(true);
-            }
-        }
 
         #region Shortcuts
         if(UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed())
@@ -1338,12 +1343,19 @@ public class LevelEditorManager : MonoBehaviour
     public void ActivateSnapGrid()
     {
         snapGrid = !snapGrid;
+
         gridVisualizer.OnSnapGridSizeUpdated();
-        // Defina a cor do botão com base no estado do snapGrid
+
+        // Desativado fica branco
         ColorBlock colors = snapGridButton.colors;
-        colors.normalColor = snapGrid ? Color.red : Color.white; // Altera para vermelho se snapGrid estiver ativado
+        colors.normalColor = Color.white;
+        colors.highlightedColor = Color.white;
+        colors.pressedColor = Color.white;
+        colors.selectedColor = Color.white;
         snapGridButton.colors = colors;
+        
     }
+
 
 
     public void SelectEnemy(string enemyName)

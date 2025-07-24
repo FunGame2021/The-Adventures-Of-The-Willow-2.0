@@ -39,13 +39,19 @@ public class GridVisualizer : MonoBehaviour
     {
         isGridEnabled = !isGridEnabled;
 
-
-        // Defina a cor do botão com base no estado do snapGrid
         ColorBlock colors = gridViewButton.colors;
-        colors.normalColor = isGridEnabled ? Color.red : Color.white; // Altera para vermelho se snapGrid estiver ativado
+        Color targetColor = isGridEnabled ? Color.red : Color.white;
+
+        colors.normalColor = targetColor;
+        colors.highlightedColor = targetColor;
+        colors.pressedColor = targetColor;
+        colors.selectedColor = targetColor;
+
         gridViewButton.colors = colors;
+
         OnGridSizeUpdated();
     }
+
 
     #endregion
 

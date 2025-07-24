@@ -17,7 +17,8 @@ public class Grabber : MonoBehaviour
 
         if (grabCheck.collider != null)
         {
-            bool isGrabPressed = UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.IsPressed();
+            bool isGrabPressed = UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.IsPressed() ||
+                UserInput.instance.grabButtonPressed;
 
             if (isGrabPressed && !isGrabbing && !PlayerHealth.instance.isDead)
             {
@@ -46,7 +47,7 @@ public class Grabber : MonoBehaviour
         Rigidbody2D rb = currentHeldObject.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.isKinematic = true;
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
         // Defina a variável isBeingGrabbed como verdadeira na caixa
@@ -67,7 +68,7 @@ public class Grabber : MonoBehaviour
             Rigidbody2D rb = currentHeldObject.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                rb.isKinematic = false;
+                rb.bodyType = RigidbodyType2D.Dynamic;
             }
 
             // Defina a variável isBeingGrabbed como verdadeira na caixa

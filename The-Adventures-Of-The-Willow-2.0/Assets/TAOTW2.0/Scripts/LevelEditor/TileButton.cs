@@ -229,7 +229,7 @@ public class TileButton : MonoBehaviour
             return;
         }
 
-        if (!eraserTool.isActiveEraserEnemy && !eraserTool.isActiveEraserTile && !TileSelectionTool.instance.isActive
+        if (!eraserTool.isActiveEraserEnemy && !eraserTool.isActiveEraserDecor1 && !eraserTool.isActiveEraserDecor2 && !eraserTool.isActiveEraserTile && !TileSelectionTool.instance.isActive
             && !LevelEditorManager.instance.isActiveSelectPoint)
         {
             if (Touch.activeTouches.Count > 0)
@@ -238,6 +238,8 @@ public class TileButton : MonoBehaviour
                 {
                     if (!isObjectSelected
                         && !eraserTool.isActiveEraserEnemy
+                        && !eraserTool.isActiveEraserDecor1
+                        && !eraserTool.isActiveEraserDecor2
                         && !eraserTool.isActiveEraserTile
                         && !TileSelectionTool.instance.isActive
                         && !LevelEditorManager.instance.isActiveSelectPoint

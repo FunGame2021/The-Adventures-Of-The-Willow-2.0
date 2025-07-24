@@ -36,7 +36,8 @@ public class MoveAndSelectTool : MonoBehaviour
 
     public Transform selectedEnemySprite;
     public Transform selectedObjectSprite;
-    public Transform enemyParent;
+    // Adicione esta variável para armazenar o parent do enemy
+    private Transform selectedEnemyParent;
     public Transform objectParent;
 
     // Offset usado no drag
@@ -114,6 +115,7 @@ public class MoveAndSelectTool : MonoBehaviour
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 ClearSelections();
+                RestoreAllOriginalColors();
                 return;
             }
 
@@ -141,8 +143,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 }
                 else
                 {
-                    selectedGameObjectSprite = null;
-                    isDragging = false;
+                    DeselectGameObject();
                 }
             }
 
@@ -156,8 +157,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 }
                 else
                 {
-                    selectedObjectSprite = null;
-                    isDragging = false;
+                    DeselectObject();
                 }
             }
 
@@ -229,6 +229,7 @@ public class MoveAndSelectTool : MonoBehaviour
         else
         {
             ClearSelections();
+            RestoreAllOriginalColors();
         }
 
         if (inputEnded)
@@ -247,38 +248,96 @@ public class MoveAndSelectTool : MonoBehaviour
             DeleteSelected();
         }
     }
+    private void DeselectGameObject()
+    {
+        RestoreAllOriginalColors();
+        selectedGameObjectSprite = null;
+        GameObjectParent = null;
+        isDragging = false;
+    }
 
+    private void DeselectObject()
+    {
+        RestoreAllOriginalColors();
+        selectedObjectSprite = null;
+        objectParent = null;
+        isDragging = false;
+    }
+    private Vector3 GetInputPosition()
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+            return Mouse.current.position.ReadValue();
+
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+            return Touchscreen.current.touches[0].position.ReadValue();
+
+        return Vector3.zero;
+    }
+    private Vector3 GetCurrentInputPosition()
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+            return Mouse.current.position.ReadValue();
+
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+            return Touchscreen.current.touches[0].position.ReadValue();
+
+        return Vector3.zero;
+    }
+    // Substitua o método LateUpdate pelo seguinte código:
     private void LateUpdate()
     {
+
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        Vector3 inputPos = Vector3.zero;
+        Vector3 inputPos = GetInputPosition();
+        if (inputPos == Vector3.zero) return;
 
-        if (Mouse.current != null)
-            inputPos = Mouse.current.position.ReadValue();
-        else if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
-            inputPos = Touchscreen.current.touches[0].position.ReadValue();
-        else return;
-
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPos.x, inputPos.y, 0));
-
-        // Aplica o offset para movimento suave e correto
-
-        if (isEnemy && isDragging && enemyParent != null)
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPos.x, inputPos.y, 10)); // Z=10 para melhor visualização
+                 
+        // Movimento para Enemy
+        if (isEnemy && isDragging && selectedEnemyParent != null)
         {
-            enemyParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, enemyParent.position.z);
+            Vector3 currentInputPos = GetCurrentInputPosition();
+            if (currentInputPos == Vector3.zero) return;
+
+            Vector3 enemyWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(currentInputPos.x, currentInputPos.y, 10));
+
+            // Move apenas o parent (toda hierarquia se move junto)
+            selectedEnemyParent.position = new Vector3(
+                enemyWorldPos.x + offset.x,
+                enemyWorldPos.y + offset.y,
+                selectedEnemyParent.position.z);
         }
 
-        if (isGameObject && isDragging && GameObjectParent != null)
+        // Movimento para GameObject
+        if (isGameObject && isDragging && selectedGameObjectSprite != null)
         {
-            GameObjectParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, GameObjectParent.position.z);
+            if (selectedGameObjectSprite.CompareTag("LevelDot"))
+            {
+                selectedGameObjectSprite.position = new Vector3(
+                    worldPos.x + offset.x,
+                    worldPos.y + offset.y,
+                    selectedGameObjectSprite.position.z);
+            }
+            else
+            {
+                GameObjectParent.position = new Vector3(
+                    worldPos.x + offset.x,
+                    worldPos.y + offset.y,
+                    GameObjectParent.position.z);
+            }
         }
 
-        if (isObject && isDragging && objectParent != null)
+        // Movimento para Object
+        if (isObject && isDragging && selectedObjectSprite != null)
         {
-            objectParent.position = new Vector3(worldPos.x + offset.x, worldPos.y + offset.y, objectParent.position.z);
+            objectParent.position = new Vector3(
+                worldPos.x + offset.x,
+                worldPos.y + offset.y,
+                objectParent.position.z);
         }
 
+        // Movimento para Decor (mantido original)
         if (isDecor && selectedDecorObject != null && Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
             Vector3 newPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + DecorOffset;
@@ -296,6 +355,7 @@ public class MoveAndSelectTool : MonoBehaviour
             UpdateUIWithSelectedObjectData();
         }
 
+        // Movimento para Decor2 (mantido original)
         if (isDecor2 && selectedDecor2Object != null && Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
             Vector3 newPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) + Decor2Offset;
@@ -313,37 +373,34 @@ public class MoveAndSelectTool : MonoBehaviour
             UpdateUIWithSelectedObjectData2();
         }
     }
-
+    // Modifique o método SelectEnemy
     private void SelectEnemy(Transform enemyTransform, Vector2 inputPosition)
     {
+        // Desseleciona o enemy atual primeiro
         if (selectedEnemySpriteRenderer != null)
-            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
+        {
+            ChangeParentColors(selectedEnemyParent, originalEnemyColor); // Restaura cor original em toda hierarquia
+        }
 
         selectedEnemySprite = enemyTransform;
-        stringInfo = selectedEnemySprite.name;
+        selectedEnemyParent = GetEnemyParent(enemyTransform); // Armazena o parent
+        stringInfo = selectedEnemyParent.name; // Mostra nome do parent
 
-        enemyParent = GetEnemyParent(selectedEnemySprite);
-
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, enemyParent.position.z));
-        offset = enemyParent.position - worldPoint;
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 10));
+        offset = selectedEnemyParent.position - worldPoint;
 
         isDragging = true;
 
-        selectedEnemySpriteRenderer = enemyTransform.GetComponent<SpriteRenderer>();
-        if (selectedEnemySpriteRenderer != null)
+        // Aplica cor de seleção em toda hierarquia
+        if (selectedEnemyParent != null)
         {
-            originalEnemyColor = GetOriginalColor(selectedEnemySpriteRenderer.transform);
-            ChangeParentColors(selectedEnemySpriteRenderer.transform, selectedColor);
+            selectedEnemySpriteRenderer = selectedEnemyParent.GetComponentInChildren<SpriteRenderer>();
+            if (selectedEnemySpriteRenderer != null)
+            {
+                originalEnemyColor = selectedEnemySpriteRenderer.color;
+                ChangeParentColors(selectedEnemyParent, selectedColor);
+            }
         }
-    }
-
-    private void DeselectEnemy()
-    {
-        if (selectedEnemySpriteRenderer != null)
-            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
-
-        selectedEnemySprite = null;
-        isDragging = false;
     }
 
     private void SelectGameObject(Transform gameObjectTransform, Vector2 inputPosition)
@@ -352,11 +409,15 @@ public class MoveAndSelectTool : MonoBehaviour
         stringInfo = selectedGameObjectSprite.name;
 
         if (gameObjectTransform.CompareTag("LevelDot"))
+        {
             GameObjectParent = gameObjectTransform;
+        }
         else
+        {
             GameObjectParent = GetGameObjectParent(selectedGameObjectSprite);
+        }
 
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, GameObjectParent.position.z));
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 10));
         offset = GameObjectParent.position - worldPoint;
 
         isDragging = true;
@@ -366,13 +427,25 @@ public class MoveAndSelectTool : MonoBehaviour
     {
         selectedObjectSprite = objectTransform;
         stringInfo = selectedObjectSprite.name;
-
         objectParent = GetObjectParent(selectedObjectSprite);
 
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, objectParent.position.z));
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 10));
         offset = objectParent.position - worldPoint;
 
         isDragging = true;
+    }
+    // Atualize os métodos de desseleção
+    private void DeselectEnemy()
+    {
+        if (selectedEnemyParent != null)
+        {
+            ChangeParentColors(selectedEnemyParent, originalEnemyColor);
+        }
+
+        selectedEnemySprite = null;
+        selectedEnemyParent = null;
+        selectedEnemySpriteRenderer = null;
+        isDragging = false;
     }
 
     private void DeleteSelected()
@@ -406,28 +479,56 @@ public class MoveAndSelectTool : MonoBehaviour
 
     private void ClearSelections()
     {
+
+        if (selectedEnemyParent != null)
+        {
+            ChangeParentColors(selectedEnemyParent, originalEnemyColor);
+        }
+
         selectedEnemySprite = null;
+        selectedEnemyParent = null;
+        selectedEnemySpriteRenderer = null;
+
+        // Desseleciona outros objetos
         selectedObjectSprite = null;
         selectedGameObjectSprite = null;
         selectedDecorObject = null;
         selectedDecor2Object = null;
-        isDragging = false;
 
-        if (selectedEnemySpriteRenderer != null)
+        isDragging = false;
+    }
+    private void RestoreAllOriginalColors()
+    {
+        if (selectedEnemyParent != null)
         {
-            ChangeParentColors(selectedEnemySpriteRenderer.transform, originalEnemyColor);
-            selectedEnemySpriteRenderer = null;
+            ChangeParentColors(selectedEnemyParent, originalEnemyColor);
+        }
+
+        if (selectedDecorObject != null)
+        {
+            var decorSR = selectedDecorObject.GetComponent<SpriteRenderer>();
+            if (decorSR != null) decorSR.color = originalColor;
+        }
+
+        if (selectedDecor2Object != null)
+        {
+            var decor2SR = selectedDecor2Object.GetComponentInChildren<SpriteRenderer>();
+            if (decor2SR != null) decor2SR.color = originalColor;
         }
     }
 
-    private void ChangeParentColors(Transform objTransform, Color color)
+
+    // Atualize o método ChangeParentColors para aplicar cor recursivamente
+    private void ChangeParentColors(Transform parentTransform, Color color)
     {
-        if (objTransform == null) return;
+        if (parentTransform == null) return;
 
-        SpriteRenderer sr = objTransform.GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = color;
-
-        ChangeParentColors(objTransform.parent, color);
+        // Aplica cor a todos os SpriteRenderers na hierarquia
+        SpriteRenderer[] renderers = parentTransform.GetComponentsInChildren<SpriteRenderer>();
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            renderer.color = color;
+        }
     }
 
     private Color GetOriginalColor(Transform objTransform)
@@ -661,6 +762,10 @@ public class MoveAndSelectTool : MonoBehaviour
 
     public void OnDropdownValueChanged(int value)
     {
+        // Restaura cores e limpa seleção atual antes de trocar de categoria
+        ClearSelections();
+        RestoreAllOriginalColors();
+
         // Limpar todos os objetos selecionados
         selectedEnemySprite = null;
         selectedObjectSprite = null;

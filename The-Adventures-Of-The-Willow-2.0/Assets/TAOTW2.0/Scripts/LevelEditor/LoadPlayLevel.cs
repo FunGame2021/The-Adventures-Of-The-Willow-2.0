@@ -113,6 +113,9 @@ public class LoadPlayLevel : MonoBehaviour
     [SerializeField] private GameObject DeathZonePrefab;
     public bool isPlayingLevel;
 
+    #region Mobile
+    [SerializeField] private GameObject UITouchButtons;
+    #endregion
 
     #region Sectors
     [SerializeField] private Transform Sector1;
@@ -152,6 +155,10 @@ public class LoadPlayLevel : MonoBehaviour
         StartedLevel = false;
         LevelInfoPanel.SetActive(true);
 
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            UITouchButtons.gameObject.SetActive(true);
+        }
     }
 
     private TileBase GetTileByName(string tileName)

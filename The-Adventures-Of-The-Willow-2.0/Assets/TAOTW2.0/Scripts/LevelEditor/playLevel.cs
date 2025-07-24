@@ -135,6 +135,10 @@ public class playLevel : MonoBehaviour
     [SerializeField] private ParticleTypes scriptableParticleTypesData;
     #endregion
 
+    #region Mobile
+    [SerializeField] private GameObject UITouchButtons;
+    #endregion
+
     #endregion
 
     #region Load World
@@ -149,6 +153,7 @@ public class playLevel : MonoBehaviour
 
     private bool isWorld;
     [SerializeField] private Color worldSolidTilemapColor;
+
     private void Awake()
     {
         if (instance == null)
@@ -206,6 +211,10 @@ public class playLevel : MonoBehaviour
                 LoadWorld(worldNames);
                 StartedWorld = false;
             }
+        }
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            UITouchButtons.gameObject.SetActive(true);
         }
     }
 

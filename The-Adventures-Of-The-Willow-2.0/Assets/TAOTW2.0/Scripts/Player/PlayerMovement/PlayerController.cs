@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using FMOD.Studio;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
+    #region Touch Mobile
 
+
+    #endregion
     #region Walk
     [Header ("Walk")]
     [HideInInspector] public float moveInput;
@@ -141,10 +145,11 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region movingPlatforms
+    private Transform originalParent;
+    private Transform currentPlatform;
     [SerializeField] private LayerMask whatIsMovingPlatform;
     private bool isOnPlatform;
     private Rigidbody2D platform;
-    [SerializeField] private Transform _originalParent; 
     public Transform PlayerTrans;
     public float zRotation = 0f;
     #endregion
@@ -174,7 +179,7 @@ public class PlayerController : MonoBehaviour
         { 
             instance = this;
         }
-        _originalParent = transform.parent;
+        originalParent = transform.parent;
         // Inicialize a c�mera ou realize outras a��es, se necess�rio.
         if (CameraZoom.instance != null)
         {
@@ -248,7 +253,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if(IsCollidingWithNormalWall())
+        Vector2 moveVector = Vector2.zero; 
+        
+        moveVector = UserInput.instance.GetMoveInput();
+        
+        moveInput = moveVector.x;
+        moveInputUp = moveVector.y;
+
+
+
+
+        if (IsCollidingWithNormalWall())
         {
             AddPlayerFriction2();
         }
@@ -317,9 +332,24 @@ public class PlayerController : MonoBehaviour
                 collider.enabled = true;
             }
         }
+        // Detecção específica para plataformas móveis
+        Collider2D platformCollider = Physics2D.OverlapCapsule(groundCheck.position,
+            sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule,
+            whatIsMovingPlatform);
 
-        isGrounded = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsGround);
-        isOnPlatform = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsMovingPlatform);
+        isOnPlatform = platformCollider != null;
+        if (isOnPlatform)
+        {
+            RB.bodyType = RigidbodyType2D.Kinematic;
+        }
+        else
+        {
+            RB.bodyType = RigidbodyType2D.Dynamic;
+        }
+            // Substitua sua detecção atual por:
+            isGrounded = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule,
+                CapsuleDirection2D.Horizontal, angleCapsule,
+                whatIsGround | whatIsMovingPlatform);
         isTouchingWater = Physics2D.OverlapCircle(waterCheck.position, 0.2f, whatIsWater);
         Collider2D colliders = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule, whatIsMovingPlatform);
         if (colliders != null)
@@ -334,8 +364,6 @@ public class PlayerController : MonoBehaviour
         {
             ResetPlayerParent();
         }
-        moveInput = UserInput.instance.moveInput.x;
-        moveInputUp = UserInput.instance.moveInput.y;
         // Verifica se o jogador est� colidindo com uma parede
         IsCollidingWithWall();
         if (!isWallJumping && !stopPlayer)
@@ -359,9 +387,11 @@ public class PlayerController : MonoBehaviour
             coyoteTimeCounter -= Time.deltaTime;
         }
         //Button was just pushed
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
+            UserInput.instance.jumpButtonPressed)
         {
-            if(!Swimming && isGrounded)
+            RB.bodyType = RigidbodyType2D.Dynamic;
+            if (!Swimming && isGrounded)
             {
                 AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
             }
@@ -379,7 +409,8 @@ public class PlayerController : MonoBehaviour
                 isClimbing = false;
             }
         }
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasReleasedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasReleasedThisFrame()
+            || UserInput.instance.jumpButtonReleased)
         {
             if (!Swimming)
             {
@@ -393,13 +424,15 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed())
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed()
+            || UserInput.instance.shootButtonPressed)
         {
             jumpBoost = true;
             speedBoost = true;
             targetMoveSpeed = boostSpeed;
         }
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame())
+        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame()
+            || UserInput.instance.shootButtonReleased)
         {
             jumpBoost = false;
             speedBoost = false;
@@ -419,7 +452,8 @@ public class PlayerController : MonoBehaviour
         {
             
 
-            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.IsPressed())
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.IsPressed()
+            || UserInput.instance.jumpButtonPressed)
             {
                 if (isTouchingWater)
                 {
@@ -547,6 +581,7 @@ public class PlayerController : MonoBehaviour
         if (moveInput != 0)
         {
             RemovePlayerFriction();
+            RB.bodyType = RigidbodyType2D.Dynamic;
         }
         else
         {
@@ -723,7 +758,7 @@ public class PlayerController : MonoBehaviour
     }
     public void ResetPlayerParent()
     {
-        transform.parent = _originalParent;
+        transform.parent = originalParent;
     }
     #endregion
 
@@ -811,12 +846,14 @@ public class PlayerController : MonoBehaviour
             {
                 wallJumpingCounter -= Time.deltaTime;
             }
-            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() && wallJumpingCounter > 0f && !Swimming)
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame()
+            || UserInput.instance.jumpButtonPressed && wallJumpingCounter > 0f && !Swimming)
             {
                 isWallJumping = true;
                 wallJumpingCounter = 0f;
 
-                if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() && wallJumpingCounter > 0f && !Swimming)
+                if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame()
+            || UserInput.instance.shootButtonPressed && wallJumpingCounter > 0f && !Swimming)
                 {
                     RB.linearVelocity = new Vector2(wallJumpingDirection * wallJumpingBoostPower.x, wallJumpingBoostPower.y);
                 }
@@ -1015,6 +1052,14 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
     #region Colliders
     private void OnCollisionEnter2D(Collision2D collision)
     {
+
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            isOnPlatform = true;
+            currentPlatform = collision.transform;
+            SetPlayerParent(currentPlatform);
+            RB.bodyType = RigidbodyType2D.Kinematic;
+        }
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -1025,6 +1070,15 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
         if (collision.gameObject.tag == "IcePlatform")
         {
             isOnIcePlatform = true;
+        }
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            // Força o parenting se estiver se movendo verticalmente
+            if (Mathf.Abs(collision.rigidbody.linearVelocity.y) > 5f &&
+                transform.parent != collision.transform)
+            {
+                transform.SetParent(collision.transform);
+            }
         }
 
     }
@@ -1037,6 +1091,12 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
         if (collision.gameObject.tag == "IcePlatform")
         {
             isOnIcePlatform = false;
+        }
+        if (collision.transform == currentPlatform)
+        {
+            isOnPlatform = false;
+            transform.SetParent(originalParent);
+            currentPlatform = null;
         }
     }
     #endregion

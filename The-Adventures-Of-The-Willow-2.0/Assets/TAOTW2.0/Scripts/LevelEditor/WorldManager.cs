@@ -452,9 +452,9 @@ public class WorldManager : MonoBehaviour
             // Verifica se o arquivo do mundo atual existe
             if (File.Exists(worldFilePath))
             {
+                LevelEditorManager.instance.isWorldMapEditor = true;
                 // Define a variável currentWorldEdit com o caminho completo para o arquivo do mundo atual
                 LevelEditorManager.instance.LoadWorld(currentWorldName);
-                LevelEditorManager.instance.isWorldMapEditor = true;
                 // Exibe no console o caminho completo para o arquivo do mundo atual
                 UnityEngine.Debug.Log("Editing the world: " + currentWorldName);
             }
