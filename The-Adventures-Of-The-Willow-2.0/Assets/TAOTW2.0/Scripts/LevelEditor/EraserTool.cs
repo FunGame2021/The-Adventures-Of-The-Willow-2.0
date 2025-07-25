@@ -31,7 +31,18 @@ public class EraserTool : MonoBehaviour
         eraserDecor1Button.onClick.AddListener(ToggleDecor1Eraser);
         eraserDecor2Button.onClick.AddListener(ToggleDecor2Eraser);
 
-        EnhancedTouchSupport.Enable();
+        if (!EnhancedTouchSupport.enabled)
+        {
+            try
+            {
+                EnhancedTouchSupport.Enable();
+                Debug.Log("EnhancedTouch enabled successfully.");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Failed to enable EnhancedTouch: " + e.Message);
+            }
+        }
     }
 
     private void Update()
@@ -40,16 +51,16 @@ public class EraserTool : MonoBehaviour
             return;
 
         // --- Mouse ---
-        if (isActiveEraserTile && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserTile && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
             EraseTileAtMouse();
 
-        if (isActiveEraserEnemy && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserEnemy && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
             EraseEnemyAtMouse();
 
-        if (isActiveEraserDecor1 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserDecor1 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
             EraseDecor1AtMouse();
 
-        if (isActiveEraserDecor2 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserDecor2 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
             EraseDecor2AtMouse();
 
         // --- Touch ---
@@ -57,7 +68,9 @@ public class EraserTool : MonoBehaviour
         {
             var touch = Touch.activeTouches[0];
 
-            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began ||
+                touch.phase == UnityEngine.InputSystem.TouchPhase.Moved ||
+                touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
             {
                 if (isActiveEraserTile)
                     EraseTileAtPosition(touch.screenPosition);
@@ -86,61 +99,92 @@ public class EraserTool : MonoBehaviour
 
     private void EraseTileAtMouse()
     {
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(mouseWorldPos);
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = ScreenToWorldWithZ(mouseScreenPos);
+        Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(worldPos);
         LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, null);
     }
 
     private void EraseEnemyAtMouse()
     {
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = ScreenToWorldWithZ(mouseScreenPos);
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         if (hit.collider != null)
+        {
+            Debug.Log("EraseEnemyAtMouse hit: " + hit.collider.gameObject.name);
             TryEraseEnemy(hit.collider.gameObject);
+        }
     }
 
     private void EraseDecor1AtMouse()
     {
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = ScreenToWorldWithZ(mouseScreenPos);
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         if (hit.collider != null)
+        {
+            Debug.Log("EraseDecor1AtMouse hit: " + hit.collider.gameObject.name);
             TryEraseDecor1(hit.collider.gameObject);
+        }
     }
 
     private void EraseDecor2AtMouse()
     {
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = ScreenToWorldWithZ(mouseScreenPos);
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         if (hit.collider != null)
+        {
+            Debug.Log("EraseDecor2AtMouse hit: " + hit.collider.gameObject.name);
             TryEraseDecor2(hit.collider.gameObject);
+        }
     }
 
     private void EraseTileAtPosition(Vector2 screenPosition)
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 worldPos = ScreenToWorldWithZ(screenPosition);
         Vector3Int cellPos = LevelEditorManager.instance.selectedTilemap.WorldToCell(worldPos);
         LevelEditorManager.instance.selectedTilemap.SetTile(cellPos, null);
     }
 
     private void EraseEnemyAtPosition(Vector2 screenPosition)
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 worldPos = ScreenToWorldWithZ(screenPosition);
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         if (hit.collider != null)
+        {
+            Debug.Log("EraseEnemyAtPosition hit: " + hit.collider.gameObject.name);
             TryEraseEnemy(hit.collider.gameObject);
+        }
+        else
+        {
+            Debug.Log("EraseEnemyAtPosition no hit at pos: " + worldPos);
+        }
     }
 
     private void EraseDecorAtPosition(Vector2 screenPosition, bool decor1)
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 worldPos = ScreenToWorldWithZ(screenPosition);
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         if (hit.collider != null)
         {
+            Debug.Log($"EraseDecorAtPosition hit: {hit.collider.gameObject.name} (decor1={decor1})");
             if (decor1)
                 TryEraseDecor1(hit.collider.gameObject);
             else
                 TryEraseDecor2(hit.collider.gameObject);
         }
+        else
+        {
+            Debug.Log($"EraseDecorAtPosition no hit at pos: {worldPos} (decor1={decor1})");
+        }
+    }
+
+    private Vector3 ScreenToWorldWithZ(Vector2 screenPosition)
+    {
+        Vector3 pos = new Vector3(screenPosition.x, screenPosition.y, Mathf.Abs(Camera.main.transform.position.z));
+        return Camera.main.ScreenToWorldPoint(pos);
     }
 
     private void TryEraseEnemy(GameObject hitObject)
@@ -173,7 +217,6 @@ public class EraserTool : MonoBehaviour
                 Destroy(hitObject); // segurança: apaga direto se pai não for achado
         }
     }
-
 
     private void TryEraseDecor1(GameObject hitObject)
     {
@@ -219,8 +262,6 @@ public class EraserTool : MonoBehaviour
         UpdateButtonColor(eraserDecor2Button, isActiveEraserDecor2);
     }
 
-
-
     public void SelectEnemyObject(GameObject enemyObject)
     {
         selectedEnemyObject = enemyObject;
@@ -265,7 +306,4 @@ public class EraserTool : MonoBehaviour
         colors.selectedColor = color;
         button.colors = colors;
     }
-
-
-
 }

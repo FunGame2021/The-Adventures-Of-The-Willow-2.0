@@ -55,144 +55,149 @@ public class PlatformNodeEditor : MonoBehaviour
 
     private void Update()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
         if (Mouse.current != null)
         {
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
+
             Vector2 mousePos = Mouse.current.position.ReadValue();
             if (mousePos != null)
             {
                 mousePosition = LevelEditorManager.instance.mainCamera.ScreenToWorldPoint(mousePos);
             }
-        }
-        if (isNodeEditor)
-        {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+
+            if (isNodeEditor)
             {
-                if (hit.collider != null)
+                if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    if (hit.collider.CompareTag("MovingPlatform"))
+                    if (hit.collider != null)
                     {
-                        // Restaure a cor da plataforma anterior
-                        if (previouslySelectedPlatform != null)
+                        if (hit.collider.CompareTag("MovingPlatform"))
                         {
-                            previouslySelectedPlatform.GetComponent<Renderer>().material.color = originalColor;
-                        }
-
-                        selectedPlatform = hit.collider.gameObject;
-                        platformController = selectedPlatform.GetComponent<PlatformController>();
-                        originalColor = selectedPlatform.GetComponent<Renderer>().material.color;
-                        selectedPlatform.GetComponent<Renderer>().material.color = selectedColor;
-
-                        EnsureWaypointsContainerExists();
-                        // Limpe a lista waypointsObjects
-                        waypointsObjects.Clear();
-
-                        if (platformController.waypoints != null && platformController.waypoints.Count > 0)
-                        {
-                            // Instancie objetos com base nos waypoints da plataforma
-                            foreach (Vector3 waypointPosition in platformController.waypoints)
+                            // Restaure a cor da plataforma anterior
+                            if (previouslySelectedPlatform != null)
                             {
-                                GameObject newWaypointObject = Instantiate(waypointPrefab, waypointPosition, Quaternion.identity, pointsLineRendererContainer);
-
-                                WaypointData waypointData = new WaypointData();
-                                waypointData.waypointObject = newWaypointObject;
-                                waypointData.position = newWaypointObject.transform.position;
-
-                                waypointsObjects.Add(waypointData);
+                                previouslySelectedPlatform.GetComponent<Renderer>().material.color = originalColor;
                             }
 
-                            // Atualize a lista waypointseditor
-                            UpdateWaypointsEditor();
+                            selectedPlatform = hit.collider.gameObject;
+                            platformController = selectedPlatform.GetComponent<PlatformController>();
+                            originalColor = selectedPlatform.GetComponent<Renderer>().material.color;
+                            selectedPlatform.GetComponent<Renderer>().material.color = selectedColor;
 
+                            EnsureWaypointsContainerExists();
+                            // Limpe a lista waypointsObjects
+                            waypointsObjects.Clear();
+
+                            if (platformController.waypoints != null && platformController.waypoints.Count > 0)
+                            {
+                                // Instancie objetos com base nos waypoints da plataforma
+                                foreach (Vector3 waypointPosition in platformController.waypoints)
+                                {
+                                    GameObject newWaypointObject = Instantiate(waypointPrefab, waypointPosition, Quaternion.identity, pointsLineRendererContainer);
+
+                                    WaypointData waypointData = new WaypointData();
+                                    waypointData.waypointObject = newWaypointObject;
+                                    waypointData.position = newWaypointObject.transform.position;
+
+                                    waypointsObjects.Add(waypointData);
+                                }
+
+                                // Atualize a lista waypointseditor
+                                UpdateWaypointsEditor();
+
+                            }
+                            // Defina a plataforma atualmente selecionada como a plataforma anteriormente selecionada
+                            previouslySelectedPlatform = selectedPlatform;
                         }
-                        // Defina a plataforma atualmente selecionada como a plataforma anteriormente selecionada
-                        previouslySelectedPlatform = selectedPlatform;
                     }
+
                 }
-
-            }
-            if (Mouse.current.leftButton.wasPressedThisFrame && Keyboard.current.shiftKey.isPressed && pointsLineRendererContainer != null)
-            {
-                AddWaypoint(mousePosition);
-            }
-
-            if (Mouse.current.leftButton.wasPressedThisFrame && Keyboard.current.ctrlKey.isPressed)
-            {
-                if (hit.collider != null && hit.collider.CompareTag("WayPoint"))
+                if (Mouse.current.leftButton.wasPressedThisFrame && Keyboard.current.shiftKey.isPressed && pointsLineRendererContainer != null)
                 {
-                    waypoint = hit.collider.gameObject;
-
-                    // Verifique se o waypoint pertence ao container correto
-                    if (waypoint.transform.parent == pointsLineRendererContainer)
-                    {
-                        // Exclua o ponto do caminho
-                        RemoveWaypoint(waypoint);
-                        UpdateWaypointsEditor();
-                    }
+                    AddWaypoint(mousePosition);
                 }
-            }
-            if (Mouse.current.leftButton.isPressed)
-            {
-                if (hit.collider != null && hit.collider.CompareTag("WayPoint"))
+
+                if (Mouse.current.leftButton.wasPressedThisFrame && Keyboard.current.ctrlKey.isPressed)
                 {
-                    // Mover ponto do caminho
-
-                    waypoint = hit.collider.gameObject;
-
-                    // Verifique se o waypoint pertence ao container correto
-                    if (waypoint.transform.parent == pointsLineRendererContainer)
+                    if (hit.collider != null && hit.collider.CompareTag("WayPoint"))
                     {
-                        // Mova o ponto do caminho
-                        offset = waypoint.transform.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                        waypoint = hit.collider.gameObject;
 
-                        isDragging = true;
-
-                        // Atualize a posição do waypoint na lista waypointsObjects enquanto ele é movido
-                        UpdateWaypointPosition(waypoint);
+                        // Verifique se o waypoint pertence ao container correto
+                        if (waypoint.transform.parent == pointsLineRendererContainer)
+                        {
+                            // Exclua o ponto do caminho
+                            RemoveWaypoint(waypoint);
+                            UpdateWaypointsEditor();
+                        }
                     }
                 }
+                if (Mouse.current.leftButton.isPressed)
+                {
+                    if (hit.collider != null && hit.collider.CompareTag("WayPoint"))
+                    {
+                        // Mover ponto do caminho
+
+                        waypoint = hit.collider.gameObject;
+
+                        // Verifique se o waypoint pertence ao container correto
+                        if (waypoint.transform.parent == pointsLineRendererContainer)
+                        {
+                            // Mova o ponto do caminho
+                            offset = waypoint.transform.position - Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+                            isDragging = true;
+
+                            // Atualize a posição do waypoint na lista waypointsObjects enquanto ele é movido
+                            UpdateWaypointPosition(waypoint);
+                        }
+                    }
+                }
+                if (Mouse.current.leftButton.wasReleasedThisFrame)
+                {
+                    isDragging = false;
+                }
             }
-            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            else
             {
-                isDragging = false;
+                // Desselecione a plataforma se edit for falso
+                DeselectPlatform();
             }
-        }
-        else
-        {
-            // Desselecione a plataforma se edit for falso
-            DeselectPlatform();
-        }
-        if (Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            // Desselecione a plataforma se outra coisa for clicada
-            DeselectPlatform();
-        }
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            // Verifica se o clique foi realizado em um elemento do UI
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (Mouse.current.rightButton.wasPressedThisFrame)
             {
-                isNodeEditor = false;
-                UpdateButtonSprite();
-                return; // Sai da função se o clique foi no UI
+                // Desselecione a plataforma se outra coisa for clicada
+                DeselectPlatform();
+            }
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                // Verifica se o clique foi realizado em um elemento do UI
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    isNodeEditor = false;
+                    UpdateButtonSprite();
+                    return; // Sai da função se o clique foi no UI
+                }
             }
         }
     }
     private void LateUpdate()
     {
-        Vector3 mousePosition2 = Mouse.current.position.ReadValue();
+        if (Keyboard.current != null)
+        {
+            Vector3 mousePosition2 = Mouse.current.position.ReadValue();
 
-        // Verifica se o clique foi realizado em um elemento do UI
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return; // Sai da função se o clique foi no UI
-        }
-        if (isDragging && waypoint != null)
-        {
-            Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition2) + offset;
-            waypoint.transform.position = new Vector3(newPosition.x, newPosition.y, waypoint.transform.position.z);
-            UpdateWaypointPosition(waypoint);
-            UpdateWaypointsEditor();
+            // Verifica se o clique foi realizado em um elemento do UI
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return; // Sai da função se o clique foi no UI
+            }
+            if (isDragging && waypoint != null)
+            {
+                Vector3 newPosition = Camera.main.ScreenToWorldPoint(mousePosition2) + offset;
+                waypoint.transform.position = new Vector3(newPosition.x, newPosition.y, waypoint.transform.position.z);
+                UpdateWaypointPosition(waypoint);
+                UpdateWaypointsEditor();
+            }
         }
 
     }

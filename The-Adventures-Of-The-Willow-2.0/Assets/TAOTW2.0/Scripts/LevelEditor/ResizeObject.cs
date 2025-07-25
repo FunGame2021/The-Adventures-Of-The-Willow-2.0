@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 
 public class ResizeObject : MonoBehaviour
 {
     private Vector2 initialScale;
-    private Vector2 initialMousePosition;
+    private Vector2 initialPointerPosition;
     private bool isResizing = false;
     private GameObject hitObject;
 
@@ -27,83 +26,141 @@ public class ResizeObject : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        HandleMouseInput();
+        HandleTouchInput();
+    }
+
+    private void HandleMouseInput()
+    {
+        if (Touchscreen.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
-            if (hit.collider != null)
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+            if (hit.collider != null && IsArrow(hit.collider.gameObject))
             {
                 hitObject = hit.collider.gameObject;
-
-                if (hitObject == topArrow || hitObject == bottomArrow || hitObject == leftArrow || hitObject == rightArrow ||
-                    hitObject == topLeftArrow || hitObject == topRightArrow || hitObject == bottomLeftArrow || hitObject == bottomRightArrow)
-                {
-                    initialScale = squareToResize.transform.localScale;
-                    initialMousePosition = Mouse.current.position.ReadValue();
-                    isResizing = true;
-                }
+                initialScale = squareToResize.transform.localScale;
+                initialPointerPosition = Mouse.current.position.ReadValue();
+                isResizing = true;
             }
         }
 
-        if (isResizing && Mouse.current.leftButton.isPressed)
+        if (isResizing && Touchscreen.current != null && Mouse.current.leftButton.isPressed)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector2 mouseDelta = (mousePosition - initialMousePosition) * 0.01f;
-
-            if (hitObject == topArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y + mouseDelta.y);
-            }
-            else if (hitObject == bottomArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y - mouseDelta.y);
-            }
-            else if (hitObject == leftArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x - mouseDelta.x, initialScale.y);
-            }
-            else if (hitObject == rightArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x + mouseDelta.x, initialScale.y);
-            }
-            else if (hitObject == topLeftArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x - mouseDelta.x, initialScale.y + mouseDelta.y);
-            }
-            else if (hitObject == topRightArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x + mouseDelta.x, initialScale.y + mouseDelta.y);
-            }
-            else if (hitObject == bottomLeftArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x - mouseDelta.x, initialScale.y - mouseDelta.y);
-            }
-            else if (hitObject == bottomRightArrow)
-            {
-                squareToResize.transform.localScale = new Vector2(initialScale.x + mouseDelta.x, initialScale.y - mouseDelta.y);
-            }
-
-            squareToResize.transform.localScale = new Vector2(Mathf.Max(squareToResize.transform.localScale.x, 0.1f), Mathf.Max(squareToResize.transform.localScale.y, 0.1f));
-
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            Vector2 delta = (mousePos - initialPointerPosition) * 0.01f;
+            ResizeAccordingToArrow(delta);
             UpdateArrowPositions();
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        if (Touchscreen.current != null && Mouse.current.leftButton.wasReleasedThisFrame)
         {
             isResizing = false;
             hitObject = null;
         }
     }
 
+    private void HandleTouchInput()
+    {
+        if (Touchscreen.current == null) return;
+
+        var touches = Touchscreen.current.touches;
+
+        if (touches.Count == 0) return;
+
+        var touch = touches[0];
+
+        if (touch.press.wasPressedThisFrame)
+        {
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint(touch.position.ReadValue());
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+            if (hit.collider != null && IsArrow(hit.collider.gameObject))
+            {
+                hitObject = hit.collider.gameObject;
+                initialScale = squareToResize.transform.localScale;
+                initialPointerPosition = touch.position.ReadValue();
+                isResizing = true;
+            }
+        }
+
+        if (isResizing && touch.press.isPressed)
+        {
+            Vector2 touchPos = touch.position.ReadValue();
+            Vector2 delta = (touchPos - initialPointerPosition) * 0.01f;
+            ResizeAccordingToArrow(delta);
+            UpdateArrowPositions();
+        }
+
+        if (touch.press.wasReleasedThisFrame)
+        {
+            isResizing = false;
+            hitObject = null;
+        }
+    }
+
+    private bool IsArrow(GameObject obj)
+    {
+        return obj == topArrow || obj == bottomArrow || obj == leftArrow || obj == rightArrow ||
+               obj == topLeftArrow || obj == topRightArrow || obj == bottomLeftArrow || obj == bottomRightArrow;
+    }
+
+    private void ResizeAccordingToArrow(Vector2 delta)
+    {
+        if (hitObject == topArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y + delta.y);
+        }
+        else if (hitObject == bottomArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y - delta.y);
+        }
+        else if (hitObject == leftArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y);
+        }
+        else if (hitObject == rightArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y);
+        }
+        else if (hitObject == topLeftArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y + delta.y);
+        }
+        else if (hitObject == topRightArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y + delta.y);
+        }
+        else if (hitObject == bottomLeftArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y - delta.y);
+        }
+        else if (hitObject == bottomRightArrow)
+        {
+            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y - delta.y);
+        }
+
+        // Limita escala mínima para evitar tamanho zero ou negativo
+        squareToResize.transform.localScale = new Vector2(
+            Mathf.Max(squareToResize.transform.localScale.x, 0.1f),
+            Mathf.Max(squareToResize.transform.localScale.y, 0.1f)
+        );
+    }
+
     private void UpdateArrowPositions()
     {
-        topArrow.transform.position = squareToResize.transform.position + new Vector3(0, squareToResize.transform.localScale.y / 2f, 0);
-        bottomArrow.transform.position = squareToResize.transform.position - new Vector3(0, squareToResize.transform.localScale.y / 2f, 0);
-        leftArrow.transform.position = squareToResize.transform.position - new Vector3(squareToResize.transform.localScale.x / 2f, 0, 0);
-        rightArrow.transform.position = squareToResize.transform.position + new Vector3(squareToResize.transform.localScale.x / 2f, 0, 0);
+        Vector3 pos = squareToResize.transform.position;
+        Vector3 scale = squareToResize.transform.localScale;
 
-        topLeftArrow.transform.position = squareToResize.transform.position + new Vector3(-squareToResize.transform.localScale.x / 2f, squareToResize.transform.localScale.y / 2f, 0);
-        topRightArrow.transform.position = squareToResize.transform.position + new Vector3(squareToResize.transform.localScale.x / 2f, squareToResize.transform.localScale.y / 2f, 0);
-        bottomLeftArrow.transform.position = squareToResize.transform.position + new Vector3(-squareToResize.transform.localScale.x / 2f, -squareToResize.transform.localScale.y / 2f, 0);
-        bottomRightArrow.transform.position = squareToResize.transform.position + new Vector3(squareToResize.transform.localScale.x / 2f, -squareToResize.transform.localScale.y / 2f, 0);
+        topArrow.transform.position = pos + new Vector3(0, scale.y / 2f, 0);
+        bottomArrow.transform.position = pos - new Vector3(0, scale.y / 2f, 0);
+        leftArrow.transform.position = pos - new Vector3(scale.x / 2f, 0, 0);
+        rightArrow.transform.position = pos + new Vector3(scale.x / 2f, 0, 0);
+
+        topLeftArrow.transform.position = pos + new Vector3(-scale.x / 2f, scale.y / 2f, 0);
+        topRightArrow.transform.position = pos + new Vector3(scale.x / 2f, scale.y / 2f, 0);
+        bottomLeftArrow.transform.position = pos + new Vector3(-scale.x / 2f, -scale.y / 2f, 0);
+        bottomRightArrow.transform.position = pos + new Vector3(scale.x / 2f, -scale.y / 2f, 0);
     }
 }

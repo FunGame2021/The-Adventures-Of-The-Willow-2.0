@@ -76,11 +76,11 @@ public class LevelEditorCamera : MonoBehaviour
 
     private void HandleBoostSpeed()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed())
         {
             moveSpeed = boostSpeed;
         }
-        else if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame())
+        else if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame())
         {
             moveSpeed = moveSpeedDefault;
         }
@@ -99,19 +99,21 @@ public class LevelEditorCamera : MonoBehaviour
 
     private void ZoomCameraKeyboard()
     {
-        float zoomInput = Mouse.current.scroll.y.ReadValue();
-
-        if (zoomInput != 0)
+        if (Mouse.current != null)
         {
-            currentZoomSize -= zoomInput * zoomSpeedKeyboard;
-            currentZoomSize = Mathf.Clamp(currentZoomSize, minZoomSize, maxZoomSize);
-            Camera.main.orthographicSize = currentZoomSize;
+            float zoomInput = Mouse.current.scroll.y.ReadValue();
+
+            if (zoomInput != 0)
+            {
+                currentZoomSize -= zoomInput * zoomSpeedKeyboard;
+                currentZoomSize = Mathf.Clamp(currentZoomSize, minZoomSize, maxZoomSize);
+                Camera.main.orthographicSize = currentZoomSize;
+            }
         }
+        if (Keyboard.current != null && Keyboard.current.qKey.isPressed) ZoomIn();
+        if (Keyboard.current != null && Keyboard.current.eKey.isPressed) ZoomOut();
 
-        if (Keyboard.current.qKey.isPressed) ZoomIn();
-        if (Keyboard.current.eKey.isPressed) ZoomOut();
-
-        if (Keyboard.current.rKey.wasPressedThisFrame) ResetZoom();
+        if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame) ResetZoom();
     }
 
 

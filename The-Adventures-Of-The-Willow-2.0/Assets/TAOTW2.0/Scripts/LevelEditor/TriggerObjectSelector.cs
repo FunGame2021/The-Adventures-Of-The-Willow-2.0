@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
-using TMPro;
-using Unity.VisualScripting;
 
 public class TriggerObjectSelector : MonoBehaviour
 {
@@ -25,12 +24,13 @@ public class TriggerObjectSelector : MonoBehaviour
     private bool isOpened = false;
     private Button backButton;
     private Button okButton;
-    // Declare a list for typeOptions
     private List<string> typeOptions;
+
+    private float touchHoldTime = 0f;
+    private bool touchHeld = false;
 
     void Awake()
     {
-        // Initialize typeOptions in Awake or Start
         typeOptions = new List<string>
         {
             "Play Particles",
@@ -42,97 +42,60 @@ public class TriggerObjectSelector : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        // Clique direito do mouse
+        if (Keyboard.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
-            Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
+            TryOpenPanelFromPosition(Mouse.current.position.ReadValue());
+        }
 
-            if (hit.collider != null && !isOpened && LevelEditorManager.instance.isActiveSelectPoint)
+        // Toque prolongado (1 segundo)
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        {
+            TouchControl touch = Touchscreen.current.touches[0];
+            if (touch.press.isPressed)
             {
-                if (hit.collider != null && hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Trigger"))
+                Vector2 touchPos = touch.position.ReadValue();
+                Vector2 worldTouchPos = Camera.main.ScreenToWorldPoint(touchPos);
+                RaycastHit2D hit = Physics2D.Raycast(worldTouchPos, Vector2.zero);
+
+                if (hit.collider != null && !isOpened && LevelEditorManager.instance.isActiveSelectPoint)
                 {
-                    isOpened = true;
-                    selectedObject = hit.collider.gameObject;
-                    triggerObjectScript = selectedObject.GetComponentInChildren<TriggerObject>();
-                    panelInstance = Instantiate(panelPrefab, panelLocalization);
-
-                    if (panelInstance != null)
+                    if (hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Trigger"))
                     {
-                        typeDropdown = panelInstance.GetComponentInChildren<TMP_Dropdown>();
+                        touchHoldTime += Time.deltaTime;
 
-                        if (typeDropdown != null)
+                        if (touchHoldTime >= 1f && !touchHeld)
                         {
-                            typeDropdown.ClearOptions();
-                            typeDropdown.AddOptions(typeOptions);
-
+                            touchHeld = true;
+                            OpenPanel(hit.collider.gameObject);
                         }
-                        inputFields = panelInstance.GetComponentsInChildren<TMP_InputField>();
-                        foreach (TMP_InputField inputField in inputFields)
-                        {
-                            if(inputField.name == "timeToPlayInputField")
-                            {
-                                timeToPlayInputField = inputField;
-                            }
-                            else if(inputField.name == "scriptInputField")
-                            {
-                                scriptInputField = inputField;
-                            }
-                        }
-                        wasWaitTimeToggle = panelInstance.GetComponentInChildren<Toggle>();
-                        buttons = panelInstance.GetComponentsInChildren<Button>();
-                        foreach (Button button in buttons)
-                        {
-                            if (button.name == "BackButton")
-                            {
-                                backButton = button;
-                            }
-                            else if (button.name == "OKButton")
-                            {
-                                okButton = button;
-                            }
-                        }
-                        // Configurar eventos para botões
-                        backButton.onClick.AddListener(() =>
-                        {
-                            isOpened = false;
-                            Destroy(panelInstance);
-                        });
-
-                        okButton.onClick.AddListener(() =>
-                        {
-                            triggerObjectScript.thisTriggerType = typeDropdown.options[typeDropdown.value].text;
-                            triggerObjectScript.customScript = scriptWritted;
-                            triggerObjectScript.wasTriggerWaitTime = wasWaitTimeToggle.isOn;
-                            // Converte a string para float e atribui a timeToPlay
-                            if (float.TryParse(timeToPlayInputField.text, out float parsedTime))
-                            {
-                                timeToPlay = parsedTime;
-                            }
-                            else
-                            {
-                                Debug.LogError("Failed to parse timeToPlay.");
-                            }
-
-                            triggerObjectScript.timeToPlayTrigger = timeToPlay;
-                            isOpened = false;
-                            Destroy(panelInstance);
-                        });
-                        UpdateUIValues();
+                    }
+                    else
+                    {
+                        ResetTouchHold();
                     }
                 }
-            }
-        }
-        if (isOpened)
-        {
-            if (panelInstance != null)
-            {
-                if (scriptInputField != null)
+                else
                 {
-                    scriptWritted = scriptInputField.text;
+                    ResetTouchHold();
                 }
+            }
+            else
+            {
+                ResetTouchHold();
             }
         }
         else
+        {
+            ResetTouchHold();
+        }
+
+        // Atualiza script durante o painel aberto
+        if (isOpened && panelInstance != null && scriptInputField != null)
+        {
+            scriptWritted = scriptInputField.text;
+        }
+        else if (!isOpened)
         {
             selectedObject = null;
             panelInstance = null;
@@ -140,10 +103,92 @@ public class TriggerObjectSelector : MonoBehaviour
         }
     }
 
+    private void ResetTouchHold()
+    {
+        touchHoldTime = 0f;
+        touchHeld = false;
+    }
+
+    private void TryOpenPanelFromPosition(Vector2 screenPosition)
+    {
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+        if (hit.collider != null && !isOpened && LevelEditorManager.instance.isActiveSelectPoint)
+        {
+            if (hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Trigger"))
+            {
+                OpenPanel(hit.collider.gameObject);
+            }
+        }
+    }
+
+    private void OpenPanel(GameObject obj)
+    {
+        isOpened = true;
+        selectedObject = obj;
+        triggerObjectScript = selectedObject.GetComponentInChildren<TriggerObject>();
+        panelInstance = Instantiate(panelPrefab, panelLocalization);
+
+        if (panelInstance != null)
+        {
+            typeDropdown = panelInstance.GetComponentInChildren<TMP_Dropdown>();
+            if (typeDropdown != null)
+            {
+                typeDropdown.ClearOptions();
+                typeDropdown.AddOptions(typeOptions);
+            }
+
+            inputFields = panelInstance.GetComponentsInChildren<TMP_InputField>();
+            foreach (TMP_InputField inputField in inputFields)
+            {
+                if (inputField.name == "timeToPlayInputField")
+                    timeToPlayInputField = inputField;
+                else if (inputField.name == "scriptInputField")
+                    scriptInputField = inputField;
+            }
+
+            wasWaitTimeToggle = panelInstance.GetComponentInChildren<Toggle>();
+
+            buttons = panelInstance.GetComponentsInChildren<Button>();
+            foreach (Button button in buttons)
+            {
+                if (button.name == "BackButton")
+                    backButton = button;
+                else if (button.name == "OKButton")
+                    okButton = button;
+            }
+
+            backButton.onClick.AddListener(() =>
+            {
+                isOpened = false;
+                Destroy(panelInstance);
+            });
+
+            okButton.onClick.AddListener(() =>
+            {
+                triggerObjectScript.thisTriggerType = typeDropdown.options[typeDropdown.value].text;
+                triggerObjectScript.customScript = scriptWritted;
+                triggerObjectScript.wasTriggerWaitTime = wasWaitTimeToggle.isOn;
+                if (float.TryParse(timeToPlayInputField.text, out float parsedTime))
+                {
+                    timeToPlay = parsedTime;
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse timeToPlay.");
+                }
+                triggerObjectScript.timeToPlayTrigger = timeToPlay;
+                isOpened = false;
+                Destroy(panelInstance);
+            });
+
+            UpdateUIValues();
+        }
+    }
 
     void UpdateUIValues()
     {
-
         if (triggerObjectScript != null)
         {
             int index = typeOptions.IndexOf(triggerObjectScript.thisTriggerType);
@@ -152,11 +197,15 @@ public class TriggerObjectSelector : MonoBehaviour
                 typeDropdown.value = index;
             }
             scriptWritted = triggerObjectScript.customScript;
-            scriptInputField.text = scriptWritted;
-            wasWaitTimeToggle.isOn = triggerObjectScript.wasTriggerWaitTime;
-            timeToPlayInputField.text = timeToPlay.ToString();
+            if (scriptInputField != null)
+                scriptInputField.text = scriptWritted;
+
+            if (wasWaitTimeToggle != null)
+                wasWaitTimeToggle.isOn = triggerObjectScript.wasTriggerWaitTime;
+
             timeToPlay = triggerObjectScript.timeToPlayTrigger;
-            timeToPlayInputField.text = timeToPlay.ToString();
+            if (timeToPlayInputField != null)
+                timeToPlayInputField.text = timeToPlay.ToString();
         }
     }
 }

@@ -203,6 +203,11 @@ public class LevelEditorManager : MonoBehaviour
 
     public bool isCTRLClicked;
 
+    private float touchHoldTime = 1f;
+    private float touchTimer = 0f;
+    private bool touchHolding = false;
+    private Vector2 touchStartPos;
+
     #region Start Things/ Editor Things
     public enum SelectedObjectType
     {
@@ -288,30 +293,33 @@ public class LevelEditorManager : MonoBehaviour
 
     private void Update()
     {
-        if (isWorldMapEditor)
+        if (PanelWorldEditor != null)
         {
-            foreach (GameObject panel in PanelWorldEditor)
+            if (isWorldMapEditor)
             {
-                panel.SetActive(true);
+                foreach (GameObject panel in PanelWorldEditor)
+                {
+                    panel.SetActive(true);
+                }
+                foreach (GameObject panel in PanelLevelEditor)
+                {
+                    panel.SetActive(false);
+                }
             }
-            foreach (GameObject panel in PanelLevelEditor)
+            else
             {
-                panel.SetActive(false);
-            }
-        }
-        else
-        {
-            foreach (GameObject panel in PanelWorldEditor)
-            {
-                panel.SetActive(false);
-            }
-            foreach (GameObject panel in PanelLevelEditor)
-            {
-                panel.SetActive(true);
+                foreach (GameObject panel in PanelWorldEditor)
+                {
+                    panel.SetActive(false);
+                }
+                foreach (GameObject panel in PanelLevelEditor)
+                {
+                    panel.SetActive(true);
+                }
             }
         }
         // Verifica se o botão direito do mouse foi clicado
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             // Converte a posição do mouse para a posição no canvas
             Vector2 inputPosition = Mouse.current.position.ReadValue();
@@ -329,9 +337,51 @@ public class LevelEditorManager : MonoBehaviour
                 }
             }
         }
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        {
+            var touch = Touchscreen.current.touches[0];
+            if (touch.press.isPressed)
+            {
+                if (!touchHolding)
+                {
+                    touchStartPos = touch.position.ReadValue();
+                    touchTimer = 0f;
+                    touchHolding = true;
+                }
+                else
+                {
+                    touchTimer += Time.deltaTime;
+                    if (touchTimer >= touchHoldTime)
+                    {
+                        touchHolding = false;
+                        Vector2 inputPosition = touchStartPos;
+
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(uiButtonContainer.GetComponent<RectTransform>(), inputPosition, null, out Vector2 localPoint);
+
+                        foreach (Button button in tilemapButtons)
+                        {
+                            if (RectTransformUtility.RectangleContainsScreenPoint(button.GetComponent<RectTransform>(), inputPosition))
+                            {
+                                int index = tilemapButtons.IndexOf(button);
+                                OpenTilemapOptions(index);
+                                StopDragTempObject();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                touchTimer = 0f;
+                touchHolding = false;
+            }
+        }
+
+
 
         // Instanciar
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (isActiveSelectPoint)
             {
@@ -341,7 +391,7 @@ public class LevelEditorManager : MonoBehaviour
             {
                 return;
             }
-            if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy)
+            if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || eraserTool.isActiveEraserDecor1 || eraserTool.isActiveEraserDecor2)
             {
                 return;
             }
@@ -546,7 +596,7 @@ public class LevelEditorManager : MonoBehaviour
             if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
             {
                 if (isActiveSelectPoint || PlatformNodeEditor.instance.isNodeEditor
-                    || eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy)
+                    || eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || eraserTool.isActiveEraserDecor1 || eraserTool.isActiveEraserDecor2)
                 {
                     return;
                 }
@@ -711,7 +761,7 @@ public class LevelEditorManager : MonoBehaviour
             StopDragTempObject();
         }
         //Snap Grid Size
-        if(UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasPressedThisFrame())
+        if(Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.PlayerActions.Grab.WasPressedThisFrame())
         {
             // Incrementa o índice (se chegou ao final, reinicia)
             currentSnapGridIndex = (currentSnapGridIndex + 1) % snapGridSizes.Length;
@@ -729,7 +779,7 @@ public class LevelEditorManager : MonoBehaviour
 
 
         #region Shortcuts
-        if(UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed())
+        if(Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed())
         {
             isCTRLClicked = true;
         }
@@ -737,40 +787,40 @@ public class LevelEditorManager : MonoBehaviour
         {
             isCTRLClicked = false;
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.S.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.S.IsPressed())
         {
             //Save
 
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.R.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.R.IsPressed())
         {
             //SelectPoint Tool
             ToggleSelectPoint();
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.U.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.U.IsPressed())
         {
             //Unselect Object
             StopDragTempObject();
             ClearSelectedThings();
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.E.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.E.IsPressed())
         {
             //Delete enemies
             eraserTool.ToggleEnemyEraser();
 
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.T.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.T.IsPressed())
         {
             //DeleteTiles
             eraserTool.ToggleTileEraser();
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.Y.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.Y.IsPressed())
         {
             //SnapGrid
 
             ActivateSnapGrid();
         }
-        if (UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.W.IsPressed())
+        if (Keyboard.current != null && UserInput.instance.playerMoveAndExtraActions.UI.LeftCTRL.IsPressed() && UserInput.instance.playerMoveAndExtraActions.UI.W.IsPressed())
         {
             //ShowGrid
 

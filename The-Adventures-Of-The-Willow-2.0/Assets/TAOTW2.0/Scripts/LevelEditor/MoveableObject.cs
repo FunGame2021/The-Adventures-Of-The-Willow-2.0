@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using static MoveableObjectDecor2;
 
 public class MoveableObject : MonoBehaviour
 {
@@ -49,6 +50,17 @@ public class MoveableObject : MonoBehaviour
             // Restaurar a cor original
             myRenderer.material.color = defaultColor;
         }
+    }
+    public void SelectDecorColors()
+    {
+        myRenderer.material.color = selectedColor;
+    }
+
+    public void RestoreDecorOriginalColors()
+    {
+
+        myRenderer.material.color = defaultColor;
+
     }
 
 

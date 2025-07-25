@@ -71,6 +71,8 @@ public class MoveAndSelectTool : MonoBehaviour
     {
         if (instance == null) instance = this;
 
+        PanelToHideValues.SetActive(false);
+
         dropdownSelectType.onValueChanged.AddListener(OnDropdownValueChanged);
         isEnemy = true;
         OnDropdownValueChanged(0);
@@ -228,6 +230,7 @@ public class MoveAndSelectTool : MonoBehaviour
         }
         else
         {
+            PanelToHideValues.SetActive(false);
             ClearSelections();
             RestoreAllOriginalColors();
         }
@@ -365,6 +368,8 @@ public class MoveAndSelectTool : MonoBehaviour
             var mo2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
             if (mo2 != null)
             {
+                mo2.SelectDecor2Colors();
+                
                 mo2.ZPos = newPos.z;
                 mo2.ShortLayer = mo2.GetComponentInChildren<SpriteRenderer>().sortingOrder;
                 mo2.floatScale = mo2.transform.localScale.x;
@@ -484,7 +489,25 @@ public class MoveAndSelectTool : MonoBehaviour
         {
             ChangeParentColors(selectedEnemyParent, originalEnemyColor);
         }
-
+        if (selectedDecorObject != null)
+        {
+            var decor = selectedDecorObject.GetComponent<MoveableObject>();
+            if (decor != null)
+            {
+                decor.RestoreDecorOriginalColors();
+            }
+            selectedDecorObject = null;
+        }
+        // Desseleciona Decor2
+        if (selectedDecor2Object != null)
+        {
+            var decor2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
+            if (decor2 != null)
+            {
+                decor2.RestoreDecor2OriginalColors();
+            }
+            selectedDecor2Object = null;
+        }
         selectedEnemySprite = null;
         selectedEnemyParent = null;
         selectedEnemySpriteRenderer = null;
@@ -504,16 +527,23 @@ public class MoveAndSelectTool : MonoBehaviour
             ChangeParentColors(selectedEnemyParent, originalEnemyColor);
         }
 
+        // Restaura cor dos Decor1
         if (selectedDecorObject != null)
         {
-            var decorSR = selectedDecorObject.GetComponent<SpriteRenderer>();
-            if (decorSR != null) decorSR.color = originalColor;
+            var decorSR = selectedDecorObject.GetComponent<MoveableObject>();
+            if (decorSR != null)
+            {
+                decorSR.RestoreDecorOriginalColors();
+            }
         }
-
+        // Novo método para Decor2
         if (selectedDecor2Object != null)
         {
-            var decor2SR = selectedDecor2Object.GetComponentInChildren<SpriteRenderer>();
-            if (decor2SR != null) decor2SR.color = originalColor;
+            var decor2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
+            if (decor2 != null)
+            {
+                decor2.RestoreDecor2OriginalColors(); // Usa o método do próprio objeto
+            }
         }
     }
 
@@ -529,12 +559,6 @@ public class MoveAndSelectTool : MonoBehaviour
         {
             renderer.color = color;
         }
-    }
-
-    private Color GetOriginalColor(Transform objTransform)
-    {
-        SpriteRenderer sr = objTransform.GetComponent<SpriteRenderer>();
-        return sr != null ? sr.color : Color.white;
     }
 
     private Transform GetEnemyParent(Transform spriteTransform)
@@ -568,14 +592,6 @@ public class MoveAndSelectTool : MonoBehaviour
             parent = parent.parent;
         }
         return null;
-    }
-
-
-
-
-    private void HideUIInfo()
-    {
-        PanelToHideValues.SetActive(true);
     }
     private void UpdateUIWithSelectedObjectData()
     {
@@ -619,6 +635,7 @@ public class MoveAndSelectTool : MonoBehaviour
             // Verifica se o componente MoveableObject existe no objeto selecionado
             if (moveableObject != null)
             {
+                moveableObject.SelectDecorColors();
                 dropdownShortLayerList.value = GetDropdownIndex(moveableObject.ShortLayerName);
 
                 // Atualiza os campos de entrada de texto e o Dropdown com as informações obtidas
@@ -682,6 +699,8 @@ public class MoveAndSelectTool : MonoBehaviour
             // Verifica se o componente MoveableObject existe no objeto selecionado
             if (moveableObject2 != null)
             {
+                moveableObject2.SelectDecor2Colors(); // Aplica cor vermelha
+                
                 dropdownShortLayerList.value = GetDropdownIndex(moveableObject2.ShortLayerName);
 
                 zPosInput.text = moveableObject2.ZPos.ToString("F2");
@@ -791,6 +810,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = false;
+                PanelToHideValues.SetActive(false);
                 break;
 
             case 2: // Valor da Opção 3 selecionada
@@ -799,6 +819,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = true;
                 isDecor = false;
                 isDecor2 = false;
+                PanelToHideValues.SetActive(false);
                 break;
 
             case 3: // Valor da Opção 4 selecionada
@@ -807,6 +828,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = true;
                 isDecor2 = false;
+                PanelToHideValues.SetActive(true);
                 break;
 
             case 4: // Valor da Opção 5 selecionada
@@ -815,6 +837,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = true;
+                PanelToHideValues.SetActive(true);
                 break;
 
             default: // Valor inválido selecionado
@@ -823,6 +846,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = false;
+                PanelToHideValues.SetActive(false);
                 break;
         }
     }

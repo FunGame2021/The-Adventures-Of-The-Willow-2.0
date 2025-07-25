@@ -4,6 +4,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
 
 public class AddLevelToDot : MonoBehaviour
@@ -30,6 +31,8 @@ public class AddLevelToDot : MonoBehaviour
     [SerializeField] private Toggle isFirstLevel;
     private LevelDot currentLevelDotComponent;
 
+    private float touchHoldTime = 0f;      // Quanto tempo o dedo está pressionando
+    private bool touchHeld = false;        // Se já ativou o painel pelo toque
 
     private void Start()
     {
@@ -39,7 +42,7 @@ public class AddLevelToDot : MonoBehaviour
     }
     private void Update()
     {
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (Keyboard.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
@@ -56,6 +59,53 @@ public class AddLevelToDot : MonoBehaviour
                     UpdateLevelDotValues();
                 }
             }
+        }
+        // Verificação do toque prolongado para abrir painel
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        {
+            TouchControl touch = Touchscreen.current.touches[0];
+            if (touch.press.isPressed)
+            {
+                Vector2 touchPos = touch.position.ReadValue();
+                Vector3 worldTouchPos = Camera.main.ScreenToWorldPoint(touchPos);
+                RaycastHit2D hit = Physics2D.Raycast(worldTouchPos, Vector2.zero);
+
+                if (hit.collider != null && (hit.collider.CompareTag("LevelDot") || hit.collider.GetComponent<LevelDot>()))
+                {
+                    touchHoldTime += Time.deltaTime;
+
+                    if (touchHoldTime >= 1f && !touchHeld)
+                    {
+                        touchHeld = true;
+
+                        selectedLevelDot = hit.collider.gameObject;
+                        OnMouseClick?.Invoke();
+
+                        if (selectedLevelDot)
+                        {
+                            isSelectingLevel = true;
+                            PanelOptions.SetActive(true);
+                            currentLevelDotComponent = selectedLevelDot.GetComponent<LevelDot>();
+                            UpdateLevelDotValues();
+                        }
+                    }
+                }
+                else
+                {
+                    touchHoldTime = 0f;
+                    touchHeld = false;
+                }
+            }
+            else
+            {
+                touchHoldTime = 0f;
+                touchHeld = false;
+            }
+        }
+        else
+        {
+            touchHoldTime = 0f;
+            touchHeld = false;
         }
 
 

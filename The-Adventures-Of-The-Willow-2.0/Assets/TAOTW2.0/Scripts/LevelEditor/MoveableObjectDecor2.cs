@@ -4,7 +4,18 @@ using UnityEngine;
 
 public class MoveableObjectDecor2 : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer[] myRenderers;
+    public SpriteRenderer[] myRenderers;
+
+    [System.Serializable]
+    public class RendererData
+    {
+        public SpriteRenderer renderer;
+        public Color originalColor;
+    }
+
+    [SerializeField] private RendererData[] rendererData;
+    [SerializeField] private Color selectedColor = Color.red; // Cor quando selecionado
+
 
     // Propriedades adicionadas
     public int ShortLayer;
@@ -14,6 +25,7 @@ public class MoveableObjectDecor2 : MonoBehaviour
 
     private void Start()
     {
+        InitializeRendererData();
         // Obter as opções de short layers
         string[] shortLayerOptions = SortingLayer.layers.Select(layer => layer.name).ToArray();
         // Definir a opção inicial como o short layer atual do primeiro SpriteRenderer
@@ -21,6 +33,42 @@ public class MoveableObjectDecor2 : MonoBehaviour
         ShortLayer = myRenderers[0].sortingOrder;
         ZPos = this.gameObject.transform.position.z;
         floatScale = this.gameObject.transform.localScale.x;
+
+        // Armazena automaticamente as cores originais
+        foreach (var data in rendererData)
+        {
+            if (data.renderer != null)
+            {
+                data.originalColor = data.renderer.color;
+            }
+        }
+    }
+    private void InitializeRendererData()
+    {
+        if (myRenderers == null || myRenderers.Length == 0)
+        {
+            Debug.LogWarning($"{name} não tem myRenderers configurados!");
+            return;
+        }
+
+        // Cria o array rendererData com o mesmo tamanho de myRenderers
+        rendererData = new RendererData[myRenderers.Length];
+
+        for (int i = 0; i < myRenderers.Length; i++)
+        {
+            if (myRenderers[i] != null)
+            {
+                rendererData[i] = new RendererData()
+                {
+                    renderer = myRenderers[i],
+                    originalColor = myRenderers[i].color
+                };
+            }
+            else
+            {
+                Debug.LogWarning($"Renderer {i} em {name} está nulo!");
+            }
+        }
     }
 
     void CheckForClick2()
@@ -91,4 +139,25 @@ public class MoveableObjectDecor2 : MonoBehaviour
     }
 
 
+    public void SelectDecor2Colors()
+    {
+        foreach (var data in rendererData)
+        {
+            if (data.renderer != null)
+            {
+                data.renderer.color = selectedColor;
+            }
+        }
+    }
+
+    public void RestoreDecor2OriginalColors()
+    {
+        foreach (var data in rendererData)
+        {
+            if (data.renderer != null)
+            {
+                data.renderer.color = data.originalColor;
+            }
+        }
+    }
 }
