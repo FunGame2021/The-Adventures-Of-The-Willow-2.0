@@ -4,7 +4,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch: {}  # This enables manual triggering without branch restrictions
+  workflow_dispatch: {}
 
 jobs:
   buildForAndroid:
@@ -41,7 +41,7 @@ jobs:
           path: |
             ${{ matrix.projectPath }}/Library/BuildCache
             ${{ matrix.projectPath }}/Library/ScriptAssemblies
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath + '/Assets/**') }}
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(format('{0}/Assets/**', matrix.projectPath)) }}
           restore-keys: |
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
