@@ -55,7 +55,7 @@ public class PlatformNodeEditor : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current != null)
+        if (Keyboard.current != null && Mouse.current != null)
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Vector2.zero);
 
@@ -182,7 +182,7 @@ public class PlatformNodeEditor : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (Keyboard.current != null)
+        if (Keyboard.current != null && Mouse.current != null)
         {
             Vector3 mousePosition2 = Mouse.current.position.ReadValue();
 

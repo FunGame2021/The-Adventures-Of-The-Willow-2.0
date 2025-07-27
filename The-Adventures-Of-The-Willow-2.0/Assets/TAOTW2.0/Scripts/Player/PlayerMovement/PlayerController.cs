@@ -166,12 +166,23 @@ public class PlayerController : MonoBehaviour
     public float stickyPlatformSlowdownFactor = 2f;
     #endregion
 
+    #region particles
     //Particles
     public ParticleSystem Bubble;
     private bool WindParticlesPlayNow;
     [SerializeField] private ParticleSystem WindParticles;
     [SerializeField] private ParticleSystem WaterParticles;
     private Vector2 _lastVelocity;
+
+    #endregion
+
+    #region finishline
+    [Header("Finish Settings")]
+    [SerializeField] private float finishJumpForce = 12f;
+    [SerializeField] private float finishWalkSpeed = 1f;
+    [SerializeField] private float finishGravity = 3f;
+    public bool isFinishing = false;
+    #endregion
 
     void Start()
     {
@@ -566,145 +577,134 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (knockbackTimer > 0)
+        if (!isFinishing)
         {
-            // Reduzir o contador de tempo
-            knockbackTimer -= Time.fixedDeltaTime;
-            knocked = true;
-        }
-        // Verificar se o knockback terminou
-        if (knockbackTimer <= 0)
-        {
-            knocked = false;
-        }
 
-        if (moveInput != 0)
-        {
-            RemovePlayerFriction();
-            RB.bodyType = RigidbodyType2D.Dynamic;
-        }
-        else
-        {
-            AddPlayerFriction();
-        }
-
-        #region Jump and walk
-        if (!knocked && !stopPlayer)
-        {
-            //Walk
-            if (!isWallJumping && !Swimming && !isDead && !isOnPlatform)
+            if (knockbackTimer > 0)
             {
-                if (!isOnIcePlatform && !isOnStickyPlatform)
-                {
-                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
-                }
-                else if (isOnIcePlatform)
-                {
-                    float targetVelocity = Mathf.Clamp(moveInput * iceSlideMaxSpeed, -iceSlideMaxSpeed, iceSlideMaxSpeed);
-                    RB.linearVelocity = new Vector2(Mathf.MoveTowards(RB.linearVelocity.x, targetVelocity * 10, iceSlideAccelAmount * Time.deltaTime), RB.linearVelocity.y);
+                // Reduzir o contador de tempo
+                knockbackTimer -= Time.fixedDeltaTime;
+                knocked = true;
+            }
+            // Verificar se o knockback terminou
+            if (knockbackTimer <= 0)
+            {
+                knocked = false;
+            }
 
-                    // Reduz a velocidade do jogador enquanto escorrega no gelo
-                    RB.AddForce(Vector2.left * RB.linearVelocity.x * iceSlipFactor * Time.deltaTime);
-                    if (Mathf.Sign(RB.linearVelocity.x) != Mathf.Sign(_lastVelocity.x))
+            if (moveInput != 0)
+            {
+                RemovePlayerFriction();
+                RB.bodyType = RigidbodyType2D.Dynamic;
+            }
+            else
+            {
+                AddPlayerFriction();
+            }
+
+            #region Jump and walk
+            if (!knocked && !stopPlayer)
+            {
+                //Walk
+                if (!isWallJumping && !Swimming && !isDead && !isOnPlatform)
+                {
+                    if (!isOnIcePlatform && !isOnStickyPlatform)
                     {
-                        if (facingRight)
-                        {
-                            Vector3 scale = WaterParticles.transform.localScale;
-                            scale.x *= 1;
-                            WaterParticles.transform.localScale = scale;
-                            WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 38.72f);
-                        }
-                        else
-                        {
-                            Vector3 scale = WaterParticles.transform.localScale;
-                            scale.x *= 1;
-                            WaterParticles.transform.localScale = scale;
-                            WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 139.186f);
-                        }
+                        RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
+                    }
+                    else if (isOnIcePlatform)
+                    {
+                        float targetVelocity = Mathf.Clamp(moveInput * iceSlideMaxSpeed, -iceSlideMaxSpeed, iceSlideMaxSpeed);
+                        RB.linearVelocity = new Vector2(Mathf.MoveTowards(RB.linearVelocity.x, targetVelocity * 10, iceSlideAccelAmount * Time.deltaTime), RB.linearVelocity.y);
 
-                        WaterParticles.Play();
+                        // Reduz a velocidade do jogador enquanto escorrega no gelo
+                        RB.AddForce(Vector2.left * RB.linearVelocity.x * iceSlipFactor * Time.deltaTime);
+                        if (Mathf.Sign(RB.linearVelocity.x) != Mathf.Sign(_lastVelocity.x))
+                        {
+                            if (facingRight)
+                            {
+                                Vector3 scale = WaterParticles.transform.localScale;
+                                scale.x *= 1;
+                                WaterParticles.transform.localScale = scale;
+                                WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 38.72f);
+                            }
+                            else
+                            {
+                                Vector3 scale = WaterParticles.transform.localScale;
+                                scale.x *= 1;
+                                WaterParticles.transform.localScale = scale;
+                                WaterParticles.transform.rotation = Quaternion.Euler(0, 178.554f, 139.186f);
+                            }
+
+                            WaterParticles.Play();
+                        }
+                    }
+                    else if (isOnStickyPlatform)
+                    {
+                        // Simular ader�ncia na plataforma pegajosa
+                        RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed * stickyPlatformSlowdownFactor, RB.linearVelocity.y);
                     }
                 }
-                else if (isOnStickyPlatform)
+                else
                 {
-                    // Simular ader�ncia na plataforma pegajosa
-                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed * stickyPlatformSlowdownFactor, RB.linearVelocity.y);
+                    if (platform != null)
+                    {
+                        //RB.velocity = platform.GetComponent<Rigidbody2D>().velocity;
+                        RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed + platform.linearVelocity.x, RB.linearVelocity.y);
+                    }
+                    else
+                    {
+                        RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
+                    }
                 }
-            }
-            else
-            {
-                if(platform != null)
+                //Jump
+                if (jumpBoost && !stopPlayer && !isDead)
                 {
-                    //RB.velocity = platform.GetComponent<Rigidbody2D>().velocity;
-                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed + platform.linearVelocity.x, RB.linearVelocity.y);
+                    jumpTime = boostedJumpTime; // Usar dura��o de salto aumentada
                 }
                 else
                 {
-                    RB.linearVelocity = new Vector2(moveInput * currentMoveSpeed, RB.linearVelocity.y);
+                    jumpTime = normalJumpTime;
                 }
-            }
-            //FinishPoint
-            if (FinishPoint.instance.isFinished && stopPlayer)
-            {
-                if (FinishPole.instance.isFinishPoleRightEnter)
+
+                if (RB.linearVelocity.y > 0 && jump)
                 {
-                    Turn(false); // Vire para a direita
-                    RB.linearVelocity = new Vector2(autoMoveSpeed, RB.linearVelocity.y);
+                    jumpTimeCounter += Time.deltaTime;
+                    if (jumpTimeCounter > jumpTime)
+                    {
+                        jump = false;
+                    }
+                    float t = jumpTimeCounter / jumpTime;
+                    float currentJumpM = jumpMultiplier;
+
+                    if (t > 0.5f)
+                    {
+                        currentJumpM = jumpMultiplier * (1 - t);
+                    }
+                    RB.linearVelocity += vecGravity * currentJumpM * Time.deltaTime;
+                }
+
+                if (RB.linearVelocity.y < 0)
+                {
+                    RB.linearVelocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
+                    //RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
+                }
+                #endregion
+
+                if (isClimbing && !Swimming)
+                {
+                    RB.gravityScale = 0;
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, moveInputUp * upSpeed);
                 }
                 else
                 {
-                    Turn(true); // Vire para a esquerda
-                    RB.linearVelocity = new Vector2(-autoMoveSpeed, RB.linearVelocity.y);
-                }
-            }
-            //Jump
-            if (jumpBoost && !stopPlayer && !isDead)
-            {
-                jumpTime = boostedJumpTime; // Usar dura��o de salto aumentada
-            }
-            else
-            {
-                jumpTime = normalJumpTime;
-            }
-
-            if (RB.linearVelocity.y > 0 && jump)
-            {
-                jumpTimeCounter += Time.deltaTime;
-                if (jumpTimeCounter > jumpTime)
-                {
-                    jump = false;
-                }
-                float t = jumpTimeCounter / jumpTime;
-                float currentJumpM = jumpMultiplier;
-
-                if (t > 0.5f)
-                {
-                    currentJumpM = jumpMultiplier * (1 - t);
-                }
-                RB.linearVelocity += vecGravity * currentJumpM * Time.deltaTime;
-            }
-
-            if (RB.linearVelocity.y < 0)
-            {
-                RB.linearVelocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
-                //RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
-            }
-            #endregion
-
-            if (isClimbing && !Swimming)
-            {
-                RB.gravityScale = 0;
-                RB.linearVelocity = new Vector2(RB.linearVelocity.x, moveInputUp * upSpeed);
-            }
-            else
-            {
-                if (!Swimming || !isOnWater)
-                {
-                    RB.gravityScale = normalGravity;
+                    if (!Swimming || !isOnWater)
+                    {
+                        RB.gravityScale = normalGravity;
+                    }
                 }
             }
         }
-
         
 
     }
@@ -937,6 +937,56 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
     }
 
 
+    #endregion
+
+    #region finishline
+    public void StartFinishSequence(bool moveRight)
+    {
+        // Configura física
+        RB.gravityScale = finishGravity;
+        isFinishing = true;
+
+        StartCoroutine(FinishMovement(moveRight));
+           
+
+        // Desativa outros sistemas
+        DisableOtherSystems();
+    }
+
+    private IEnumerator FinishMovement(bool moveRight)
+    {
+        float direction = moveRight ? 1 : -1;
+        float movementDuration = 2f; // Duração exata de 3 segundos
+        float timer = 0f;
+
+        Turn(moveRight);
+        UserInput.instance.DisableInput(); 
+
+        while (timer < movementDuration)
+        {
+            Debug.Log("While");
+            timer += Time.fixedDeltaTime;
+
+            RB.linearVelocity = new Vector2(
+                direction * finishWalkSpeed,
+                Mathf.Clamp(RB.linearVelocity.y, -10f, finishJumpForce)
+            );
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        // Opcional: Parar completamente após os 3 segundos
+        RB.linearVelocity = Vector2.zero;
+        //isFinishing = false;
+    }
+
+    private void DisableOtherSystems()
+    {
+        jump = false;
+        isWallJumping = false;
+        isClimbing = false;
+        Swimming = false;
+    }
     #endregion
 
     #region debug

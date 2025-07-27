@@ -1,20 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Experimental.VFX;
+﻿using UnityEngine;
 using UnityEngine.VFX;
-using static Unity.Collections.AllocatorManager;
 
 public class FinishPole : MonoBehaviour
 {
     public static FinishPole instance;
+
+    [Header("Visual Effects")]
     [SerializeField] private VisualEffect visualEffect;
     [SerializeField] private Animator anim;
     public bool isFinishPoleRightEnter;
 
-    private void Start()
+    [Header("Timing Settings")]
+    [SerializeField] private float initialDelay = 1f;
+    [SerializeField] private float walkDuration = 3f;
+    [SerializeField] private float fireworksDuration = 5f;
+
+    private bool isFinishing = false;
+
+    private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -22,54 +27,56 @@ public class FinishPole : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player") && GameStates.instance.isLevelStarted && !isFinishing)
         {
-            if(GameStates.instance.isLevelStarted)
-            {
-                if (LoadPlayLevel.instance != null)
-                {
-                    LoadPlayLevel.instance.StopMusic();
-                }
-                if (playLevel.instance != null)
-                {
-                    playLevel.instance.StopMusic();
-                }
-            }
-            PlayEndMusic();
-            Finish();
-            //anim.SetBool("Winner", true);
-            PlayerController.instance.stopPlayer = true;
-            //Stop game music play winner music
-
+            StartFinishSequence();
+            Debug.Log("Touched pole");
         }
     }
 
-    private void PlayEndMusic()
+    public void StartFinishSequence()
     {
+        Debug.Log("Sequence");
+        isFinishing = true;
+        anim.SetBool("Winner", true);
+        // Controle do player
+        PlayerController.instance.StartFinishSequence(isFinishPoleRightEnter);
+
+        // Efeitos sonoros
         AudioManager.instance.PlayOneShotNo3D(FMODEvents.instance.FinishMusic);
-    }
-    public void Finish()
-    {
-        if(PlayerManager.instance != null)
-        {
-            PlayerManager.instance.FinishLevelSave();
-            PlayerManager.instance.UpdateFinishLevelInfoTXT();
-        }
-        if(LevelTimeManager.instance != null)
-        {
-            LevelTimeManager.instance.OnLevelCompleted();
-        }
-        FinishPoint.instance.FinishSequence();
-        PlayFireworksEffect();
-    }
+        LoadPlayLevel.instance?.StopMusic();
+        playLevel.instance?.StopMusic();
 
-    public void PlayFireworksEffect()
-    {
+        // Progressão do jogo
+        PlayerManager.instance?.FinishLevelSave();
+        PlayerManager.instance?.UpdateFinishLevelInfoTXT();
+        LevelTimeManager.instance?.OnLevelCompleted();
+
+        // Efeitos visuais
         visualEffect.Play();
+        CameraZoom.instance.ZoomOutFinish();
+
+        StartCoroutine(FinishRoutine());
     }
 
-    public void StopFireworksEffect()
+    private System.Collections.IEnumerator FinishRoutine()
     {
+        yield return new WaitForSeconds(initialDelay);
+
+        // Tempo de caminhada com zoom
+        yield return new WaitForSeconds(walkDuration);
+
+        // Finalização
         visualEffect.Stop();
+        //CameraZoom.instance.ResetZoom();
+
+        // Transição de cena
+        LoadNextScene();
+    }
+
+    private void LoadNextScene()
+    {
+        var sceneManager = GameObject.Find("SceneManager")?.GetComponent<LoadScenes>();
+        sceneManager?.loadSceneEscapeButton();
     }
 }

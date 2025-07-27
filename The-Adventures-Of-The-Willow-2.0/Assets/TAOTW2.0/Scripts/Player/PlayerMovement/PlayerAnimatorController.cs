@@ -67,7 +67,7 @@ public class PlayerAnimatorController : MonoBehaviour
         {
             PlayRandomIdleAnimation();
         }
-        if (FinishPoint.instance.isFinished)
+        if (PlayerController.instance.isFinishing)
         {
             animationPlayer.SetBool("JumpingV", false);
             animationPlayer.SetBool("FallingV", false);
@@ -78,7 +78,7 @@ public class PlayerAnimatorController : MonoBehaviour
             isIdle = false;
             animationPlayer.SetBool("Walking", true);
         }
-        if (!FinishPoint.instance.isFinished)
+        if (!PlayerController.instance.isFinishing)
         {
             //se estiver no ch�o pode andar e parar //n�o est� a nadar
             if (PlayerController.instance.isGrounded && !PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)

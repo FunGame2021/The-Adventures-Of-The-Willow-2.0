@@ -371,7 +371,6 @@ MonoBehaviour:
   whatIsMovingPlatform:
     serializedVersion: 2
     m_Bits: 67108864
-  _originalParent: {fileID: 0}
   PlayerTrans: {fileID: 4275676865161093360}
   zRotation: 0
   isOnStickyPlatform: 0
@@ -383,6 +382,10 @@ MonoBehaviour:
   Bubble: {fileID: 7601891823785844162}
   WindParticles: {fileID: 0}
   WaterParticles: {fileID: 7540263773543752031}
+  finishJumpForce: 12
+  finishWalkSpeed: 1
+  finishGravity: 3
+  isFinishing: 0
 --- !u!114 &7153235750983776138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,6 +419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
   attenuationObject: {fileID: 155168309214299445}
 --- !u!114 &2592786377724172707
 MonoBehaviour:
@@ -449,7 +453,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toDie: 1
   playerPosCheck: {x: 0, y: 0, z: 0}
+  isDeadNow: 0
   isDead: 0
+  restartDie: 0
   invulnerabilityDuration: 2
   playerStates: {fileID: 7550289033753128257}
   isInvincible: 0
@@ -474,11 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092303a8484acbc4f9f2ce0b8906c920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toStop: 13
-  toStopWalking: 8
   jumpForce: 5
-  elapsedTime: 0
-  isFinished: 0
 --- !u!114 &7550289033753128257
 MonoBehaviour:
   m_ObjectHideFlags: 0
