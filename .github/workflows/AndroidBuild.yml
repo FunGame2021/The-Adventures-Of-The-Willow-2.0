@@ -1,10 +1,10 @@
 name: AndroidBuild
 on:
   push:
+    branches: [ main ]
   pull_request:
-  workflow_dispatch:
-    branches:
-      - main
+    branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
   buildForAndroid:
@@ -29,11 +29,19 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Clean up disk space
+        run: |
+          sudo apt-get clean
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+
       - name: Cache Library
         uses: actions/cache@v3
         with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(matrix.projectPath) }}
+          path: |
+            ${{ matrix.projectPath }}/Library/BuildCache
+            ${{ matrix.projectPath }}/Library/ScriptAssemblies
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ hashFiles(format('{0}/Assets/**', matrix.projectPath)) }}
           restore-keys: |
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
@@ -49,7 +57,7 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
+          customParameters: '-buildTarget Android -developmentBuild'
 
       - name: Upload Build
         uses: actions/upload-artifact@v4
