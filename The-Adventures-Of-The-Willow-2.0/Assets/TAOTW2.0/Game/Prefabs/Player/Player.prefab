@@ -383,7 +383,7 @@ MonoBehaviour:
   WindParticles: {fileID: 0}
   WaterParticles: {fileID: 7540263773543752031}
   finishJumpForce: 12
-  finishWalkSpeed: 1
+  finishWalkSpeed: 2
   finishGravity: 3
   isFinishing: 0
 --- !u!114 &7153235750983776138
@@ -405,8 +405,10 @@ MonoBehaviour:
   - Idle
   - Idle2
   - Idle3
-  isJump: 0
-  isMoving: 0
+  groundCheckDistance: 1.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 201326784
 --- !u!114 &4355294316908627330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,7 +751,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ab0c7842bea9048961a760d75b1225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAnimatorController: {fileID: 7153235750983776138}
 --- !u!1 &2795846774789424612
 GameObject:
   m_ObjectHideFlags: 0

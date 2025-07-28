@@ -1,240 +1,232 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerAnimatorController : MonoBehaviour
 {
     public static PlayerAnimatorController instance;
 
-    [SerializeField] public Animator animationPlayer;
-
+    [Header("Animation References")]
+    [SerializeField] private Animator animationPlayer;
     [SerializeField] private ParticleSystem getPowerUp;
 
-    [SerializeField] private int numberOfIdleAnimations = 3; // N�mero total de anima��es Idle dispon�veis
-    [SerializeField] private string[] idleAnimationTriggers = { "Idle", "Idle2", "Idle3" }; // Triggers das anima��es Idle
+    [Header("Idle Animations")]
+    [SerializeField] private int numberOfIdleAnimations = 3;
+    [SerializeField] private string[] idleAnimationTriggers = { "Idle", "Idle2", "Idle3" };
 
-
-    private bool hasRandomizedIdle = false; // Flag para verificar se j� foi feita a randomiza��o da anima��o Idle
+    private bool hasRandomizedIdle = false;
     private bool isIdle;
-    public bool isJump;
-    public bool isMoving;
+    private bool wasMovingBeforeJump = false;
+    private float movementThreshold = 0.1f;
+    private float inputThreshold = 0.2f;
 
+    [Header("Fall Detection")]
+    [SerializeField] private float fallSpeedThreshold = -1f; // Ajustado para melhor detecção
+    [SerializeField] private float groundCheckDistance = 0.5f; // Distância reduzida
+    [SerializeField] private LayerMask groundLayer;
+    private bool wasFalling = false;
+    private bool isNearGround = false;
+    private bool triggerLock = false; // Evita múltiplos triggers
 
-    void Start()
+    private void Awake()
     {
         if (instance == null)
         {
             instance = this;
         }
     }
-    // Evento chamado no final da anima��o Idle 1
-    public void OnIdle1AnimationEnd()
-    {
-        hasRandomizedIdle = false;
-    }
 
-    // Evento chamado no final da anima��o Idle 2
-    public void OnIdle2AnimationEnd()
+    public void SetFinishState(bool isFinishing)
     {
-        hasRandomizedIdle = false;
-    }
-
-    // Evento chamado no final da anima��o Idle 3
-    public void OnIdle3AnimationEnd()
-    {
-        hasRandomizedIdle = false;
-    }
-
-    private void PlayRandomIdleAnimation()
-    {
-        if (!isIdle && PlayerController.instance.Swimming || PlayerController.instance.isOnWater)
+        if (isFinishing)
         {
-            return;
+            ResetAllAnimations();
+            animationPlayer.SetBool("Walking", true);
         }
-
-        // Escolhe um �ndice aleat�rio para o Trigger de anima��o Idle
-        int randomIndex = Random.Range(0, idleAnimationTriggers.Length);
-
-        // Reproduz a anima��o Idle correspondente ao Trigger aleat�rio
-        string randomTrigger = idleAnimationTriggers[randomIndex];
-        animationPlayer.SetTrigger(randomTrigger);
-
-        hasRandomizedIdle = true;
+        else
+        {
+            ResetAllAnimations();
+            animationPlayer.SetBool("Idle", true);
+        }
     }
 
+    private void ResetAllAnimations()
+    {
+        animationPlayer.SetBool("Walking", false);
+        animationPlayer.SetBool("JumpingV", false);
+        animationPlayer.SetBool("FallingV", false);
+        animationPlayer.SetBool("JumpingH", false);
+        animationPlayer.SetBool("FallingH", false);
+        animationPlayer.SetBool("Climbing", false);
+        animationPlayer.SetBool("ClimbingIdle", false);
+        animationPlayer.SetBool("Swim", false);
+        animationPlayer.SetBool("IdleSwim", false);
+    }
+    // Adicionar no OnDrawGizmos para visualização (opcional)
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+    }
     void Update()
     {
-        // Randomiza uma nova anima��o Idle se estiver parado e ainda n�o tiver sido randomizado
+        if (PlayerController.instance.isFinishing) return;
+
+        // Atualiza o estado de movimento antes do salto
+        if (PlayerController.instance.isGrounded)
+        {
+            wasMovingBeforeJump = Mathf.Abs(PlayerController.instance.RB.linearVelocity.x) > movementThreshold ||
+                                Mathf.Abs(PlayerController.instance.moveInput) > inputThreshold;
+        }
+
+        UpdateMovementAnimations();
+
+        // Só verifica animações idle se não estiver em movimento
+        if (PlayerController.instance.isGrounded &&
+           !PlayerController.instance.Swimming &&
+           !PlayerController.instance.isOnWater &&
+           Mathf.Abs(PlayerController.instance.RB.linearVelocity.x) < movementThreshold &&
+           Mathf.Abs(PlayerController.instance.moveInput) < inputThreshold)
+        {
+            HandleIdleAnimations();
+        }
+    }
+
+    private void HandleIdleAnimations()
+    {
         if (!hasRandomizedIdle)
         {
             PlayRandomIdleAnimation();
         }
-        if (PlayerController.instance.isFinishing)
+    }
+
+    private void PlayRandomIdleAnimation()
+    {
+        int randomIndex = Random.Range(0, idleAnimationTriggers.Length);
+        animationPlayer.SetTrigger(idleAnimationTriggers[randomIndex]);
+        hasRandomizedIdle = true;
+    }
+
+    private void UpdateMovementAnimations()
+    {
+        if (PlayerController.instance.stopPlayer) return;
+
+        bool isGrounded = PlayerController.instance.isGrounded;
+        bool isSwimming = PlayerController.instance.Swimming || PlayerController.instance.isOnWater;
+        bool isClimbing = PlayerController.instance.isClimbing;
+
+        ResetAllAnimations();
+
+        if (isSwimming)
         {
-            animationPlayer.SetBool("JumpingV", false);
-            animationPlayer.SetBool("FallingV", false);
-            animationPlayer.SetBool("JumpingH", false);
-            animationPlayer.SetBool("FallingH", false);
-            animationPlayer.SetBool("Climbing", false);
-            animationPlayer.SetBool("ClimbingIdle", false);
-            isIdle = false;
-            animationPlayer.SetBool("Walking", true);
+            UpdateSwimAnimations();
         }
-        if (!PlayerController.instance.isFinishing)
+        else if (isClimbing)
         {
-            //se estiver no ch�o pode andar e parar //n�o est� a nadar
-            if (PlayerController.instance.isGrounded && !PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
-            {
-                animationPlayer.SetBool("JumpingV", false);
-                animationPlayer.SetBool("FallingV", false);
-                animationPlayer.SetBool("JumpingH", false);
-                animationPlayer.SetBool("FallingH", false);
-                animationPlayer.SetBool("Climbing", false);
-                animationPlayer.SetBool("ClimbingIdle", false);
-                animationPlayer.SetBool("Swim", false);
-                animationPlayer.SetBool("IdleSwim", false);
-
-                //andar movimento
-                if (PlayerController.instance.RB.linearVelocity.x != 0
-                    && PlayerController.instance.moveInput != 0)
-                {
-                    isIdle = false;
-                    animationPlayer.SetBool("Walking", true);
-                    animationPlayer.SetBool("Swim", false);
-                    animationPlayer.SetBool("IdleSwim", false);
-                }
-                else
-                {
-                    animationPlayer.SetBool("Walking", false);
-                    isIdle = true;
-                    animationPlayer.SetBool("Swim", false);
-                    animationPlayer.SetBool("IdleSwim", false);
-                }
-
-            }
-            else if (PlayerController.instance.Swimming || PlayerController.instance.isOnWater)//est� a nadar
-            {
-                animationPlayer.SetBool("Climbing", false);
-                animationPlayer.SetBool("ClimbingIdle", false);
-                animationPlayer.SetBool("JumpingV", false);
-                animationPlayer.SetBool("FallingV", false);
-                animationPlayer.SetBool("JumpingH", false);
-                animationPlayer.SetBool("FallingH", false);
-                animationPlayer.SetBool("Walking", false);
-                isIdle = false;
-
-                if (PlayerController.instance.moveInput != 0 || PlayerController.instance.moveInputUp != 0)
-                {
-                    animationPlayer.SetBool("Swim", true);
-                    animationPlayer.SetBool("IdleSwim", false);
-                }
-                else //est� idle na �gua
-                {
-                    animationPlayer.SetBool("IdleSwim", true);
-                    animationPlayer.SetBool("Swim", false);
-
-                }
-            }
-            else if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater) //se n�o estiver no ch�o
-            {
-                if (!PlayerController.instance.Swimming && !PlayerController.instance.isOnWater)
-                {
-
-                    //Se velocidade for igual a 0 salta normal verticar.
-                    if (PlayerController.instance.RB.linearVelocity.x == 0 && !PlayerController.instance.isOnLadder)
-                    {
-                        animationPlayer.SetBool("Walking", false);
-
-                        if (PlayerController.instance.RB.linearVelocity.y > 0)
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("JumpingV", true);
-                            animationPlayer.SetBool("FallingV", false);
-                            animationPlayer.SetBool("JumpingH", false);
-                            animationPlayer.SetBool("FallingH", false);
-                            animationPlayer.SetBool("Climbing", false);
-                            animationPlayer.SetBool("ClimbingIdle", false);
-                            animationPlayer.SetBool("IdleSwim", false);
-                            animationPlayer.SetBool("Swim", false);
-                        }
-                        if (PlayerController.instance.RB.linearVelocity.y < 0)
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("JumpingV", false);
-                            animationPlayer.SetBool("FallingV", true);
-                            animationPlayer.SetBool("JumpingH", false);
-                            animationPlayer.SetBool("FallingH", false);
-                            animationPlayer.SetBool("Climbing", false);
-                            animationPlayer.SetBool("ClimbingIdle", false);
-                            animationPlayer.SetBool("IdleSwim", false);
-                            animationPlayer.SetBool("Swim", false);
-                        }
-                    }
-                    //Salto horizontal
-                    else if (PlayerController.instance.RB.linearVelocity.x != 0 && !PlayerController.instance.isOnLadder)
-                    {
-                        if (PlayerController.instance.RB.linearVelocity.y > 0)
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("JumpingV", false);
-                            animationPlayer.SetBool("FallingV", false);
-                            animationPlayer.SetBool("JumpingH", true);
-                            animationPlayer.SetBool("FallingH", false);
-                            animationPlayer.SetBool("Climbing", false);
-                            animationPlayer.SetBool("ClimbingIdle", false);
-                        }
-                        if (PlayerController.instance.RB.linearVelocity.y < 0)
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("JumpingV", false);
-                            animationPlayer.SetBool("FallingV", false);
-                            animationPlayer.SetBool("JumpingH", false);
-                            animationPlayer.SetBool("FallingH", true);
-                            animationPlayer.SetBool("Climbing", false);
-                            animationPlayer.SetBool("ClimbingIdle", false);
-                        }
-                    }
-
-                    //escalando
-                    else if (PlayerController.instance.isClimbing)
-                    {
-                        if (PlayerController.instance.moveInputUp != 0)
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("Climbing", true);
-                            animationPlayer.SetBool("JumpingV", false);
-                            animationPlayer.SetBool("FallingV", false);
-                            animationPlayer.SetBool("JumpingH", false);
-                            animationPlayer.SetBool("FallingH", false);
-                            animationPlayer.SetBool("Walking", false);
-                            animationPlayer.SetBool("ClimbingIdle", false);
-                        }
-                        else
-                        {
-                            isIdle = false;
-                            animationPlayer.SetBool("JumpingV", false);
-                            animationPlayer.SetBool("FallingV", false);
-                            animationPlayer.SetBool("JumpingH", false);
-                            animationPlayer.SetBool("FallingH", false);
-                            animationPlayer.SetBool("Walking", false);
-                            animationPlayer.SetBool("Climbing", false);
-                            animationPlayer.SetBool("ClimbingIdle", true);
-                        }
-                    }
-                    else //n�o est� a escalar
-                    {
-                        animationPlayer.SetBool("Climbing", false);
-                        animationPlayer.SetBool("ClimbingIdle", false);
-                    }
-                }
-            }
+            UpdateClimbAnimations();
+        }
+        else if (isGrounded)
+        {
+            UpdateGroundAnimations();
+        }
+        else
+        {
+            UpdateAirAnimations();
         }
     }
+
+    private void UpdateSwimAnimations()
+    {
+        bool isMoving = PlayerController.instance.moveInput != 0 || PlayerController.instance.moveInputUp != 0;
+        animationPlayer.SetBool(isMoving ? "Swim" : "IdleSwim", true);
+    }
+
+    private void UpdateClimbAnimations()
+    {
+        bool isClimbing = PlayerController.instance.moveInputUp != 0;
+        animationPlayer.SetBool(isClimbing ? "Climbing" : "ClimbingIdle", true);
+    }
+
+    private void UpdateGroundAnimations()
+    {
+        bool isMoving = Mathf.Abs(PlayerController.instance.RB.linearVelocity.x) > movementThreshold &&
+                       Mathf.Abs(PlayerController.instance.moveInput) > inputThreshold;
+
+        animationPlayer.SetBool(isMoving ? "Walking" : "Idle", true);
+        isIdle = !isMoving;
+    }
+
+    private void UpdateAirAnimations()
+    {
+        float velocityY = PlayerController.instance.RB.linearVelocity.y;
+        bool isMovingHorizontally = Mathf.Abs(PlayerController.instance.RB.linearVelocity.x) > movementThreshold ||
+                                  Mathf.Abs(PlayerController.instance.moveInput) > inputThreshold;
+
+        // Verificação mais precisa do chão
+        isNearGround = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+
+        bool isFalling = velocityY < fallSpeedThreshold;
+
+        // Resetar estados
+        animationPlayer.SetBool("JumpingV", false);
+        animationPlayer.SetBool("FallingV", false);
+        animationPlayer.SetBool("JumpingH", false);
+        animationPlayer.SetBool("FallingH", false);
+
+        if (isFalling)
+        {
+            if (isMovingHorizontally)
+            {
+                animationPlayer.SetBool("FallingH", true);
+
+                // Trigger quando está perto do chão e não estava antes
+                if (isNearGround && !wasFalling && !triggerLock)
+                {
+                    animationPlayer.SetTrigger("FallingHEnd");
+                    triggerLock = true;
+                    StartCoroutine(ResetTriggerLock());
+                }
+            }
+            else
+            {
+                animationPlayer.SetBool("FallingV", true);
+
+                if (isNearGround && !wasFalling && !triggerLock)
+                {
+                    animationPlayer.SetTrigger("FallingVEnd");
+                    triggerLock = true;
+                    StartCoroutine(ResetTriggerLock());
+                }
+            }
+            wasFalling = true;
+        }
+        else
+        {
+            // Estado de subida
+            if (isMovingHorizontally)
+            {
+                animationPlayer.SetBool("JumpingH", true);
+            }
+            else
+            {
+                animationPlayer.SetBool("JumpingV", true);
+            }
+            wasFalling = false;
+            triggerLock = false;
+        }
+    }
+
+    private IEnumerator ResetTriggerLock()
+    {
+        yield return new WaitForSeconds(0.5f);
+        triggerLock = false;
+    }
+    public void OnIdleAnimationEnd() => hasRandomizedIdle = false;
 
     public void PlayDeathAnimation()
     {
+        ResetAllAnimations();
         animationPlayer.SetBool("dead", true);
     }
-    public void StopDeathAnimation()
-    {
-        animationPlayer.SetBool("dead", false);
-    }
+
+    public void StopDeathAnimation() => animationPlayer.SetBool("dead", false);
 }

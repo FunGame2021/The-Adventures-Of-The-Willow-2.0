@@ -190,6 +190,8 @@ public class PlayerController : MonoBehaviour
         { 
             instance = this;
         }
+
+        UserInput.instance.EnableInput();
         originalParent = transform.parent;
         // Inicialize a c�mera ou realize outras a��es, se necess�rio.
         if (CameraZoom.instance != null)
@@ -942,44 +944,62 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
     #region finishline
     public void StartFinishSequence(bool moveRight)
     {
-        // Configura física
-        RB.gravityScale = finishGravity;
+        // Freeze player input and physics
+        RB.constraints = RigidbodyConstraints2D.FreezeRotation;
         isFinishing = true;
 
-        StartCoroutine(FinishMovement(moveRight));
-           
+        // Set gravity scale (use a lower value for more controlled movement)
+        RB.gravityScale = finishGravity;
 
-        // Desativa outros sistemas
+        // Stop any existing movement
+        RB.linearVelocity = new Vector2(0, 0);
+
+        // Notify animator
+        PlayerAnimatorController.instance.SetFinishState(true);
+
+        StartCoroutine(FinishMovement(moveRight));
+
+        // Disable other systems
         DisableOtherSystems();
     }
 
     private IEnumerator FinishMovement(bool moveRight)
     {
         float direction = moveRight ? 1 : -1;
-        float movementDuration = 2f; // Duração exata de 3 segundos
+        float movementDuration = 3f;
         float timer = 0f;
 
+        // Face the correct direction
         Turn(moveRight);
-        UserInput.instance.DisableInput(); 
+        UserInput.instance.DisableInput();
+
+        // Initial jump force
+        RB.linearVelocity = new Vector2(0, finishJumpForce);
 
         while (timer < movementDuration)
         {
-            Debug.Log("While");
             timer += Time.fixedDeltaTime;
 
+            // Calculate horizontal movement
+            float horizontalSpeed = direction * finishWalkSpeed;
+
+            // Apply movement with gravity
             RB.linearVelocity = new Vector2(
-                direction * finishWalkSpeed,
-                Mathf.Clamp(RB.linearVelocity.y, -10f, finishJumpForce)
+                horizontalSpeed,
+                RB.linearVelocity.y // Let gravity affect vertical movement
             );
 
             yield return new WaitForFixedUpdate();
         }
 
-        // Opcional: Parar completamente após os 3 segundos
+        // Final cleanup
         RB.linearVelocity = Vector2.zero;
-        //isFinishing = false;
-    }
+        PlayerAnimatorController.instance.SetFinishState(false);
+        UserInput.instance.EnableInput();
 
+        // Reset constraints
+        RB.constraints = RigidbodyConstraints2D.FreezeRotation;
+    }
     private void DisableOtherSystems()
     {
         jump = false;
