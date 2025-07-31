@@ -47,7 +47,21 @@ public class PanelController : MonoBehaviour
             panel.SetActive(false);
         }
     }
+    private void Update()
+    {
+        // Verifique continuamente se o toggle foi alterado
+        CheckPlatformToggle();
+    }
 
+    private void CheckPlatformToggle()
+    {
+        if (MoveAndSelectTool.instance != null && MoveAndSelectTool.instance.isPlatformNodeEditor && LevelEditorManager.instance != null && LevelEditorManager.instance.isActiveSelectPoint)
+        {
+            // Se o toggle MovePlatformNode estiver ativo, selecione a opção Platforms (índice 2)
+            dropdown.value = 2;
+            OnDropdownValueChanged(2);
+        }
+    }
     private string GetOptionName(int index)
     {
         // Retorne o nome da opção com base no índice

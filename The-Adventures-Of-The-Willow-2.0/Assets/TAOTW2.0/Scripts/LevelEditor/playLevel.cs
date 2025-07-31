@@ -823,8 +823,6 @@ public class playLevel : MonoBehaviour
                     if (movementComponent != null)
                     {
                         movementComponent.initialStart = movingObjectSaveData.initialStart;
-                        movementComponent.moveSpeed = movingObjectSaveData.speed;
-                        movementComponent.stopDistance = movingObjectSaveData.stopDistance;
                         movementComponent.rightStart = movingObjectSaveData.rightStart;
                         if (movingObjectSaveData.isPingPong)
                         {
@@ -834,22 +832,20 @@ public class playLevel : MonoBehaviour
                         {
                             movementComponent.behaviorType = WaypointBehaviorType.Loop;
                         }
-                        if (movingObjectSaveData.isClosed)
-                        {
-                            movementComponent.pathType = WaypointPathType.Closed;
-                        }
-                        else
-                        {
-                            movementComponent.pathType = WaypointPathType.Open;
-                        }
                         movementComponent.platformMoveid = movingObjectSaveData.id;
 
-                        movementComponent.waypoints = new List<Vector3>();
+                        movementComponent.waypointsData = new List<RuntimeWaypointData>();
 
                         foreach (MovementNodeData nodeData in movingObjectSaveData.node)
                         {
-                            movementComponent.waypoints.Add(nodeData.position);
+                            RuntimeWaypointData waypoint = new RuntimeWaypointData();
+                            waypoint.Position = nodeData.position;
+                            waypoint.TimeNode = nodeData.timeNode;   // Tempo para chegar até aqui vindo do anterior
+                            waypoint.StopTime = nodeData.stopTime;   // Tempo que para neste node
+
+                            movementComponent.waypointsData.Add(waypoint);
                         }
+
                     }
                 }
             }

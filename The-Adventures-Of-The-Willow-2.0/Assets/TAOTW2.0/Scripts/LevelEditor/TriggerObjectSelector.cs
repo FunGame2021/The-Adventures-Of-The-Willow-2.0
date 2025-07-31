@@ -42,12 +42,13 @@ public class TriggerObjectSelector : MonoBehaviour
 
     void Update()
     {
+#if UNITY_EDITOR || UNITY_STANDALONE
         // Clique direito do mouse
         if (Keyboard.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             TryOpenPanelFromPosition(Mouse.current.position.ReadValue());
         }
-
+#else
         // Toque prolongado (1 segundo)
         if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
@@ -89,7 +90,7 @@ public class TriggerObjectSelector : MonoBehaviour
         {
             ResetTouchHold();
         }
-
+#endif
         // Atualiza script durante o painel aberto
         if (isOpened && panelInstance != null && scriptInputField != null)
         {
@@ -100,6 +101,27 @@ public class TriggerObjectSelector : MonoBehaviour
             selectedObject = null;
             panelInstance = null;
             triggerObjectScript = null;
+        }
+
+        try
+        {
+            if (Camera.main == null)
+                Debug.LogWarning("Camera.main is null");
+            if (LevelEditorManager.instance == null)
+                Debug.LogWarning("LevelEditorManager.instance is null");
+            if (Mouse.current == null)
+                Debug.LogWarning("Mouse.current is null");
+            if (Keyboard.current == null)
+                Debug.LogWarning("Keyboard.current is null");
+            if (Touchscreen.current == null)
+                Debug.LogWarning("Touchscreen.current is null");
+
+            // código existente aqui
+
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Erro no Update TriggerObjectSelector: " + e.Message + "\n" + e.StackTrace);
         }
     }
 

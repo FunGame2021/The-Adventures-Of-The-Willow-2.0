@@ -141,6 +141,9 @@ public class LevelEditorManager : MonoBehaviour
     [SerializeField] private GameObject NodeObjectPrefab;
     [SerializeField] private Transform nodesContainer;
 
+    public PlatformController platformController;
+    [SerializeField] private GameObject lineRenderPlatformNodePrefab;
+
     #region Gride
     public int gridWidth = 10; // Largura inicial da grelha
     public int gridHeight = 10; // Altura inicial da grelha
@@ -387,10 +390,6 @@ public class LevelEditorManager : MonoBehaviour
             {
                 return;
             }
-            if (PlatformNodeEditor.instance.isNodeEditor)
-            {
-                return;
-            }
             if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || eraserTool.isActiveEraserDecor1 || eraserTool.isActiveEraserDecor2)
             {
                 return;
@@ -595,7 +594,7 @@ public class LevelEditorManager : MonoBehaviour
             var touch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0];
             if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
             {
-                if (isActiveSelectPoint || PlatformNodeEditor.instance.isNodeEditor
+                if (isActiveSelectPoint
                     || eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || eraserTool.isActiveEraserDecor1 || eraserTool.isActiveEraserDecor2)
                 {
                     return;
@@ -756,7 +755,7 @@ public class LevelEditorManager : MonoBehaviour
             UpdateDragTempObjectPos();
         }
 
-        if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || PlatformNodeEditor.instance.isNodeEditor || isActiveSelectPoint)
+        if (eraserTool.isActiveEraserTile || eraserTool.isActiveEraserEnemy || isActiveSelectPoint)
         {
             StopDragTempObject();
         }
@@ -1566,6 +1565,7 @@ public class LevelEditorManager : MonoBehaviour
         {
             string uniqueID = System.Guid.NewGuid().ToString();
             instantiatedObject.name = selectedObjectName + "_" + uniqueID;
+
         }
 
         // Associa ao container certo
@@ -1611,6 +1611,8 @@ public class LevelEditorManager : MonoBehaviour
 
                 // Use o ID exclusivo para nomear o objeto instanciado
                 instantiatedObject.name = selectedObjectName + "_" + uniqueID;
+
+
 
             }
             // Define o contêiner com base no tipo de objeto
@@ -2389,8 +2391,6 @@ public class LevelEditorManager : MonoBehaviour
                 movingObjectData.objectType = objectType;
                 movingObjectData.initialStart = movementComponent.initialStart;
                 movingObjectData.rightStart = movementComponent.rightStart;
-                movingObjectData.speed = movementComponent.moveSpeed;
-                movingObjectData.stopDistance = movementComponent.stopDistance;
                 movingObjectData.id = movementComponent.platformMoveid;
 
                 // Preenche os dados relacionados ao movimento apenas para objetos do tipo "Moving"
@@ -2404,22 +2404,21 @@ public class LevelEditorManager : MonoBehaviour
                     {
                         movingObjectData.isPingPong = false;
                     }
-                    if (movementComponent.pathType == WaypointPathType.Closed)
-                    {
-                        movingObjectData.isClosed = true;
-                    }
-                    else
-                    {
-                        movingObjectData.isClosed = false;
-                    }
+
 
                     List<MovementNodeData> nodeData = new List<MovementNodeData>();
-                    foreach (Vector3 waypointPosition in movementComponent.waypoints)
+
+                    // Importante: iterar sobre waypointsData (contém posição + timers)
+                    foreach (RuntimeWaypointData waypoint in movementComponent.waypointsData)
                     {
                         MovementNodeData node = new MovementNodeData();
-                        node.position = waypointPosition;
+                        node.position = waypoint.Position;
+                        node.timeNode = waypoint.TimeNode;    // tempo para chegar nesse node
+                        node.stopTime = waypoint.StopTime;    // tempo de parada nesse node
                         nodeData.Add(node);
                     }
+
+                    movingObjectData.node = nodeData;
 
                     movingObjectData.node = nodeData;
 
@@ -3051,12 +3050,10 @@ public class LevelEditorManager : MonoBehaviour
                             if (objectType == ObjectType.Moving)
                             {
                                 PlatformController movementComponent = movingObjectObject.GetComponent<PlatformController>();
-
+                                
                                 if (movementComponent != null)
                                 {
                                     movementComponent.initialStart = movingObjectSaveData.initialStart;
-                                    movementComponent.moveSpeed = movingObjectSaveData.speed;
-                                    movementComponent.stopDistance = movingObjectSaveData.stopDistance;
                                     movementComponent.rightStart = movingObjectSaveData.rightStart;
                                     if (movingObjectSaveData.isPingPong)
                                     {
@@ -3066,22 +3063,20 @@ public class LevelEditorManager : MonoBehaviour
                                     {
                                         movementComponent.behaviorType = WaypointBehaviorType.Loop;
                                     }
-                                    if (movingObjectSaveData.isClosed)
-                                    {
-                                        movementComponent.pathType = WaypointPathType.Closed;
-                                    }
-                                    else
-                                    {
-                                        movementComponent.pathType = WaypointPathType.Open;
-                                    }
                                     movementComponent.platformMoveid = movingObjectSaveData.id;
-
-                                    movementComponent.waypoints = new List<Vector3>();
+                                    // Preenche waypointsData com posições e tempos
+                                    movementComponent.waypointsData = new List<RuntimeWaypointData>();
 
                                     foreach (MovementNodeData nodeData in movingObjectSaveData.node)
                                     {
-                                        movementComponent.waypoints.Add(nodeData.position);
+                                        RuntimeWaypointData waypoint = new RuntimeWaypointData();
+                                        waypoint.Position = nodeData.position;
+                                        waypoint.TimeNode = nodeData.timeNode;   // Tempo para chegar até aqui vindo do anterior
+                                        waypoint.StopTime = nodeData.stopTime;   // Tempo que para neste node
+
+                                        movementComponent.waypointsData.Add(waypoint);
                                     }
+
                                 }
                             }
                         }
@@ -3508,8 +3503,6 @@ public class LevelEditorManager : MonoBehaviour
                                     if (movementComponent != null)
                                     {
                                         movementComponent.initialStart = movingObjectSaveData.initialStart;
-                                        movementComponent.moveSpeed = movingObjectSaveData.speed;
-                                        movementComponent.stopDistance = movingObjectSaveData.stopDistance;
                                         movementComponent.rightStart = movingObjectSaveData.rightStart;
                                         if (movingObjectSaveData.isPingPong)
                                         {
@@ -3519,22 +3512,20 @@ public class LevelEditorManager : MonoBehaviour
                                         {
                                             movementComponent.behaviorType = WaypointBehaviorType.Loop;
                                         }
-                                        if (movingObjectSaveData.isClosed)
-                                        {
-                                            movementComponent.pathType = WaypointPathType.Closed;
-                                        }
-                                        else
-                                        {
-                                            movementComponent.pathType = WaypointPathType.Open;
-                                        }
                                         movementComponent.platformMoveid = movingObjectSaveData.id;
 
-                                        movementComponent.waypoints = new List<Vector3>();
+                                        movementComponent.waypointsData = new List<RuntimeWaypointData>();
 
                                         foreach (MovementNodeData nodeData in movingObjectSaveData.node)
                                         {
-                                            movementComponent.waypoints.Add(nodeData.position);
+                                            RuntimeWaypointData waypoint = new RuntimeWaypointData();
+                                            waypoint.Position = nodeData.position;
+                                            waypoint.TimeNode = nodeData.timeNode;   // Tempo para chegar até aqui vindo do anterior
+                                            waypoint.StopTime = nodeData.stopTime;   // Tempo que para neste node
+
+                                            movementComponent.waypointsData.Add(waypoint);
                                         }
+
                                     }
                                 }
                             }
@@ -4628,6 +4619,8 @@ public class MovingObjectSaveData
 public class MovementNodeData
 {
     public Vector3 position;
+    public float timeNode;
+    public float stopTime;
 }
 
 [System.Serializable]

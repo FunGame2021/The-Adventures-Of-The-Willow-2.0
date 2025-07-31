@@ -26,8 +26,14 @@ public class ResizeObject : MonoBehaviour
 
     private void Update()
     {
-        HandleMouseInput();
-        HandleTouchInput();
+        if (Touchscreen.current != null)
+        {
+            HandleTouchInput();
+        }
+        else
+        {
+            HandleMouseInput();
+        }
     }
 
     private void HandleMouseInput()
@@ -63,13 +69,18 @@ public class ResizeObject : MonoBehaviour
 
     private void HandleTouchInput()
     {
-        if (Touchscreen.current == null) return;
+        if (Touchscreen.current == null)
+        {
+            Debug.Log("Touchscreen não encontrado");
+            return;
+        }
 
         var touches = Touchscreen.current.touches;
 
         if (touches.Count == 0) return;
 
         var touch = touches[0];
+        Debug.Log($"Touch phase: {touch.phase.ReadValue()}");
 
         if (touch.press.wasPressedThisFrame)
         {

@@ -1,138 +1,166 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-  public enum WaypointPathType
-    {
-        Closed,
-        Open
-    }
 
-    public enum WaypointBehaviorType
-    {
-        Loop,
-        PingPong
-    }
+public enum WaypointBehaviorType
+{
+    Loop,     // Caminho circular
+    PingPong  // Vai e volta
+}
+
+[System.Serializable]
+public class RuntimeWaypointData
+{
+    public Vector3 Position;
+    public float TimeNode;
+    public float StopTime;
+}
 
 public class PlatformController : MonoBehaviour
 {
-    public List<Vector3> waypoints = new List<Vector3>();
-    public string thisPlatformNameSaveEditor;
+    public List<RuntimeWaypointData> waypointsData = new List<RuntimeWaypointData>();
+    private int currentWaypointIndex = 0;
+    private int direction = 1;
 
-    [Header("Platform Waypoint Settings")]
     [SerializeField] private Rigidbody2D rb;
     public bool editing = false;
-
-    public WaypointPathType pathType = WaypointPathType.Closed;
     public WaypointBehaviorType behaviorType = WaypointBehaviorType.Loop;
 
-    public float moveSpeed = 5f; // Speed of movement
-    public float stopDistance = 0.1f; // Distance to consider reaching a waypoint
-
-    private int lastWaypointIndex = -1;
-    private int currentWaypointIndex = 0;
-    private int direction = 1; // 1 for forward, -1 for reverse
     public bool rightStart;
-    public string platformMoveid;
     public bool initialStart;
+    public string platformMoveid;
+    public string thisPlatformNameSaveEditor;
 
     [HideInInspector] public LineRenderer lineRenderer;
     [SerializeField] private GameObject lineRenderPrefab;
 
+    private Coroutine movementCoroutine;
+
     private void Start()
     {
+        direction = rightStart ? 1 : -1;
+
         if (editing)
         {
             GameObject lineRenderObj = Instantiate(lineRenderPrefab, transform.position, Quaternion.identity, PlatformNodeEditor.instance.nodesLineRendererContainer);
             lineRenderer = lineRenderObj.GetComponent<LineRenderer>();
             RenderLine();
         }
-    }
-    private void Update()
-    {
-        if (waypoints.Count == 0)
-            return;
-        if (!editing)
+        else if (initialStart && waypointsData.Count > 1)
         {
-            if (Vector2.Distance(transform.position, waypoints[currentWaypointIndex]) <= stopDistance)
+            movementCoroutine = StartCoroutine(MoveThroughWaypoints());
+        }
+    }
+
+    private IEnumerator MoveThroughWaypoints()
+    {
+        while (true)
+        {
+            RuntimeWaypointData currentNode = waypointsData[currentWaypointIndex];
+            RuntimeWaypointData nextNode = GetNextWaypoint();
+
+            if (currentNode.StopTime > 0f)
+                yield return new WaitForSeconds(currentNode.StopTime);
+
+            yield return StartCoroutine(MoveToPosition(nextNode.Position, nextNode.TimeNode));
+
+            UpdateWaypointIndex();
+            yield return null;
+        }
+    }
+
+    private RuntimeWaypointData GetNextWaypoint()
+    {
+        int nextIndex = currentWaypointIndex + direction;
+
+        // Se ultrapassar os limites
+        if (nextIndex >= waypointsData.Count || nextIndex < 0)
+        {
+            if (behaviorType == WaypointBehaviorType.PingPong)
             {
-                if (pathType == WaypointPathType.Closed)
-                {
-                    switch (behaviorType)
-                    {
-                        case WaypointBehaviorType.Loop:
-                            lastWaypointIndex = currentWaypointIndex;
-                            currentWaypointIndex = mod((currentWaypointIndex + direction), waypoints.Count);
-                            break;
-                        case WaypointBehaviorType.PingPong:
-                            if ((lastWaypointIndex == 1 && currentWaypointIndex == 0 && direction < 0) || (lastWaypointIndex == waypoints.Count - 1 && currentWaypointIndex == 0 && direction > 0))
-                            {
-                                direction *= -1;
-                            }
+                direction *= -1;
+                nextIndex = currentWaypointIndex + direction;
+            }
+            else if (behaviorType == WaypointBehaviorType.Loop)
+            {
+                nextIndex = Mod(nextIndex, waypointsData.Count);
+            }
+        }
 
-                            lastWaypointIndex = currentWaypointIndex;
-                            currentWaypointIndex = mod((currentWaypointIndex + direction), waypoints.Count);
-                            break;
-                    }
-                }
-                else if (pathType == WaypointPathType.Open)
-                {
-                    switch (behaviorType)
-                    {
-                        case WaypointBehaviorType.Loop:
-                            int nextWaypointIndex = mod((currentWaypointIndex + direction), waypoints.Count);
+        return waypointsData[nextIndex];
+    }
 
-                            if ((lastWaypointIndex == 1 && currentWaypointIndex == 0 && direction < 0) || (lastWaypointIndex == waypoints.Count - 2 && currentWaypointIndex == waypoints.Count - 1 && direction > 0))
-                            {
-                                transform.position = waypoints[nextWaypointIndex];
-                            }
+    private void UpdateWaypointIndex()
+    {
+        currentWaypointIndex += direction;
 
-                            lastWaypointIndex = currentWaypointIndex;
-                            currentWaypointIndex = mod((currentWaypointIndex + direction), waypoints.Count);
-                            break;
-                        case WaypointBehaviorType.PingPong:
-                            if ((lastWaypointIndex == 1 && currentWaypointIndex == 0 && direction < 0) || (lastWaypointIndex == waypoints.Count - 2 && currentWaypointIndex == waypoints.Count - 1 && direction > 0))
-                            {
-                                direction *= -1;
-                            }
-
-                            lastWaypointIndex = currentWaypointIndex;
-                            currentWaypointIndex = mod((currentWaypointIndex + direction), waypoints.Count);
-                            break;
-                    }
-                }
+        if (currentWaypointIndex >= waypointsData.Count || currentWaypointIndex < 0)
+        {
+            if (behaviorType == WaypointBehaviorType.PingPong)
+            {
+                direction *= -1;
+                currentWaypointIndex += direction * 2;
+            }
+            else if (behaviorType == WaypointBehaviorType.Loop)
+            {
+                currentWaypointIndex = Mod(currentWaypointIndex, waypointsData.Count);
             }
         }
     }
 
-    private void FixedUpdate()
+    private IEnumerator MoveToPosition(Vector3 targetPos, float duration)
     {
-        if (!editing)
-        {
-            MoveToWaypoint(waypoints[currentWaypointIndex]);
-        }
-    }
-    private void MoveToWaypoint(Vector3 waypoint)
-    {
-        Vector2 direction = (waypoint - transform.position).normalized;
-        rb.linearVelocity = direction * moveSpeed;
-    }
-    public void RenderLine()
-    {
-        lineRenderer.positionCount = waypoints.Count;
+        Vector3 startPos = transform.position;
+        float elapsed = 0f;
 
-        for (int i = 0; i < waypoints.Count; i++)
+        if (duration <= 0f)
         {
-            lineRenderer.SetPosition(i, waypoints[i]);
+            rb.position = targetPos;
+            yield break;
         }
-    }
-    //public void UpdatePlatformWaypoints(List<Vector3> newWaypoints)
-    //{
-    //    waypoints = newWaypoints;
-    //}
 
-    int mod(int x, int m)
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            Vector3 newPos = Vector3.Lerp(startPos, targetPos, t);
+            rb.MovePosition(newPos);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        rb.MovePosition(targetPos);
+    }
+
+    private int Mod(int x, int m)
     {
         return (x % m + m) % m;
     }
-}
 
+    public void SetWaypointsFromEditor(List<PlatformNodeEditor.EditorWaypointData> editorWaypoints)
+    {
+        waypointsData.Clear();
+        foreach (var wp in editorWaypoints)
+        {
+            waypointsData.Add(new RuntimeWaypointData
+            {
+                Position = wp.position,
+                TimeNode = wp.TimeNode,
+                StopTime = wp.StopTime
+            });
+        }
+
+        RenderLine();
+    }
+
+    public void RenderLine()
+    {
+        if (lineRenderer == null) return;
+
+        lineRenderer.positionCount = waypointsData.Count;
+        for (int i = 0; i < waypointsData.Count; i++)
+        {
+            lineRenderer.SetPosition(i, waypointsData[i].Position);
+        }
+    }
+}

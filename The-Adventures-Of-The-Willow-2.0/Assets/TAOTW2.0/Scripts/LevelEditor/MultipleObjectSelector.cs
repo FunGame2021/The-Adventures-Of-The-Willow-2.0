@@ -11,7 +11,7 @@ public class MultipleObjectSelector : MonoBehaviour
 {
     [Header("General")]
     #region general
-    [SerializeField] private Transform panelLocalization;
+    public Transform panelLocalization;
     #endregion
 
     [Header("Particles")]
@@ -53,18 +53,13 @@ public class MultipleObjectSelector : MonoBehaviour
 
     private TMP_InputField[] mpInputField;
     private TMP_InputField platformIDInput;
-    private TMP_InputField speedInput;
-    private TMP_InputField stopDistanceInput;
 
     private string platformIDString;
-    private string speedString;
-    private string stopDistanceString;
 
     private Toggle[] mpToggles;
     private Toggle mpIsPingPong;
     private Toggle mpIsInitialStarted;
-    private Toggle mpIsClosed;
-    //[SerializeField] private Toggle rightStart;
+    private Toggle rightStart;
 
     private bool mpIsOpened = false;
     private Button mpBackButton;
@@ -273,7 +268,8 @@ public class MultipleObjectSelector : MonoBehaviour
         }
 
         // Moving Platform
-        if (!mpIsOpened && hit.collider.CompareTag("MovingPlatform"))
+        if (!mpIsOpened && hit.collider.CompareTag("MovingPlatform") && !MoveAndSelectTool.instance.AddPlatformNode.isOn 
+            && !MoveAndSelectTool.instance.RemovePlatformNode.isOn && !MoveAndSelectTool.instance.MovePlatformNode.isOn)
         {
             mpIsOpened = true;
             mpSelectedObject = hit.collider.gameObject;
@@ -287,16 +283,17 @@ public class MultipleObjectSelector : MonoBehaviour
                 {
                     if (toggle.name == "initial") mpIsInitialStarted = toggle;
                     else if (toggle.name == "isPingPong") mpIsPingPong = toggle;
-                    else if (toggle.name == "isClosed") mpIsClosed = toggle;
+                    else if (toggle.name == "RightStart") rightStart = toggle;
                 }
 
-                mpInputField = mpPanelInstance.GetComponentsInChildren<TMP_InputField>();
-                foreach (TMP_InputField mpInput in mpInputField)
+                foreach (TMP_InputField inputField in mpPanelInstance.GetComponentsInChildren<TMP_InputField>())
                 {
-                    if (mpInput.name == "inputID") platformIDInput = mpInput;
-                    else if (mpInput.name == "inputSpeed") speedInput = mpInput;
-                    else if (mpInput.name == "inputStopDistance") stopDistanceInput = mpInput;
+                    if (inputField.name == "inputID")
+                    {
+                        platformIDInput = inputField;
+                    }
                 }
+
 
                 mpButtons = mpPanelInstance.GetComponentsInChildren<Button>();
                 foreach (Button button in mpButtons)
@@ -315,15 +312,10 @@ public class MultipleObjectSelector : MonoBehaviour
                 okButton.onClick.RemoveAllListeners();
                 okButton.onClick.AddListener(() =>
                 {
-                    platformControllerScript.pathType = mpIsClosed.isOn ? WaypointPathType.Closed : WaypointPathType.Open;
                     platformControllerScript.behaviorType = mpIsPingPong.isOn ? WaypointBehaviorType.PingPong : WaypointBehaviorType.Loop;
+                    platformControllerScript.rightStart = rightStart.isOn;
                     platformControllerScript.initialStart = mpIsInitialStarted.isOn;
                     platformControllerScript.platformMoveid = platformIDInput.text;
-
-                    if (float.TryParse(speedInput.text, out float speedValue))
-                        platformControllerScript.moveSpeed = speedValue;
-                    if (float.TryParse(stopDistanceInput.text, out float stopDistanceValue))
-                        platformControllerScript.stopDistance = stopDistanceValue;
 
                     mpIsOpened = false;
                     Destroy(mpPanelInstance);
@@ -581,10 +573,6 @@ public class MultipleObjectSelector : MonoBehaviour
         {
             platformIDString = platformControllerScript.platformMoveid.ToString();
             platformIDInput.text = platformIDString;
-            speedString = platformControllerScript.moveSpeed.ToString();
-            speedInput.text = speedString;
-            stopDistanceString = platformControllerScript.stopDistance.ToString();
-            stopDistanceInput.text = stopDistanceString;
             if(platformControllerScript.behaviorType == WaypointBehaviorType.PingPong)
             {
                 mpIsPingPong.isOn = true;
@@ -593,15 +581,9 @@ public class MultipleObjectSelector : MonoBehaviour
             {
                 mpIsPingPong.isOn = false;
             }
-            if(platformControllerScript.pathType == WaypointPathType.Closed)
-            {
-                mpIsClosed.isOn = true;
-            }
-            else
-            {
-                mpIsClosed.isOn = false;
-            }
             mpIsInitialStarted.isOn = platformControllerScript.initialStart;
+
+            rightStart.isOn = platformControllerScript.rightStart;
         }
     
                 

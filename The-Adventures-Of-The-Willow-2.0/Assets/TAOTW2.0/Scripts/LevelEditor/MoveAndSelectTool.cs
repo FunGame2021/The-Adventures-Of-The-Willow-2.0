@@ -4,12 +4,13 @@ using TMPro;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class MoveAndSelectTool : MonoBehaviour
 {
     public static MoveAndSelectTool instance;
 
-    [SerializeField] private Color selectedColor;
+    [HideInInspector] public Color selectedColor;
     [SerializeField] private Color originalColor;
 
     private SpriteRenderer selectedEnemySpriteRenderer;
@@ -26,6 +27,10 @@ public class MoveAndSelectTool : MonoBehaviour
 
     public static GameObject selectedDecor2Object;
     Vector3 Decor2Offset;
+
+    public Toggle AddPlatformNode;
+    public Toggle RemovePlatformNode;
+    public Toggle MovePlatformNode;
 
     private MoveableObject currentMoveableObject;
     private MoveableObjectDecor2 currentMoveable2Object;
@@ -51,6 +56,7 @@ public class MoveAndSelectTool : MonoBehaviour
     public bool isGameObject;
     public bool isDecor;
     public bool isDecor2;
+    public bool isPlatformNodeEditor;
 
     // UI
     public GameObject PanelToHideValues;
@@ -76,17 +82,78 @@ public class MoveAndSelectTool : MonoBehaviour
         dropdownSelectType.onValueChanged.AddListener(OnDropdownValueChanged);
         isEnemy = true;
         OnDropdownValueChanged(0);
+
+        RemovePlatformNode.isOn = false;
+        AddPlatformNode.isOn = false;
+        MovePlatformNode.isOn = false;
+
+        // Configura os listeners dos toggles
+        AddPlatformNode.onValueChanged.AddListener(OnAddToggleChanged);
+        RemovePlatformNode.onValueChanged.AddListener(OnRemoveToggleChanged);
+        MovePlatformNode.onValueChanged.AddListener(OnMoveToggleChanged);
+
+    }
+    private void OnMoveToggleChanged(bool isOn)
+    {
+        if (isOn)
+        {
+            RemovePlatformNode.isOn = false;
+            AddPlatformNode.isOn = false;
+        }
+    }
+    
+    private void OnAddToggleChanged(bool isOn)
+    {
+        if (isOn)
+        {
+            RemovePlatformNode.isOn = false;
+            MovePlatformNode.isOn = false;
+        }
     }
 
+    private void OnRemoveToggleChanged(bool isOn)
+    {
+        if (isOn)
+        {
+            AddPlatformNode.isOn = false;
+            MovePlatformNode.isOn = false;
+        }
+    }
+    private void BackStartToggle()
+    {
+        AddPlatformNode.isOn = false;
+        MovePlatformNode.isOn = false;
+        RemovePlatformNode.isOn = false;
+
+    }
+
+    private bool IsTouchOverUI(Vector2 touchPosition)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current);
+        pointerData.position = touchPosition;
+
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+        return raycastResults.Count > 0;
+    }
     void Update()
     {
-        Vector2 inputPosition = Vector2.zero;
+        if (EventSystem.current.currentSelectedGameObject != null ||
+     EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+
+        // Handle both mouse and touch input
         bool inputStarted = false;
         bool inputHeld = false;
         bool inputEnded = false;
+        Vector2 inputPosition = Vector2.zero;
 
-        // Detecta input mouse
-        if (Mouse.current != null)
+        // Check for mouse input
+        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
             inputPosition = Mouse.current.position.ReadValue();
             inputStarted = Mouse.current.leftButton.wasPressedThisFrame;
@@ -94,22 +161,39 @@ public class MoveAndSelectTool : MonoBehaviour
             inputEnded = Mouse.current.leftButton.wasReleasedThisFrame;
         }
 
-        // Detecta input touch, sobrepõe mouse se houver toque
-        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        // Check for touch input (overrides mouse if present)
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.isInProgress)
         {
-            var touch = Touchscreen.current.touches[0];
+            var touch = Touchscreen.current.primaryTouch;
             inputPosition = touch.position.ReadValue();
-
             var phase = touch.phase.ReadValue();
 
-            if (phase == UnityEngine.InputSystem.TouchPhase.Began) inputStarted = true;
-            else if (phase == UnityEngine.InputSystem.TouchPhase.Moved || phase == UnityEngine.InputSystem.TouchPhase.Stationary) inputHeld = true;
-            else if (phase == UnityEngine.InputSystem.TouchPhase.Ended || phase == UnityEngine.InputSystem.TouchPhase.Canceled) inputEnded = true;
+            inputStarted = phase == UnityEngine.InputSystem.TouchPhase.Began;
+            inputHeld = phase == UnityEngine.InputSystem.TouchPhase.Moved ||
+                       phase == UnityEngine.InputSystem.TouchPhase.Stationary;
+            inputEnded = phase == UnityEngine.InputSystem.TouchPhase.Ended ||
+                        phase == UnityEngine.InputSystem.TouchPhase.Canceled;
         }
-
         // Atualiza posição do input no mundo
         Vector3 inputWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 0));
         mousePosition = inputWorldPos;
+        if (EventSystem.current != null)
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+            if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
+            {
+                var touch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0];
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+                {
+                    // Verifica se o toque foi em UI
+                    if (IsTouchOverUI(touch.screenPosition))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
 
         if (LevelEditorManager.instance.isActiveSelectPoint)
         {
@@ -134,6 +218,35 @@ public class MoveAndSelectTool : MonoBehaviour
                     DeselectEnemy();
                 }
             }
+            // In the Update method, replace the platform node editor section with this:
+            if (isPlatformNodeEditor && inputStarted)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(inputPosition), Vector2.zero);
+
+                if (hit.collider != null && hit.collider.CompareTag("MovingPlatform"))
+                {
+                    // Se clicar em uma plataforma diferente da selecionada
+                    if (PlatformNodeEditor.instance.selectedPlatform != hit.collider.gameObject)
+                    {
+                        PlatformNodeEditor.instance.DeselectPlatform(); // Desseleciona a atual
+                        PlatformNodeEditor.instance.SelectPlatform(hit.collider.gameObject); // Seleciona a nova
+                    }
+                    // Se clicar na mesma plataforma, não faz nada (mantém seleção)
+                }
+                // Removemos o else que desmarcava ao clicar na cena vazia
+            }
+
+            // In the ClearSelections method, modify the platform section to:
+            if (isPlatformNodeEditor && PlatformNodeEditor.instance.selectedPlatform != null)
+            {
+                // Only deselect if we're actually changing tools or disabling the editor
+                if (!LevelEditorManager.instance.isActiveSelectPoint ||
+                    (dropdownSelectType.value != 5)) // 5 is the platform editor option
+                {
+                    PlatformNodeEditor.instance.DeselectPlatform();
+                }
+            }
+
 
             // -- SELEÇÃO GAMEOBJECT --
             if (isGameObject && inputStarted)
@@ -198,6 +311,7 @@ public class MoveAndSelectTool : MonoBehaviour
             {
                 if (OnMouseClick2 != null && inputStarted)
                 {
+                    ClearPreviousDecor2Selection(); // Limpa a seleção anterior
                     OnMouseClick2();
                     if (selectedDecor2Object != null)
                     {
@@ -296,7 +410,7 @@ public class MoveAndSelectTool : MonoBehaviour
         if (inputPos == Vector3.zero) return;
 
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPos.x, inputPos.y, 10)); // Z=10 para melhor visualização
-                 
+
         // Movimento para Enemy
         if (isEnemy && isDragging && selectedEnemyParent != null)
         {
@@ -377,7 +491,11 @@ public class MoveAndSelectTool : MonoBehaviour
 
             UpdateUIWithSelectedObjectData2();
         }
+
     }
+
+
+
     // Modifique o método SelectEnemy
     private void SelectEnemy(Transform enemyTransform, Vector2 inputPosition)
     {
@@ -480,10 +598,23 @@ public class MoveAndSelectTool : MonoBehaviour
             Destroy(selectedDecor2Object.gameObject);
             selectedDecor2Object = null;
         }
+        else if (isPlatformNodeEditor && PlatformNodeEditor.instance.selectedPlatform != null)
+        {
+            if (PlatformNodeEditor.instance != null)
+            {
+                PlatformNodeEditor.instance.DeleteThisPlatform(PlatformNodeEditor.instance.selectedPlatform);
+            }
+            PlatformNodeEditor.instance.selectedPlatform = null;
+        }
     }
 
     private void ClearSelections()
     {
+        // Só desativa os toggles se estivermos no modo de plataforma
+        if (isPlatformNodeEditor)
+        {
+            BackStartToggle();
+        }
 
         if (selectedEnemyParent != null)
         {
@@ -517,6 +648,14 @@ public class MoveAndSelectTool : MonoBehaviour
         selectedGameObjectSprite = null;
         selectedDecorObject = null;
         selectedDecor2Object = null;
+
+
+        // Desseleciona apenas se estiver saindo do modo de plataforma
+        if (!isPlatformNodeEditor && PlatformNodeEditor.instance != null && PlatformNodeEditor.instance.selectedPlatform != null)
+        {
+            Debug.Log("deselecionar plataforma");
+            PlatformNodeEditor.instance.DeselectPlatform();
+        }
 
         isDragging = false;
     }
@@ -718,6 +857,18 @@ public class MoveAndSelectTool : MonoBehaviour
             scaleInput.text = "";
         }
     }
+    public void ClearPreviousDecor2Selection()
+    {
+        if (selectedDecor2Object != null)
+        {
+            var previousDecor2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
+            if (previousDecor2 != null)
+            {
+                previousDecor2.RestoreDecor2OriginalColors();
+            }
+            selectedDecor2Object = null;
+        }
+    }
     private int GetDropdownIndex(string shortLayerName)
     {
         // Encontre o índice correspondente ao nome do short layer no Dropdown
@@ -802,6 +953,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = false;
+                isPlatformNodeEditor = false;
                 break;
 
             case 1: // Valor da Opção 2 selecionada
@@ -810,6 +962,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = false;
+                isPlatformNodeEditor = false;
                 PanelToHideValues.SetActive(false);
                 break;
 
@@ -819,6 +972,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = true;
                 isDecor = false;
                 isDecor2 = false;
+                isPlatformNodeEditor = false;
                 PanelToHideValues.SetActive(false);
                 break;
 
@@ -828,6 +982,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = true;
                 isDecor2 = false;
+                isPlatformNodeEditor = false;
                 PanelToHideValues.SetActive(true);
                 break;
 
@@ -837,7 +992,18 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = true;
+                isPlatformNodeEditor = false;
                 PanelToHideValues.SetActive(true);
+                break;
+
+            case 5: // Valor da Opção 5 selecionada
+                isEnemy = false;
+                isGameObject = false;
+                isObject = false;
+                isDecor = false;
+                isDecor2 = false;
+                isPlatformNodeEditor = true;
+                PanelToHideValues.SetActive(false);
                 break;
 
             default: // Valor inválido selecionado
@@ -846,6 +1012,7 @@ public class MoveAndSelectTool : MonoBehaviour
                 isObject = false;
                 isDecor = false;
                 isDecor2 = false;
+                isPlatformNodeEditor = false;
                 PanelToHideValues.SetActive(false);
                 break;
         }

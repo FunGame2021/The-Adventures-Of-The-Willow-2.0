@@ -78,13 +78,18 @@ public class MoveableObjectDecor2 : MonoBehaviour
 
         if (myRenderers[0].bounds.Contains(positionToCheck))
         {
+            // Desseleciona o Decor2 anterior, se houver
+            if (MoveAndSelectTool.selectedDecor2Object != null &&
+                MoveAndSelectTool.selectedDecor2Object != gameObject)
+            {
+                MoveAndSelectTool.instance.ClearPreviousDecor2Selection();
+            }
+
             MoveAndSelectTool.selectedDecor2Object = gameObject;
 
-            // Obtenha o nome do ShortLayer do primeiro SpriteRenderer
+            // Atualiza as propriedades
             ShortLayerName = GetShortLayerName(myRenderers[0].sortingLayerID);
-            // Obtenha o ShortLayer do primeiro SpriteRenderer
             ShortLayer = myRenderers[0].sortingOrder;
-
             ZPos = this.gameObject.transform.position.z;
             floatScale = this.gameObject.transform.localScale.x;
         }

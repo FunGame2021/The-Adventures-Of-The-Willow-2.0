@@ -47,24 +47,24 @@ public class EraserTool : MonoBehaviour
 
     private void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             return;
-
+#if UNITY_EDITOR || UNITY_STANDALONE
         // --- Mouse ---
-        if (Keyboard.current != null && isActiveEraserTile && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserTile && Mouse.current.leftButton.isPressed)
             EraseTileAtMouse();
 
-        if (Keyboard.current != null && isActiveEraserEnemy && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserEnemy && Mouse.current.leftButton.isPressed)
             EraseEnemyAtMouse();
 
-        if (Keyboard.current != null && isActiveEraserDecor1 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserDecor1 && Mouse.current.leftButton.isPressed)
             EraseDecor1AtMouse();
 
-        if (Keyboard.current != null && isActiveEraserDecor2 && Mouse.current.leftButton.isPressed && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Keyboard.current != null && isActiveEraserDecor2 && Mouse.current.leftButton.isPressed)
             EraseDecor2AtMouse();
-
+#else
         // --- Touch ---
-        if (Touch.activeTouches.Count > 0 && !PlatformNodeEditor.instance.isNodeEditor)
+        if (Touch.activeTouches.Count > 0)
         {
             var touch = Touch.activeTouches[0];
 
@@ -85,7 +85,7 @@ public class EraserTool : MonoBehaviour
                     EraseDecorAtPosition(touch.screenPosition, decor1: false);
             }
         }
-
+#endif
         // Deselect buttons
         if (isActiveEraserEnemy || isActiveEraserDecor1 || isActiveEraserDecor2 || isActiveEraserTile)
         {
@@ -94,6 +94,31 @@ public class EraserTool : MonoBehaviour
             if (GameObjectButton.instance != null) GameObjectButton.instance.Deselect();
             if (Decor2Button.instance != null) Decor2Button.instance.Deselect();
             if (EnemyButton.instance != null) EnemyButton.instance.Deselect();
+        }
+
+        try
+        {
+            if (EventSystem.current == null)
+                Debug.LogWarning("EventSystem.current está null!");
+
+            if (Keyboard.current == null)
+                Debug.LogWarning("Keyboard.current está null");
+
+            if (Mouse.current == null)
+                Debug.LogWarning("Mouse.current está null");
+
+            if (Camera.main == null)
+                Debug.LogWarning("Camera.main está null!");
+
+            if (LevelEditorManager.instance == null)
+                Debug.LogWarning("LevelEditorManager.instance está null!");
+
+            // Executa seu código normalmente aqui
+
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Erro capturado no Update: " + e.Message + "\n" + e.StackTrace);
         }
     }
 

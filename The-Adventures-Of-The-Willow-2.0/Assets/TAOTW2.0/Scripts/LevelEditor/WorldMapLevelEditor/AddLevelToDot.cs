@@ -42,6 +42,8 @@ public class AddLevelToDot : MonoBehaviour
     }
     private void Update()
     {
+
+#if UNITY_EDITOR || UNITY_STANDALONE
         if (Keyboard.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -60,6 +62,7 @@ public class AddLevelToDot : MonoBehaviour
                 }
             }
         }
+#else
         // Verificação do toque prolongado para abrir painel
         if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
@@ -107,7 +110,7 @@ public class AddLevelToDot : MonoBehaviour
             touchHoldTime = 0f;
             touchHeld = false;
         }
-
+#endif
 
         //if (OnMouseClick != null && Mouse.current.leftButton.wasPressedThisFrame && !isSelectingLevel)
         //{
