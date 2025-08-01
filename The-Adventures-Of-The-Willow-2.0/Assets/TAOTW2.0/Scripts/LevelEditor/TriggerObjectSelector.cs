@@ -26,8 +26,13 @@ public class TriggerObjectSelector : MonoBehaviour
     private Button okButton;
     private List<string> typeOptions;
 
-    private float touchHoldTime = 0f;
-    private bool touchHeld = false;
+
+    [SerializeField] private float doubleTapTimeThreshold = 0.3f; // Tempo máximo entre toques
+    [SerializeField] private float maxTapDistance = 50f;          // Distância máxima entre toques
+
+    private float lastTapTime = 0f;
+    private Vector2 lastTapPosition = Vector2.zero;
+    private int tapCount = 0;
 
     void Awake()
     {
@@ -49,46 +54,39 @@ public class TriggerObjectSelector : MonoBehaviour
             TryOpenPanelFromPosition(Mouse.current.position.ReadValue());
         }
 #else
-        // Toque prolongado (1 segundo)
+        // Toque duplo no mobile
         if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
-            TouchControl touch = Touchscreen.current.touches[0];
-            if (touch.press.isPressed)
+            var touch = Touchscreen.current.touches[0];
+
+            if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
             {
-                Vector2 touchPos = touch.position.ReadValue();
-                Vector2 worldTouchPos = Camera.main.ScreenToWorldPoint(touchPos);
-                RaycastHit2D hit = Physics2D.Raycast(worldTouchPos, Vector2.zero);
+                Vector2 currentTapPosition = touch.position.ReadValue();
+                float currentTime = Time.time;
 
-                if (hit.collider != null && !isOpened && LevelEditorManager.instance.isActiveSelectPoint)
+                if (currentTime - lastTapTime < doubleTapTimeThreshold &&
+                    Vector2.Distance(currentTapPosition, lastTapPosition) < maxTapDistance)
                 {
-                    if (hit.collider.CompareTag("GameObject") && hit.collider.gameObject.name.StartsWith("Trigger"))
-                    {
-                        touchHoldTime += Time.deltaTime;
+                    tapCount++;
 
-                        if (touchHoldTime >= 1f && !touchHeld)
-                        {
-                            touchHeld = true;
-                            OpenPanel(hit.collider.gameObject);
-                        }
-                    }
-                    else
+                    if (tapCount >= 2)
                     {
-                        ResetTouchHold();
+                        tapCount = 0;
+
+                        if (LevelEditorManager.instance.isActiveSelectPoint)
+                        {
+                            TryOpenPanelFromPosition(currentTapPosition);
+                        }
                     }
                 }
                 else
                 {
-                    ResetTouchHold();
+                    tapCount = 1;
                 }
+
+                lastTapTime = currentTime;
+                lastTapPosition = currentTapPosition;
             }
-            else
-            {
-                ResetTouchHold();
-            }
-        }
-        else
-        {
-            ResetTouchHold();
         }
 #endif
         // Atualiza script durante o painel aberto
@@ -123,12 +121,6 @@ public class TriggerObjectSelector : MonoBehaviour
         {
             Debug.LogError("Erro no Update TriggerObjectSelector: " + e.Message + "\n" + e.StackTrace);
         }
-    }
-
-    private void ResetTouchHold()
-    {
-        touchHoldTime = 0f;
-        touchHeld = false;
     }
 
     private void TryOpenPanelFromPosition(Vector2 screenPosition)

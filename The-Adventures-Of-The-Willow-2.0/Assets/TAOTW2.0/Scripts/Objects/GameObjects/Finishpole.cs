@@ -76,6 +76,10 @@ public class FinishPole : MonoBehaviour
 
     private void LoadNextScene()
     {
+        if(LoadPlayLevel.instance != null)
+        {
+            LoadPlayLevel.instance.StopTestGameButton();
+        }
         var sceneManager = GameObject.Find("SceneManager")?.GetComponent<LoadScenes>();
         sceneManager?.loadSceneEscapeButton();
     }

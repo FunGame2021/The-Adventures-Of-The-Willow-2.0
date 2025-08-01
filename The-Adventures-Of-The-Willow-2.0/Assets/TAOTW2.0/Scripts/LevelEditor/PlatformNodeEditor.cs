@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 
 public class PlatformNodeEditor : MonoBehaviour
@@ -51,12 +53,15 @@ public class PlatformNodeEditor : MonoBehaviour
     private SpriteRenderer platformSpriteRenderer;
     private Color originalPlatformColor;
 
+    // Variáveis para controle do double tap
+    [SerializeField] private float doubleTapTimeThreshold = 0.3f; // Tempo máximo entre toques
+    [SerializeField] private float maxTapDistance = 50f; // Distância máxima entre os toques para considerar double tap
+
+    private float lastTapTime = 0f;
+    private Vector2 lastTapPosition = Vector2.zero;
+    private int tapCount = 0;
 
 
-    private float touchHoldTime = 1f;
-    private float touchTimer = 0f;
-    private bool touchHolding = false;
-    private Vector2 touchStartPos;
 
     private Vector2? GetMouseWorldPosition()
     {
@@ -114,6 +119,15 @@ public class PlatformNodeEditor : MonoBehaviour
         UpdatePlatformPosition();
 
 
+
+        CheckMouseRightClick();
+        CheckDoubleTapTouch();
+    }
+
+
+
+    private void CheckMouseRightClick()
+    {
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             if (LevelEditorManager.instance.isActiveSelectPoint && MoveAndSelectTool.instance.isPlatformNodeEditor)
@@ -125,36 +139,45 @@ public class PlatformNodeEditor : MonoBehaviour
                 }
             }
         }
+    }
 
-        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+    private void CheckDoubleTapTouch()
+    {
+        if (Touchscreen.current == null)
+            return;
+
+        TouchControl touch = Touchscreen.current.primaryTouch;
+
+        if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
         {
-            var touch = Touchscreen.current.touches[0];
-            if (touch.press.isPressed)
+            Vector2 currentTapPosition = touch.position.ReadValue();
+            float currentTime = Time.time;
+
+            // Se o tempo entre toques for muito grande, reseta o contador
+            if (currentTime - lastTapTime > doubleTapTimeThreshold)
             {
-                if (!touchHolding)
+                tapCount = 0;
+            }
+
+            if (tapCount == 1 &&
+                currentTime - lastTapTime < doubleTapTimeThreshold &&
+                Vector2.Distance(currentTapPosition, lastTapPosition) < maxTapDistance)
+            {
+                // Double tap detectado
+                tapCount = 0;
+
+                if (LevelEditorManager.instance.isActiveSelectPoint)
                 {
-                    touchStartPos = touch.position.ReadValue();
-                    touchTimer = 0f;
-                    touchHolding = true;
-                }
-                else
-                {
-                    touchTimer += Time.deltaTime;
-                    if (touchTimer >= touchHoldTime)
-                    {
-                        touchHolding = false;
-                        if (LevelEditorManager.instance.isActiveSelectPoint)
-                        {
-                            Vector2 worldPos = Camera.main.ScreenToWorldPoint(touchStartPos);
-                            HandleObjectSelection(worldPos);
-                        }
-                    }
+                    Vector2 worldPos = Camera.main.ScreenToWorldPoint(currentTapPosition);
+                    HandleObjectSelection(worldPos);
                 }
             }
             else
             {
-                touchTimer = 0f;
-                touchHolding = false;
+                // Primeiro toque ou inválido, inicia nova contagem
+                tapCount = 1;
+                lastTapTime = currentTime;
+                lastTapPosition = currentTapPosition;
             }
         }
     }

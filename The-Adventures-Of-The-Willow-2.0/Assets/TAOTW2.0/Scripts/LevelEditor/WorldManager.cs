@@ -1,10 +1,25 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.IO;
-using TMPro;
-using System.Diagnostics;
-using System.Collections;
+
+#if UNITY_ANDROID || UNITY_IOS
+using NativeFilePickerNamespace;
+#endif
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#if UNITY_STANDALONE || UNITY_EDITOR
+using SFB; // StandaloneFileBrowser
+#endif
+
+
 
 public class WorldManager : MonoBehaviour
 {
@@ -47,6 +62,8 @@ public class WorldManager : MonoBehaviour
 
     public GameObject WarnTestLevelPanel;
 
+    public GameObject PlayButton;
+
     //Toggle info se tem mundo ou não
     public Toggle toggle;
 
@@ -57,7 +74,7 @@ public class WorldManager : MonoBehaviour
         {
             instance = this;
         }
-
+        PlayButton.SetActive(true);
         // Obtém o caminho completo para a pasta "LevelEditor"
         levelEditorPath = Path.Combine(Application.persistentDataPath, "LevelEditor");
 
@@ -251,6 +268,8 @@ public class WorldManager : MonoBehaviour
                     currentLevelName = level;
 
                     LevelEditorManager.instance.isWorldMapEditor = false;
+
+                    PlayButton.SetActive(true);
                     // Chame a função que carrega o nível ou execute qualquer outra ação desejada com o nível selecionado
                     LevelEditorManager.instance.LoadLevel(worldName, level, "Sector1");
                     SectorManager.instance.currentSectorName = "Sector1";
@@ -353,7 +372,7 @@ public class WorldManager : MonoBehaviour
     }
     #endregion
 
-    
+
 
     #region Criar mundo
     public void OKCreateNewWorldInput()
@@ -594,9 +613,129 @@ public class WorldManager : MonoBehaviour
 
     public void OpenFolder()
     {
-        OpenWorldFolder(currentWorldName);
-
+        ExportWorld();
+        //OpenWorldFolder(currentWorldName);
     }
+
+    public void ExportWorld()
+    {
+        if (string.IsNullOrEmpty(currentWorldName))
+        {
+            UnityEngine.Debug.LogWarning("Nenhum mundo selecionado para exportar!");
+            return;
+        }
+
+        string worldFolderPath = Path.Combine(levelEditorPath, currentWorldName);
+
+        if (!Directory.Exists(worldFolderPath))
+        {
+            UnityEngine.Debug.LogWarning("Pasta do mundo não encontrada!");
+            return;
+        }
+
+        string defaultFileName = $"{currentWorldName}.zip";
+        StartCoroutine(ShowSaveDialogAndCreateZip(worldFolderPath, defaultFileName));
+    }
+
+    private IEnumerator ShowSaveDialogAndCreateZip(string sourceFolderPath, string defaultFileName)
+    {
+        string savePath = null;
+
+#if UNITY_EDITOR
+        savePath = EditorUtility.SaveFilePanel("Exportar Mundo", "", defaultFileName, "zip");
+
+#elif UNITY_STANDALONE
+        var extension = new ExtensionFilter("Arquivo ZIP", "zip");
+        string[] paths = StandaloneFileBrowser.SaveFilePanel("Exportar Mundo", "", defaultFileName, extension);
+        if (paths != null && paths.Length > 0)
+            savePath = paths[0];
+
+#elif UNITY_ANDROID || UNITY_IOS
+        // Cria ZIP em local temporário
+        string tempZipPath = Path.Combine(Application.temporaryCachePath, defaultFileName);
+        try
+        {
+            if (File.Exists(tempZipPath))
+                File.Delete(tempZipPath);
+
+            ZipFile.CreateFromDirectory(sourceFolderPath, tempZipPath);
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError($"Erro ao criar ZIP: {e.Message}");
+            yield break;
+        }
+
+        // Exporta o arquivo com o sistema nativo
+        NativeFilePicker.ExportFile(tempZipPath, (success) =>
+        {
+            UnityEngine.Debug.Log(success ? "Mundo exportado com sucesso!" : "Exportação cancelada ou falhou.");
+        });
+
+        yield break;
+
+#else
+        Debug.LogWarning("Exportação não suportada nesta plataforma.");
+        yield break;
+#endif
+
+        // Editor/PC continua daqui
+        yield return new WaitUntil(() => !string.IsNullOrEmpty(savePath));
+
+        if (!savePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+            savePath += ".zip";
+
+        try
+        {
+            if (File.Exists(savePath))
+                File.Delete(savePath);
+
+            ZipFile.CreateFromDirectory(sourceFolderPath, savePath);
+            UnityEngine.Debug.Log("Mundo exportado com sucesso!");
+
+            StartCoroutine(ShowExportSuccessMessage());
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError($"Erro ao exportar mundo: {e.Message}");
+            StartCoroutine(ShowExportErrorMessage(e.Message));
+        }
+    }
+
+    private IEnumerator ShowExportSuccessMessage()
+    {
+        UnityEngine.Debug.Log("Exportação concluída com sucesso!");
+        yield return new WaitForSeconds(3);
+    }
+
+    private IEnumerator ShowExportErrorMessage(string error)
+    {
+        UnityEngine.Debug.LogError($"Erro na exportação: {error}");
+        yield return new WaitForSeconds(3);
+    }
+    public void OpenWorldFolder(string worldName)
+    {
+        string worldFolderPath = Path.Combine(levelEditorPath, worldName);
+        if (Directory.Exists(worldFolderPath))
+        {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            Process.Start("explorer.exe", worldFolderPath.Replace("/", "\\"));
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            Process.Start("open", worldFolderPath);
+#elif UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX
+            Process.Start("xdg-open", worldFolderPath);
+#else
+            UnityEngine.Debug.LogWarning("Abrir pasta não é suportado nesta plataforma.");
+#endif
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning("A pasta do mundo não existe: " + worldFolderPath);
+        }
+    }
+
+
+    /*/
     public void OpenWorldFolder(string worldName)
     {
         // Obtém o caminho completo para a pasta do mundo
@@ -612,7 +751,7 @@ public class WorldManager : MonoBehaviour
         {
             UnityEngine.Debug.LogWarning("A pasta do mundo não existe: " + worldFolderPath);
         }
-    }
+    }*/
     #endregion
 
     #region Update ao Mundo info Name and Autor

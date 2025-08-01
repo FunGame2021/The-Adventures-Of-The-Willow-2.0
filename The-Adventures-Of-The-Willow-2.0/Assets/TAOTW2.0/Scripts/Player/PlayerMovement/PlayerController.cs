@@ -46,6 +46,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float coyoteTime;
     private float coyoteTimeCounter;
 
+    [Header("Mobile Jump")]
+    [SerializeField] private float mobileJumpBufferTime = 0.2f; // Tempo mínimo entre saltos no mobile
+    private float lastMobileJumpTime;
+    private bool mobileJumpWasPressed;
+    private bool mobileJumpWasReleased;
+
     #endregion
 
     public Rigidbody2D RB;
@@ -184,6 +190,13 @@ public class PlayerController : MonoBehaviour
     public bool isFinishing = false;
     #endregion
 
+    #region Automatic Movement Variables
+    private bool autoMovementEnabled = false;
+    private bool isAutoMoving = false;
+    private bool isAutoJumping = false;
+    private Coroutine autoMoveCoroutine;
+    #endregion
+
     void Start()
     {
         if (instance == null)
@@ -292,6 +305,7 @@ public class PlayerController : MonoBehaviour
             PlayerTrans.eulerAngles = new Vector3(eulers.x, eulers.y, zRotation);
         }
 
+        #region PlayerStates
         //Change colliders with player state for big and small
         if (playerstates.isSmall)
         {
@@ -345,6 +359,9 @@ public class PlayerController : MonoBehaviour
                 collider.enabled = true;
             }
         }
+        #endregion
+
+        #region checks wall, ground, platforms, water
         // Detecção específica para plataformas móveis
         Collider2D platformCollider = Physics2D.OverlapCapsule(groundCheck.position,
             sizeCapsule, CapsuleDirection2D.Horizontal, angleCapsule,
@@ -359,7 +376,7 @@ public class PlayerController : MonoBehaviour
         {
             RB.bodyType = RigidbodyType2D.Dynamic;
         }
-            // Substitua sua detecção atual por:
+            
             isGrounded = Physics2D.OverlapCapsule(groundCheck.position, sizeCapsule,
                 CapsuleDirection2D.Horizontal, angleCapsule,
                 whatIsGround | whatIsMovingPlatform);
@@ -377,8 +394,10 @@ public class PlayerController : MonoBehaviour
         {
             ResetPlayerParent();
         }
+        #endregion
         // Verifica se o jogador est� colidindo com uma parede
         IsCollidingWithWall();
+
         if (!isWallJumping && !stopPlayer)
         {
             if (moveInput < 0)
@@ -390,7 +409,8 @@ public class PlayerController : MonoBehaviour
                 Turn(false); // Vire para a direita
             }
         }
-        
+
+        #region coyote
         if (isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
@@ -399,169 +419,228 @@ public class PlayerController : MonoBehaviour
         {
             coyoteTimeCounter -= Time.deltaTime;
         }
-        //Button was just pushed
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
-            UserInput.instance.jumpButtonPressed)
+        #endregion
+
+        if (!autoMovementEnabled)
         {
-            RB.bodyType = RigidbodyType2D.Dynamic;
-            if (!Swimming && isGrounded)
+            #region Jump
+            //Button was just pushed
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
             {
-                AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
-            }
-            if (isGrounded || coyoteTimeCounter > 0 && !Swimming)
-            {
-                jump = true;
-                RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
-                jumpTimeCounter = 0;
-            }
-            if (isClimbing && !Swimming)
-            {
-                jump = true;
-                RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
-                jumpTimeCounter = 0;
-                isClimbing = false;
-            }
-        }
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasReleasedThisFrame()
-            || UserInput.instance.jumpButtonReleased)
-        {
-            if (!Swimming)
-            {
-                jump = false;
-                jumpTimeCounter = 0;
-                if (RB.linearVelocity.y > 0)
+                RB.bodyType = RigidbodyType2D.Dynamic;
+
+                if (!Swimming && isGrounded)
                 {
-                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, RB.linearVelocity.y * 0.6f);
+                    AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
+                }
+                if (isGrounded || coyoteTimeCounter > 0 && !Swimming)
+                {
+                    jump = true;
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
+                    jumpTimeCounter = 0;
+                }
+                if (isClimbing && !Swimming)
+                {
+                    jump = true;
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
+                    jumpTimeCounter = 0;
+                    isClimbing = false;
+                }
+            }
+            else if (UserInput.instance.jumpButtonPressed && !mobileJumpWasPressed && Time.time > lastMobileJumpTime + mobileJumpBufferTime)
+            {
+                // Lógica específica para mobile
+                mobileJumpWasPressed = true;
+                RB.bodyType = RigidbodyType2D.Dynamic;
+
+                if (!Swimming && isGrounded)
+                {
+                    AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
+                }
+
+                if ((isGrounded || coyoteTimeCounter > 0) && !Swimming)
+                {
+                    jump = true;
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
+                    jumpTimeCounter = 0;
+                    lastMobileJumpTime = Time.time;
+                }
+
+                if (isClimbing && !Swimming)
+                {
+                    jump = true;
+                    RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpPower);
+                    jumpTimeCounter = 0;
+                    isClimbing = false;
+                    lastMobileJumpTime = Time.time;
                 }
             }
 
-        }
 
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed()
-            || UserInput.instance.shootButtonPressed)
-        {
-            jumpBoost = true;
-            speedBoost = true;
-            targetMoveSpeed = boostSpeed;
-        }
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame()
-            || UserInput.instance.shootButtonReleased)
-        {
-            jumpBoost = false;
-            speedBoost = false;
-            targetMoveSpeed = moveSpeed;
-        }
-        // Interpola��o suave da velocidade atual em rela��o � velocidade alvo
-        currentMoveSpeed = Mathf.SmoothDamp(currentMoveSpeed, targetMoveSpeed, ref moveSpeedSmoothVelocity, speedChangeSmoothTime);
-        
-        WallSlide();
-        WallJump();
-        
-        if(isOnLadder && Mathf.Abs(moveInputUp) > 0)
-        {
-            isClimbing = true;
-        }
-        if (Swimming && !stopPlayer)
-        {
-            
 
-            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.IsPressed()
-            || UserInput.instance.jumpButtonPressed)
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasReleasedThisFrame()
+                || UserInput.instance.jumpButtonReleased)
             {
-                if (isTouchingWater)
+                if (!Swimming)
+                {
+                    jump = false;
+                    jumpTimeCounter = 0;
+                    if (RB.linearVelocity.y > 0)
+                    {
+                        RB.linearVelocity = new Vector2(RB.linearVelocity.x, RB.linearVelocity.y * 0.6f);
+                    }
+                }
+
+            }
+            else if (!UserInput.instance.jumpButtonPressed && mobileJumpWasPressed)
+            {
+                // Lógica específica para mobile
+                mobileJumpWasPressed = false;
+                mobileJumpWasReleased = true;
+
+                if (!Swimming)
+                {
+                    jump = false;
+                    jumpTimeCounter = 0;
+                    if (RB.linearVelocity.y > 0)
+                    {
+                        RB.linearVelocity = new Vector2(RB.linearVelocity.x, RB.linearVelocity.y * 0.6f);
+                    }
+                }
+            }
+            #endregion
+            #region shoot
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.IsPressed()
+                || UserInput.instance.shootButtonPressed)
+            {
+                jumpBoost = true;
+                speedBoost = true;
+                targetMoveSpeed = boostSpeed;
+            }
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasReleasedThisFrame()
+                || UserInput.instance.shootButtonReleased)
+            {
+                jumpBoost = false;
+                speedBoost = false;
+                targetMoveSpeed = moveSpeed;
+            }
+            #endregion
+            // Interpola��o suave da velocidade atual em rela��o � velocidade alvo
+            currentMoveSpeed = Mathf.SmoothDamp(currentMoveSpeed, targetMoveSpeed, ref moveSpeedSmoothVelocity, speedChangeSmoothTime);
+
+            WallSlide();
+            WallJump();
+
+            #region climb ladder
+            if (isOnLadder && Mathf.Abs(moveInputUp) > 0)
+            {
+                isClimbing = true;
+            }
+            #endregion
+            #region swim
+            if (Swimming && !stopPlayer)
+            {
+
+
+                if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.IsPressed()
+                || UserInput.instance.jumpButtonPressed)
+                {
+                    if (isTouchingWater)
+                    {
+                        swimMoveDirection = new Vector2(moveInput, moveInputUp);
+                        float inputMagnitude = Mathf.Clamp01(swimMoveDirection.magnitude);
+                        swimMoveDirection.Normalize();
+                        transform.Translate(swimMoveDirection * SwimBoostSpeed * inputMagnitude * Time.deltaTime, Space.World);
+
+                        if (swimMoveDirection != Vector2.zero)
+                        {
+                            Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, swimMoveDirection);
+                            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, RotationSpeed * Time.deltaTime);
+                        }
+                        canJumpingOutOfWater = true;
+                    }
+                }
+                else
                 {
                     swimMoveDirection = new Vector2(moveInput, moveInputUp);
                     float inputMagnitude = Mathf.Clamp01(swimMoveDirection.magnitude);
                     swimMoveDirection.Normalize();
-                    transform.Translate(swimMoveDirection * SwimBoostSpeed * inputMagnitude * Time.deltaTime, Space.World);
+                    transform.Translate(swimMoveDirection * SwimSpeed * inputMagnitude * Time.deltaTime, Space.World);
 
                     if (swimMoveDirection != Vector2.zero)
                     {
                         Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, swimMoveDirection);
                         transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, RotationSpeed * Time.deltaTime);
                     }
-                    canJumpingOutOfWater = true;
+                    canJumpingOutOfWater = false;
                 }
-            }
-            else
-            {
-                swimMoveDirection = new Vector2(moveInput, moveInputUp);
-                float inputMagnitude = Mathf.Clamp01(swimMoveDirection.magnitude);
-                swimMoveDirection.Normalize();
-                transform.Translate(swimMoveDirection * SwimSpeed * inputMagnitude * Time.deltaTime, Space.World);
 
-                if (swimMoveDirection != Vector2.zero)
-                {
-                    Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, swimMoveDirection);
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, RotationSpeed * Time.deltaTime);
-                }
+            }
+
+            if (!isTouchingWater)
+            {
                 canJumpingOutOfWater = false;
             }
-            
-        }
 
-        if(!isTouchingWater)
-        {
-            canJumpingOutOfWater = false;
-        }
+            // Verifica colis�es para cada dire��o separadamente
+            RaycastHit2D groundHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.down, 0.01f, whatIsHit);
+            RaycastHit2D ceilingHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.up, 0.01f, whatIsHit);
+            RaycastHit2D leftHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.left, 0.01f, whatIsHit);
+            RaycastHit2D rightHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.right, 0.01f, whatIsHit);
 
-        // Verifica colis�es para cada dire��o separadamente
-        RaycastHit2D groundHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.down, 0.01f, whatIsHit);
-        RaycastHit2D ceilingHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.up, 0.01f, whatIsHit);
-        RaycastHit2D leftHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.left, 0.01f, whatIsHit);
-        RaycastHit2D rightHit = Physics2D.BoxCast(castOrigin.position, castSize, 0f, Vector2.right, 0.01f, whatIsHit);
-
-        if (isHeadFirst && !isGrounded && RB.linearVelocity.y < 0 && !Swimming && !isWallJumping && !isOnLadder && afterWaterOutside)
-        {
-            
-            if (moveInput != 0)
+            if (isHeadFirst && !isGrounded && RB.linearVelocity.y < 0 && !Swimming && !isWallJumping && !isOnLadder && afterWaterOutside)
             {
-                float targetRotationZ = moveInput < 0 ? -180f : 180f;
-                Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetRotationZ);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                if (moveInput != 0)
+                {
+                    float targetRotationZ = moveInput < 0 ? -180f : 180f;
+                    Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetRotationZ);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                }
+                else
+                {
+                    Quaternion targetRotation = Quaternion.Euler(0f, 0f, 180f);
+                    transform.rotation = targetRotation;
+
+                }
 
             }
-            else
+            if ((groundHit.collider != null || ceilingHit.collider != null || leftHit.collider != null || rightHit.collider != null) && afterWaterOutside)
             {
-                Quaternion targetRotation = Quaternion.Euler(0f, 0f, 180f);
-                transform.rotation = targetRotation;
-
+                transform.eulerAngles = originalRotation;
+                afterWaterOutside = false;
+            }
+            if (!afterWaterOutside)
+            {
+                transform.eulerAngles = originalRotation;
             }
 
-        }
-        if ((groundHit.collider != null || ceilingHit.collider != null || leftHit.collider != null || rightHit.collider != null) && afterWaterOutside)
-        {
-            transform.eulerAngles = originalRotation;
-            afterWaterOutside = false;
-        }
-        if (!afterWaterOutside)
-        {
-            transform.eulerAngles = originalRotation;
-        }
+            if (canJumpWaterNow > 0)
+            {
+                RB.gravityScale = normalGravity;
+                canJumpWaterNow -= Time.deltaTime;
+            }
+            if (canJumpWaterNow <= 0)
+            {
+                RB.gravityScale = SwimGravity;
+                canJumpWaterNow = 0;
+            }
 
-        if (canJumpWaterNow > 0)
-        {
-            RB.gravityScale = normalGravity;
-            canJumpWaterNow -= Time.deltaTime;
-        }
-        if(canJumpWaterNow <= 0)
-        {
-            RB.gravityScale = SwimGravity;
-            canJumpWaterNow = 0;
-        }
+            if (waterExitTime > 0)
+            {
+                isHeadFirst = true;
+                waterExitTime -= Time.deltaTime;
+            }
 
-        if(waterExitTime > 0)
-        {
-            isHeadFirst = true;
-            waterExitTime -= Time.deltaTime;
-        }
+            if (waterExitTime <= 0)
+            {
+                isHeadFirst = false;
+                waterExitTime = 0;
+            }
 
-        if(waterExitTime <= 0)
-        {
-            isHeadFirst = false;
-            waterExitTime = 0;
+            #endregion
         }
-
         //Death Animation
         if (isDead)
         {
@@ -576,10 +655,85 @@ public class PlayerController : MonoBehaviour
                 BackToLife();
             }
         }
+
+
     }
+
+    public void EnableAutoMovement()
+    {
+        autoMovementEnabled = true;
+    }
+
+    public void DisableAutoMovement()
+    {
+        autoMovementEnabled = false;
+    }
+    public void AutoJump(float jumpForce)
+    {
+        if (!isGrounded && !isWallSliding) return;
+
+        isAutoJumping = true;
+
+        // Executa o pulo imediatamente
+        if (isGrounded || coyoteTimeCounter > 0)
+        {
+            RB.linearVelocity = new Vector2(RB.linearVelocity.x, jumpForce);
+            jumpTimeCounter = 0;
+
+            if (!Swimming)
+            {
+                AudioManager.instance.PlayOneShot(FMODEvents.instance.playerJump, this.transform.position);
+            }
+        }
+        else if (isWallSliding)
+        {
+            // Wall jump automático
+            RB.linearVelocity = new Vector2(-wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+        }
+
+        isAutoJumping = false;
+    }
+
+    public Coroutine AutoMove(float moveSpeed, bool moveRight, float duration)
+    {
+        // Cancela movimento automático anterior se existir
+        if (autoMoveCoroutine != null)
+        {
+            StopCoroutine(autoMoveCoroutine);
+        }
+
+        autoMoveCoroutine = StartCoroutine(AutoMoveRoutine(moveSpeed, moveRight, duration));
+        return autoMoveCoroutine;
+    }
+
+    private IEnumerator AutoMoveRoutine(float speed, bool moveRight, float duration)
+    {
+        isAutoMoving = true;
+        float direction = moveRight ? 1f : -1f;
+
+        // Vira o player na direção correta
+        Turn(!moveRight);
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            if (!isWallJumping && !Swimming && !isDead && !isOnPlatform)
+            {
+                RB.linearVelocity = new Vector2(direction * speed, RB.linearVelocity.y);
+            }
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isAutoMoving = false;
+    }
+
+
     private void FixedUpdate()
     {
-        if (!isFinishing)
+        if (!autoMovementEnabled)
         {
 
             if (knockbackTimer > 0)
@@ -707,8 +861,55 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        
 
+        else
+        {
+
+            if (moveInput != 0)
+            {
+                RemovePlayerFriction();
+                RB.bodyType = RigidbodyType2D.Dynamic;
+            }
+            else
+            {
+                AddPlayerFriction();
+            }
+
+
+            //Jump
+            if (jumpBoost && !stopPlayer && !isDead)
+            {
+                jumpTime = boostedJumpTime; // Usar dura��o de salto aumentada
+            }
+            else
+            {
+                jumpTime = normalJumpTime;
+            }
+
+            if (RB.linearVelocity.y > 0 && jump)
+            {
+                jumpTimeCounter += Time.deltaTime;
+                if (jumpTimeCounter > jumpTime)
+                {
+                    jump = false;
+                }
+                float t = jumpTimeCounter / jumpTime;
+                float currentJumpM = jumpMultiplier;
+
+                if (t > 0.5f)
+                {
+                    currentJumpM = jumpMultiplier * (1 - t);
+                }
+                RB.linearVelocity += vecGravity * currentJumpM * Time.deltaTime;
+            }
+
+            if (RB.linearVelocity.y < 0)
+            {
+                RB.linearVelocity += vecGravity * (fallMultiplier - 1.0f) * Time.deltaTime;
+                //RB.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
+            }
+
+        }
     }
 
     public void FreezePlayer()
@@ -944,12 +1145,9 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
     #region finishline
     public void StartFinishSequence(bool moveRight)
     {
-        // Freeze player input and physics
-        RB.constraints = RigidbodyConstraints2D.FreezeRotation;
         isFinishing = true;
 
-        // Set gravity scale (use a lower value for more controlled movement)
-        RB.gravityScale = finishGravity;
+        UserInput.instance.DisableInput();
 
         // Stop any existing movement
         RB.linearVelocity = new Vector2(0, 0);
@@ -962,43 +1160,23 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
         // Disable other systems
         DisableOtherSystems();
     }
-
     private IEnumerator FinishMovement(bool moveRight)
     {
-        float direction = moveRight ? 1 : -1;
-        float movementDuration = 3f;
-        float timer = 0f;
+        // Usa o sistema de auto movimento para a sequência de finalização
+        EnableAutoMovement();
 
-        // Face the correct direction
-        Turn(moveRight);
-        UserInput.instance.DisableInput();
+        AutoJump(4);
+        yield return AutoMove(2, moveRight, 6); // Aguarda o fim da movimentação automática
+        yield return null;
+        
 
-        // Initial jump force
-        RB.linearVelocity = new Vector2(0, finishJumpForce);
+        // Finaliza o movimento automático
+        DisableAutoMovement();
 
-        while (timer < movementDuration)
-        {
-            timer += Time.fixedDeltaTime;
-
-            // Calculate horizontal movement
-            float horizontalSpeed = direction * finishWalkSpeed;
-
-            // Apply movement with gravity
-            RB.linearVelocity = new Vector2(
-                horizontalSpeed,
-                RB.linearVelocity.y // Let gravity affect vertical movement
-            );
-
-            yield return new WaitForFixedUpdate();
-        }
-
-        // Final cleanup
+        // Resto da lógica de finalização
         RB.linearVelocity = Vector2.zero;
         PlayerAnimatorController.instance.SetFinishState(false);
         UserInput.instance.EnableInput();
-
-        // Reset constraints
-        RB.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
     private void DisableOtherSystems()
     {
@@ -1006,6 +1184,7 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
         isWallJumping = false;
         isClimbing = false;
         Swimming = false;
+        mobileJumpWasPressed = false;
     }
     #endregion
 

@@ -142,10 +142,13 @@ public class MultipleObjectSelector : MonoBehaviour
     private bool KeyIsOpened = false;
     #endregion
 
-    private float touchHoldTime = 1f;
-    private float touchTimer = 0f;
-    private bool touchHolding = false;
-    private Vector2 touchStartPos;
+    [SerializeField] private float doubleTapTimeThreshold = 0.3f; // Tempo máximo entre toques
+    [SerializeField] private float maxTapDistance = 50f;          // Distância máxima entre toques
+
+    private float lastTapTime = 0f;
+    private Vector2 lastTapPosition = Vector2.zero;
+    private int tapCount = 0;
+
     private Vector2? GetMouseWorldPosition()
     {
         if (Mouse.current != null && Mouse.current.position != null)
@@ -172,32 +175,35 @@ public class MultipleObjectSelector : MonoBehaviour
         if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
             var touch = Touchscreen.current.touches[0];
-            if (touch.press.isPressed)
+
+            if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
             {
-                if (!touchHolding)
+                Vector2 currentTapPosition = touch.position.ReadValue();
+                float currentTime = Time.time;
+
+                if (currentTime - lastTapTime < doubleTapTimeThreshold &&
+                    Vector2.Distance(currentTapPosition, lastTapPosition) < maxTapDistance)
                 {
-                    touchStartPos = touch.position.ReadValue();
-                    touchTimer = 0f;
-                    touchHolding = true;
-                }
-                else
-                {
-                    touchTimer += Time.deltaTime;
-                    if (touchTimer >= touchHoldTime)
+                    tapCount++;
+
+                    if (tapCount >= 2)
                     {
-                        touchHolding = false;
+                        tapCount = 0;
+
                         if (LevelEditorManager.instance.isActiveSelectPoint)
                         {
-                            Vector2 worldPos = Camera.main.ScreenToWorldPoint(touchStartPos);
+                            Vector2 worldPos = Camera.main.ScreenToWorldPoint(currentTapPosition);
                             HandleObjectSelection(worldPos);
                         }
                     }
                 }
-            }
-            else
-            {
-                touchTimer = 0f;
-                touchHolding = false;
+                else
+                {
+                    tapCount = 1;
+                }
+
+                lastTapTime = currentTime;
+                lastTapPosition = currentTapPosition;
             }
         }
 
