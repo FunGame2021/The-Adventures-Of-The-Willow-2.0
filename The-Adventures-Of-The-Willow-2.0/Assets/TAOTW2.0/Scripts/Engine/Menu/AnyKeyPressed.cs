@@ -38,7 +38,6 @@ public class AnyKeyPressed : MonoBehaviour
             || UserInput.instance.playerMoveAndExtraActions.UI.RightClick.WasPerformedThisFrame() || UserInput.instance.playerMoveAndExtraActions.UI.MiddleClick.WasPerformedThisFrame()
             || UserInput.instance.playerMoveAndExtraActions.UI.LeftClick.WasPerformedThisFrame()) && !gameStarted)
         {
-            Debug.Log("Has touched");
             textPressed.SetActive(false);
             Buttons.SetActive(true);
             Anim.SetBool("entered", false);

@@ -613,6 +613,11 @@ public class WorldManager : MonoBehaviour
 
     public void OpenFolder()
     {
+        OpenWorldFolder(currentWorldName);
+    }
+
+    public void ExportWorldFolder()
+    {
         ExportWorld();
         //OpenWorldFolder(currentWorldName);
     }
@@ -644,11 +649,11 @@ public class WorldManager : MonoBehaviour
 #if UNITY_EDITOR
         savePath = EditorUtility.SaveFilePanel("Exportar Mundo", "", defaultFileName, "zip");
 
-#elif UNITY_STANDALONE
-        var extension = new ExtensionFilter("Arquivo ZIP", "zip");
-        string[] paths = StandaloneFileBrowser.SaveFilePanel("Exportar Mundo", "", defaultFileName, extension);
-        if (paths != null && paths.Length > 0)
-            savePath = paths[0];
+#elif UNITY_STANDALONE || UNITY_LINUX
+        var extensions = new[] {
+        new ExtensionFilter("Arquivo ZIP", "zip")
+    };
+        savePath = StandaloneFileBrowser.SaveFilePanel("Exportar Mundo", "", defaultFileName, extensions);
 
 #elif UNITY_ANDROID || UNITY_IOS
         // Cria ZIP em local temporário

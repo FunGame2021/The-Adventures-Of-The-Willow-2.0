@@ -35,6 +35,9 @@ public class UserInput : MonoBehaviour
     public void OnShootButtonDown() { shootButtonPressed = true; }
     public void OnShootButtonUp() { shootButtonPressed = false; }
 
+
+    [SerializeField] private GameObject[] TouchControls; 
+
     private void Awake()
     {
         if (instance == null)
@@ -45,7 +48,22 @@ public class UserInput : MonoBehaviour
         playerMoveAndExtraActions = new PlayerMoveAndExtraActions();
 
         playerMoveAndExtraActions.PlayerActions.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+
+#if UNITY_ANDROID || UNITY_IOS
         EnhancedTouchSupport.Enable();
+        
+        foreach (var obj in TouchControls)
+        {
+            if (obj != null)
+                obj.SetActive(true);
+        }
+#else
+        foreach (var obj in TouchControls)
+        {
+            if (obj != null)
+                obj.SetActive(false);
+        }
+#endif
     }
 
     private void Update()
@@ -85,7 +103,7 @@ public class UserInput : MonoBehaviour
         }
 #endif
 
-        Debug.Log("Input de teclado/alternativo");
+        //Debug.Log("Input de teclado/alternativo");
         return moveInput;
     }
 

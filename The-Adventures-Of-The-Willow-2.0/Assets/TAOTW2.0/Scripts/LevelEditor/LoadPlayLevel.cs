@@ -1,11 +1,12 @@
+using FMOD.Studio;
+using FMODUnity;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using TMPro;
-using FMODUnity;
-using FMOD.Studio;
-using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 using static UnityEngine.Collider2D;
 
 public class LoadPlayLevel : MonoBehaviour
@@ -189,7 +190,11 @@ public class LoadPlayLevel : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() || 
+        if (Keyboard.current.anyKey.isPressed || UserInput.instance.playerMoveAndExtraActions.UI.ScrollWheel.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.RightClick.WasPerformedThisFrame() 
+            || UserInput.instance.playerMoveAndExtraActions.UI.MiddleClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.LeftClick.WasPerformedThisFrame() 
+            || UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() || 
             UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
             if (!StartedLevel && canStart)

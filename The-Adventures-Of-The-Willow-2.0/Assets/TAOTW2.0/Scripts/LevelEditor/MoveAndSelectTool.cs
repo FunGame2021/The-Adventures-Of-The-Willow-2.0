@@ -142,6 +142,8 @@ public class MoveAndSelectTool : MonoBehaviour
         if (EventSystem.current.currentSelectedGameObject != null ||
      EventSystem.current.IsPointerOverGameObject())
         {
+            ClearSelectionsTouchUI();
+            RestoreAllOriginalColors();
             return;
         }
 
@@ -189,6 +191,8 @@ public class MoveAndSelectTool : MonoBehaviour
                     // Verifica se o toque foi em UI
                     if (IsTouchOverUI(touch.screenPosition))
                     {
+                        ClearSelectionsTouchUI();
+                        RestoreAllOriginalColors();
                         return;
                     }
                 }
@@ -200,7 +204,7 @@ public class MoveAndSelectTool : MonoBehaviour
             // Ignora clique se for na UI
             if (EventSystem.current.IsPointerOverGameObject())
             {
-                ClearSelections();
+                ClearSelectionsTouchUI();
                 RestoreAllOriginalColors();
                 return;
             }
@@ -606,6 +610,44 @@ public class MoveAndSelectTool : MonoBehaviour
             }
             PlatformNodeEditor.instance.selectedPlatform = null;
         }
+    }
+    private void ClearSelectionsTouchUI()
+    {
+        if (selectedEnemyParent != null)
+        {
+            ChangeParentColors(selectedEnemyParent, originalEnemyColor);
+        }
+        if (selectedDecorObject != null)
+        {
+            var decor = selectedDecorObject.GetComponent<MoveableObject>();
+            if (decor != null)
+            {
+                decor.RestoreDecorOriginalColors();
+            }
+            selectedDecorObject = null;
+        }
+        // Desseleciona Decor2
+        if (selectedDecor2Object != null)
+        {
+            var decor2 = selectedDecor2Object.GetComponent<MoveableObjectDecor2>();
+            if (decor2 != null)
+            {
+                decor2.RestoreDecor2OriginalColors();
+            }
+            selectedDecor2Object = null;
+        }
+        selectedEnemySprite = null;
+        selectedEnemyParent = null;
+        selectedEnemySpriteRenderer = null;
+
+        // Desseleciona outros objetos
+        selectedObjectSprite = null;
+        selectedGameObjectSprite = null;
+        selectedDecorObject = null;
+        selectedDecor2Object = null;
+
+
+        isDragging = false;
     }
 
     private void ClearSelections()

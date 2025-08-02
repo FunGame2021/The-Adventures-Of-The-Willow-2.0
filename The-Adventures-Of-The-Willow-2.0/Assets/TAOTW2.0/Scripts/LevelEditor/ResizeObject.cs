@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class ResizeObject : MonoBehaviour
@@ -8,6 +9,7 @@ public class ResizeObject : MonoBehaviour
     private bool isResizing = false;
     private GameObject hitObject;
 
+    [Header("Arrow References")]
     public GameObject topArrow;
     public GameObject bottomArrow;
     public GameObject leftArrow;
@@ -26,7 +28,7 @@ public class ResizeObject : MonoBehaviour
 
     private void Update()
     {
-        if (Touchscreen.current != null)
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
             HandleTouchInput();
         }
@@ -38,10 +40,27 @@ public class ResizeObject : MonoBehaviour
 
     private void HandleMouseInput()
     {
-        if (Touchscreen.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        // Verifica se está clicando na UI
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            if (isResizing)
+            {
+                CancelResizing();
+            }
+            return;
+        }
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 worldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+            // Se clicou em área vazia e está redimensionando, cancela
+            if (hit.collider == null && isResizing)
+            {
+                CancelResizing();
+                return;
+            }
 
             if (hit.collider != null && IsArrow(hit.collider.gameObject))
             {
@@ -52,7 +71,7 @@ public class ResizeObject : MonoBehaviour
             }
         }
 
-        if (isResizing && Touchscreen.current != null && Mouse.current.leftButton.isPressed)
+        if (isResizing && Mouse.current.leftButton.isPressed)
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
             Vector2 delta = (mousePos - initialPointerPosition) * 0.01f;
@@ -60,32 +79,41 @@ public class ResizeObject : MonoBehaviour
             UpdateArrowPositions();
         }
 
-        if (Touchscreen.current != null && Mouse.current.leftButton.wasReleasedThisFrame)
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            isResizing = false;
-            hitObject = null;
+            CancelResizing();
         }
     }
 
     private void HandleTouchInput()
     {
-        if (Touchscreen.current == null)
+        if (Touchscreen.current == null || Touchscreen.current.touches.Count == 0)
+            return;
+
+        var touch = Touchscreen.current.touches[0];
+        var phase = touch.phase.ReadValue();
+
+        // Verifica se está tocando na UI
+        if (IsPointerOverUIObject(touch.position.ReadValue()))
         {
-            Debug.Log("Touchscreen não encontrado");
+            if (isResizing)
+            {
+                CancelResizing();
+            }
             return;
         }
 
-        var touches = Touchscreen.current.touches;
-
-        if (touches.Count == 0) return;
-
-        var touch = touches[0];
-        Debug.Log($"Touch phase: {touch.phase.ReadValue()}");
-
-        if (touch.press.wasPressedThisFrame)
+        if (phase == UnityEngine.InputSystem.TouchPhase.Began)
         {
             Vector2 worldPos = Camera.main.ScreenToWorldPoint(touch.position.ReadValue());
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+            // Se tocou em área vazia e está redimensionando, cancela
+            if (hit.collider == null && isResizing)
+            {
+                CancelResizing();
+                return;
+            }
 
             if (hit.collider != null && IsArrow(hit.collider.gameObject))
             {
@@ -96,7 +124,7 @@ public class ResizeObject : MonoBehaviour
             }
         }
 
-        if (isResizing && touch.press.isPressed)
+        if (isResizing && phase == UnityEngine.InputSystem.TouchPhase.Moved)
         {
             Vector2 touchPos = touch.position.ReadValue();
             Vector2 delta = (touchPos - initialPointerPosition) * 0.01f;
@@ -104,11 +132,27 @@ public class ResizeObject : MonoBehaviour
             UpdateArrowPositions();
         }
 
-        if (touch.press.wasReleasedThisFrame)
+        if (phase == UnityEngine.InputSystem.TouchPhase.Ended ||
+            phase == UnityEngine.InputSystem.TouchPhase.Canceled)
         {
-            isResizing = false;
-            hitObject = null;
+            CancelResizing();
         }
+    }
+
+    // Método auxiliar para verificar toque na UI (funciona com o novo Input System)
+    private bool IsPointerOverUIObject(Vector2 touchPosition)
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = touchPosition;
+        var results = new System.Collections.Generic.List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count > 0;
+    }
+
+    private void CancelResizing()
+    {
+        isResizing = false;
+        hitObject = null;
     }
 
     private bool IsArrow(GameObject obj)
@@ -119,43 +163,51 @@ public class ResizeObject : MonoBehaviour
 
     private void ResizeAccordingToArrow(Vector2 delta)
     {
+        if (hitObject == null) return;
+
+        Vector2 newScale = initialScale;
+
         if (hitObject == topArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y + delta.y);
+            newScale.y += delta.y;
         }
         else if (hitObject == bottomArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x, initialScale.y - delta.y);
+            newScale.y -= delta.y;
         }
         else if (hitObject == leftArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y);
+            newScale.x -= delta.x;
         }
         else if (hitObject == rightArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y);
+            newScale.x += delta.x;
         }
         else if (hitObject == topLeftArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y + delta.y);
+            newScale.x -= delta.x;
+            newScale.y += delta.y;
         }
         else if (hitObject == topRightArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y + delta.y);
+            newScale.x += delta.x;
+            newScale.y += delta.y;
         }
         else if (hitObject == bottomLeftArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x - delta.x, initialScale.y - delta.y);
+            newScale.x -= delta.x;
+            newScale.y -= delta.y;
         }
         else if (hitObject == bottomRightArrow)
         {
-            squareToResize.transform.localScale = new Vector2(initialScale.x + delta.x, initialScale.y - delta.y);
+            newScale.x += delta.x;
+            newScale.y -= delta.y;
         }
 
-        // Limita escala mínima para evitar tamanho zero ou negativo
+        // Limita escala mínima
         squareToResize.transform.localScale = new Vector2(
-            Mathf.Max(squareToResize.transform.localScale.x, 0.1f),
-            Mathf.Max(squareToResize.transform.localScale.y, 0.1f)
+            Mathf.Max(newScale.x, 0.1f),
+            Mathf.Max(newScale.y, 0.1f)
         );
     }
 

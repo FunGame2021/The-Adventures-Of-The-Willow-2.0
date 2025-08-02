@@ -41,37 +41,41 @@ public class LevelEditorCamera : MonoBehaviour
         currentZoomSize = defaultZoomSize;
         moveSpeed = moveSpeedDefault;
     }
-    public void CameraMovement(InputAction.CallbackContext context)
+    public void CameraMovement()
     {
-        horizontal = context.ReadValue<Vector2>().x;
-        vertical = context.ReadValue<Vector2>().y;
+        Vector2 moveInput = UserInput.instance.GetMoveInput();
+        horizontal = moveInput.x;
+        vertical = moveInput.y;
     }
 
     private void Update()
     {
-
         if (!LevelEditorManager.instance.isCTRLClicked)
         {
 
+#if UNITY_ANDROID || UNITY_IOS
             if (Touchscreen.current != null && (Touch.activeTouches.Count > 0 || (joystickUI != null && joystickUI.IsTouching)))
             {
                 // Touch detected, usa movimento e zoom touch
                 HandleTouchControls();
-            }
-            else
+            } 
+#elif UNITY_STANDALONE || UNITY_LINUX
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                if (!EventSystem.current.IsPointerOverGameObject())
-                {
-                    // Sem touch, usa teclado/mouse
-                    MoveCameraKeyboard();
-                    ZoomCameraKeyboard();
-                }
+                // Sem touch, usa teclado/mouse
+                MoveCameraKeyboard();
+                ZoomCameraKeyboard();
             }
+#endif
+
         }
         else
         {
             HandleBoostSpeed();
         }
+#if UNITY_STANDALONE || UNITY_LINUX || UNITY_EDITOR
+        CameraMovement();
+#endif
     }
 
     private void HandleBoostSpeed()

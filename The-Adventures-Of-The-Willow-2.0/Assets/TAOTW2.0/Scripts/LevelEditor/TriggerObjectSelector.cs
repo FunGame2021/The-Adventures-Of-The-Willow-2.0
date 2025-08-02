@@ -30,9 +30,14 @@ public class TriggerObjectSelector : MonoBehaviour
     [SerializeField] private float doubleTapTimeThreshold = 0.3f; // Tempo máximo entre toques
     [SerializeField] private float maxTapDistance = 50f;          // Distância máxima entre toques
 
-    private float lastTapTime = 0f;
-    private Vector2 lastTapPosition = Vector2.zero;
-    private int tapCount = 0;
+
+    [SerializeField] private float holdDurationThreshold = 1.5f;
+
+    [SerializeField] private float touchStartTime = 0f;
+    [SerializeField] private Vector2 touchStartPosition;
+    [SerializeField] private bool isHolding = false;
+    [SerializeField] private bool hasTriggeredHold = false;
+
 
     void Awake()
     {
@@ -51,41 +56,51 @@ public class TriggerObjectSelector : MonoBehaviour
         // Clique direito do mouse
         if (Keyboard.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
-            TryOpenPanelFromPosition(Mouse.current.position.ReadValue());
+            if (!LevelEditorManager.instance.isActiveSelectPoint && LevelEditorManager.instance != null)
+            {
+                TryOpenPanelFromPosition(Mouse.current.position.ReadValue());
+            }
         }
 #else
-        // Toque duplo no mobile
-        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
-            var touch = Touchscreen.current.touches[0];
+            var touch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0];
 
-            if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
+            switch (touch.phase)
             {
-                Vector2 currentTapPosition = touch.position.ReadValue();
-                float currentTime = Time.time;
+                case UnityEngine.InputSystem.TouchPhase.Began:
+                    touchStartTime = Time.time;
+                    touchStartPosition = touch.screenPosition;
+                    isHolding = true;
+                    hasTriggeredHold = false;
+                    break;
 
-                if (currentTime - lastTapTime < doubleTapTimeThreshold &&
-                    Vector2.Distance(currentTapPosition, lastTapPosition) < maxTapDistance)
-                {
-                    tapCount++;
-
-                    if (tapCount >= 2)
+                case UnityEngine.InputSystem.TouchPhase.Stationary:
+                case UnityEngine.InputSystem.TouchPhase.Moved:
+                    if (isHolding && !hasTriggeredHold &&
+                        Vector2.Distance(touchStartPosition, touch.screenPosition) < 20f)
                     {
-                        tapCount = 0;
-
-                        if (LevelEditorManager.instance.isActiveSelectPoint)
+                        if (Time.time - touchStartTime >= holdDurationThreshold)
                         {
-                            TryOpenPanelFromPosition(currentTapPosition);
+                            hasTriggeredHold = true;
+                            Vector2 worldPos = Camera.main.ScreenToWorldPoint(touch.screenPosition);
+                            
+                            if (!LevelEditorManager.instance.isActiveSelectPoint && LevelEditorManager.instance != null)
+                            {
+                                TryOpenPanelFromPosition(worldPos);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    tapCount = 1;
-                }
+                    else
+                    {
+                        isHolding = false;
+                    }
+                    break;
 
-                lastTapTime = currentTime;
-                lastTapPosition = currentTapPosition;
+                case UnityEngine.InputSystem.TouchPhase.Ended:
+                case UnityEngine.InputSystem.TouchPhase.Canceled:
+                    isHolding = false;
+                    break;
             }
         }
 #endif

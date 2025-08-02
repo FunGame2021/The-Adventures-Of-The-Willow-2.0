@@ -57,9 +57,14 @@ public class PlatformNodeEditor : MonoBehaviour
     [SerializeField] private float doubleTapTimeThreshold = 0.3f; // Tempo máximo entre toques
     [SerializeField] private float maxTapDistance = 50f; // Distância máxima entre os toques para considerar double tap
 
-    private float lastTapTime = 0f;
-    private Vector2 lastTapPosition = Vector2.zero;
-    private int tapCount = 0;
+
+    [SerializeField] private float holdDurationThreshold = 1.5f;
+
+    [SerializeField] private float touchStartTime = 0f;
+    [SerializeField] private Vector2 touchStartPosition;
+    [SerializeField] private bool isHolding = false;
+    [SerializeField] private bool hasTriggeredHold = false;
+
 
 
 
@@ -121,7 +126,7 @@ public class PlatformNodeEditor : MonoBehaviour
 
 
         CheckMouseRightClick();
-        CheckDoubleTapTouch();
+        CheckHoldTapTouch();
     }
 
 
@@ -141,45 +146,53 @@ public class PlatformNodeEditor : MonoBehaviour
         }
     }
 
-    private void CheckDoubleTapTouch()
+    private void CheckHoldTapTouch()
     {
         if (Touchscreen.current == null)
             return;
 
-        TouchControl touch = Touchscreen.current.primaryTouch;
-
-        if (touch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
+        if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
-            Vector2 currentTapPosition = touch.position.ReadValue();
-            float currentTime = Time.time;
+            var touch = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0];
 
-            // Se o tempo entre toques for muito grande, reseta o contador
-            if (currentTime - lastTapTime > doubleTapTimeThreshold)
+            switch (touch.phase)
             {
-                tapCount = 0;
-            }
+                case UnityEngine.InputSystem.TouchPhase.Began:
+                    touchStartTime = Time.time;
+                    touchStartPosition = touch.screenPosition;
+                    isHolding = true;
+                    hasTriggeredHold = false;
+                    break;
 
-            if (tapCount == 1 &&
-                currentTime - lastTapTime < doubleTapTimeThreshold &&
-                Vector2.Distance(currentTapPosition, lastTapPosition) < maxTapDistance)
-            {
-                // Double tap detectado
-                tapCount = 0;
+                case UnityEngine.InputSystem.TouchPhase.Stationary:
+                case UnityEngine.InputSystem.TouchPhase.Moved:
+                    if (isHolding && !hasTriggeredHold &&
+                        Vector2.Distance(touchStartPosition, touch.screenPosition) < 20f)
+                    {
+                        if (Time.time - touchStartTime >= holdDurationThreshold)
+                        {
+                            hasTriggeredHold = true;
+                            Vector2 worldPos = Camera.main.ScreenToWorldPoint(touch.screenPosition);
 
-                if (LevelEditorManager.instance.isActiveSelectPoint)
-                {
-                    Vector2 worldPos = Camera.main.ScreenToWorldPoint(currentTapPosition);
-                    HandleObjectSelection(worldPos);
-                }
-            }
-            else
-            {
-                // Primeiro toque ou inválido, inicia nova contagem
-                tapCount = 1;
-                lastTapTime = currentTime;
-                lastTapPosition = currentTapPosition;
+                            if (LevelEditorManager.instance.isActiveSelectPoint && LevelEditorManager.instance != null)
+                            {
+                                HandleObjectSelection(worldPos);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isHolding = false;
+                    }
+                    break;
+
+                case UnityEngine.InputSystem.TouchPhase.Ended:
+                case UnityEngine.InputSystem.TouchPhase.Canceled:
+                    isHolding = false;
+                    break;
             }
         }
+
     }
     private void UpdatePlatformPosition()
     {
