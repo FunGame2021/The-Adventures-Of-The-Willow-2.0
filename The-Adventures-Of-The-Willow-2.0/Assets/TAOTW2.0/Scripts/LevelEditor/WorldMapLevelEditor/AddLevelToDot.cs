@@ -28,6 +28,7 @@ public class AddLevelToDot : MonoBehaviour
 
     [SerializeField] private GameObject PanelOptions;
     [SerializeField] private TextMeshProUGUI LevelDotLevelName;
+    [SerializeField] private TMP_InputField StarsRequered;
     [SerializeField] private Toggle isFirstLevel;
     private LevelDot currentLevelDotComponent;
 
@@ -153,6 +154,7 @@ public class AddLevelToDot : MonoBehaviour
         currentWorld = currentLevelDotComponent.worldName;
         currentLevel = currentLevelDotComponent.levelName;
         LevelDotLevelName.text = currentLevelDotComponent.levelName;
+        StarsRequered.text = currentLevelDotComponent.starsNeedToUnlock.ToString();
         isFirstLevel.isOn = currentLevelDotComponent.isFirstLevel;
     }
 
@@ -164,6 +166,7 @@ public class AddLevelToDot : MonoBehaviour
             currentLevelDotComponent.SetLevelPath(currentWorld, currentLevel);
             LevelDotLevelName.text = currentLevel;
             currentLevelDotComponent.isFirstLevel = isFirstLevel.isOn;
+            currentLevelDotComponent.starsNeedToUnlock = int.Parse(StarsRequered.text);
             PanelOptions.SetActive(false);
             isSelectingLevel = false;
             UpdateLevelDotValues();

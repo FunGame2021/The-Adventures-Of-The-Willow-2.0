@@ -20,7 +20,6 @@ GameObject:
   - component: {fileID: 4355294316908627330}
   - component: {fileID: 2592786377724172707}
   - component: {fileID: 4798901641038521615}
-  - component: {fileID: 3668697172349177264}
   - component: {fileID: 7550289033753128257}
   - component: {fileID: 8822884678696470345}
   - component: {fileID: 5174861776435783233}
@@ -311,6 +310,7 @@ MonoBehaviour:
   normalJumpTime: 0.4
   boostedJumpTime: 0.5
   coyoteTime: 0.2
+  mobileJumpBufferTime: 0.2
   RB: {fileID: 6915230460424986886}
   facingRight: 0
   sameGravityPlayer: 2
@@ -405,6 +405,7 @@ MonoBehaviour:
   - Idle
   - Idle2
   - Idle3
+  fallSpeedThreshold: -1
   groundCheckDistance: 1.5
   groundLayer:
     serializedVersion: 2
@@ -470,19 +471,6 @@ MonoBehaviour:
   knockbackDuration: 0.3
   knockbackUpForce: 1
   LastSectorCheck: 
---- !u!114 &3668697172349177264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155168309214299445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 092303a8484acbc4f9f2ce0b8906c920, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpForce: 5
 --- !u!114 &7550289033753128257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b2c6d4e22987f243a18ca8916fbb598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerstates: {fileID: 7550289033753128257}
   projectile: {fileID: 4246249041917327327, guid: 9cade0270f335d04097e1a6870373ae5, type: 3}
   velocity: {x: 6, y: -6}
   offset: {x: 0.5, y: 0.5}

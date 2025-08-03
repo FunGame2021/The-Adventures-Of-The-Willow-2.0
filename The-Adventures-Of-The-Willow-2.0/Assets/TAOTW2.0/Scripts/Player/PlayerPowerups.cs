@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerPowerups : MonoBehaviour
 {
+    [SerializeField] private PlayerStates playerstates;
+
     #region FirePower
     public GameObject projectile;
     public Vector2 velocity;
@@ -17,16 +19,29 @@ public class PlayerPowerups : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() || UserInput.instance.shootButtonPressed && canShoot)
+        if (playerstates.isFirePower)
         {
 
-            GameObject go = (GameObject)Instantiate(projectile, (Vector2)transform.position + offset * transform.localScale.x, Quaternion.identity);
 
-            go.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(velocity.x * transform.localScale.x, velocity.y);
+            if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Shoot.WasPressedThisFrame() || UserInput.instance.shootButtonPressed && canShoot)
+            {
+
+                GameObject go = (GameObject)Instantiate(projectile, (Vector2)transform.position + offset * transform.localScale.x, Quaternion.identity);
+
+                go.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(velocity.x * transform.localScale.x, velocity.y);
 
 
-            StartCoroutine(CanShoot());
+                StartCoroutine(CanShoot());
 
+
+            } 
+        }
+        else if (playerstates.isBubblePower)
+        {
+
+        }
+        else if (playerstates.isAirPower)
+        {
 
         }
     }

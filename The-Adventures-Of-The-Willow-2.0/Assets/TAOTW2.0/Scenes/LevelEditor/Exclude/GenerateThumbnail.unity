@@ -119,6 +119,43 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!84 &95549995
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 32
+  m_Height: 32
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &363460063
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +224,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1692124460}
+  m_TargetTexture: {fileID: 95549995}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -256,6 +293,68 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1001 &720476922
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.019
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967803973719807071, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+      propertyPath: m_Name
+      value: Mushroom_Invincible_Powerup
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+--- !u!1 &720476923 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6967803973719807071, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+  m_PrefabInstance: {fileID: 720476922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &860660582
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f19b4e28419904ab2f1c4d6cc97489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabToGenerateThumbnail: {fileID: 1206830424}
+  prefabToGenerateThumbnail: {fileID: 720476923}
   thumbnailCamera: {fileID: 363460065}
   thumbnailSize: 32
 --- !u!4 &860660584
@@ -303,68 +402,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1206830423
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1863284214482250881, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_Name
-      value: Key
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8173483663075142826, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
---- !u!1 &1206830424 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1863284214482250881, guid: 83a005e11d1b7ae43b6dddba624b5bae, type: 3}
-  m_PrefabInstance: {fileID: 1206830423}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1548894000
 GameObject:
   m_ObjectHideFlags: 0
@@ -449,43 +486,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1692124460
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 32
-  m_Height: 32
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -493,4 +493,4 @@ SceneRoots:
   - {fileID: 363460066}
   - {fileID: 1548894002}
   - {fileID: 860660584}
-  - {fileID: 1206830423}
+  - {fileID: 720476922}

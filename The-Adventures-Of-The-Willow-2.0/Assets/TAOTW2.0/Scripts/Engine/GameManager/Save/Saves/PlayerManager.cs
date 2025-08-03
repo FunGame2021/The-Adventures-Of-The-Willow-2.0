@@ -10,12 +10,14 @@ public class PlayerManager : MonoBehaviour
     public int deaths;
     public float completionTime;
     public int coinsCollected;
+    public int starsCollected;
 
     //Info Texts
     [SerializeField] private GameObject infoPanel;
     [SerializeField] private TextMeshProUGUI enemiesKilledTXT;
     [SerializeField] private TextMeshProUGUI deathsTXT;
     [SerializeField] private TextMeshProUGUI coinsCollectedTXT;
+    [SerializeField] private TextMeshProUGUI starsCollectedTXT;
     [SerializeField] private TextMeshProUGUI completionTimeTXT;
 
     void Awake()
@@ -43,6 +45,7 @@ public class PlayerManager : MonoBehaviour
         infoPanel.SetActive(true);
         enemiesKilledTXT.text = enemiesKilled.ToString();
         coinsCollectedTXT.text = coinsCollected.ToString();
+        starsCollectedTXT.text = starsCollected.ToString();
         deathsTXT.text = deaths.ToString();
         completionTimeTXT.text = completionTime.ToString();
     }
@@ -65,5 +68,9 @@ public class PlayerManager : MonoBehaviour
         coinsCollected += coinValue;
     }
 
+    public void IncrementStarsCollected(int starValue)
+    {
+        starsCollected += starValue;
+    }
 
 }

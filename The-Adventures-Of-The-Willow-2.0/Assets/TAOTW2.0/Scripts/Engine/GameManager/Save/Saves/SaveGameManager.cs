@@ -11,6 +11,7 @@ public class CurrentSaveLevelData
     public string CurrentLevelName;
     public bool currentLevelsolved;
     public int currentLevelCoinsCollected;
+    public int currentLevelStarsCollected;
     public int currentLevelDeaths;
     public int currentLevelEnemiesKilled;
     public float currentLevelCompletionTime;
@@ -30,6 +31,7 @@ public class SaveLevelData
     public string levelName;
     public bool solved;
     public int coinsCollected;
+    public int starsCollected;
     public int deaths;
     public int enemiesKilled;
     public float completionTime;
@@ -78,6 +80,7 @@ public class SaveGameManager : MonoBehaviour
     [HideInInspector] public Vector3 loadedPlayerWorldPosition;
     private Vector3 currentPlayerOnWorldPos;
     public int TotalCoins;
+    public int TotalStars;
     [SerializeField] private bool isWorldmapPlayed;
 
     [HideInInspector] public bool isSaveBig;
@@ -104,6 +107,11 @@ public class SaveGameManager : MonoBehaviour
         if (coinCollect != null)
         {
             CoinCollect.instance = coinCollect;
+        }
+        StarsFunction starCollect = FindAnyObjectByType<StarsFunction>();
+        if (starCollect != null)
+        {
+            StarsFunction.instance = starCollect;
         }
         LoadGame();
 
@@ -181,6 +189,7 @@ public class SaveGameManager : MonoBehaviour
             // Atualize os dados do nível atual
             currentLevel.solved = currentSaveLevelData.currentLevelsolved;
             currentLevel.coinsCollected = currentSaveLevelData.currentLevelCoinsCollected;
+            currentLevel.starsCollected = currentSaveLevelData.currentLevelStarsCollected;
             currentLevel.deaths = currentSaveLevelData.currentLevelDeaths;
             currentLevel.enemiesKilled = currentSaveLevelData.currentLevelEnemiesKilled;
             currentLevel.completionTime = currentSaveLevelData.currentLevelCompletionTime;
@@ -195,6 +204,7 @@ public class SaveGameManager : MonoBehaviour
         {
             // Atualize os dados do jogador
             saveData.player.coins = TotalCoins;
+            saveData.player.stars = TotalStars;
             saveData.player.isSmall = PlayerStates.instance.isSmall;
             saveData.player.isBig = PlayerStates.instance.isBig;
             saveData.player.isAirPower = PlayerStates.instance.isAirPower;
@@ -230,7 +240,9 @@ public class SaveGameManager : MonoBehaviour
             SaveWorldData currentWorld = saveData.worlds.Find(world => world.worldName == currentWorldName);
 
             TotalCoins = saveData.player.coins;
+            TotalStars = saveData.player.stars;
             CoinCollect.instance.SaveChangeCoin(saveData.player.coins);
+            StarsFunction.instance.SaveChangeStar(saveData.player.stars);
             // Carregue as informações do jogador
             loadedPlayerWorldPosition = saveData.player.position;
             asWorldData = true;
@@ -251,6 +263,7 @@ public class SaveGameManager : MonoBehaviour
                     CurrentLevelName = level.levelName,
                     currentLevelsolved = level.solved,
                     currentLevelCoinsCollected = level.coinsCollected,
+                    currentLevelStarsCollected = level.starsCollected,
                     currentLevelDeaths = level.deaths,
                     currentLevelEnemiesKilled = level.enemiesKilled,
                     currentLevelCompletionTime = level.completionTime
@@ -281,11 +294,13 @@ public class SaveGameManager : MonoBehaviour
         // Define os valores finais do nível atual
         currentSaveLevelData.currentLevelsolved = true; // Indica que o nível foi concluído com sucesso
         currentSaveLevelData.currentLevelCoinsCollected = PlayerManager.instance.coinsCollected;
+        currentSaveLevelData.currentLevelStarsCollected = PlayerManager.instance.starsCollected;
         currentSaveLevelData.currentLevelDeaths = PlayerManager.instance.deaths;
         currentSaveLevelData.currentLevelEnemiesKilled = PlayerManager.instance.enemiesKilled;
         currentSaveLevelData.currentLevelCompletionTime = LevelTimeManager.instance.elapsedTime;
 
         TotalCoins = CoinCollect.instance.coin;
+        TotalStars = StarsFunction.instance.star;
 
         // Encontre o nível atual na lista de níveis do mundo atual
         CurrentSaveLevelData currentLevel = currentSaveWorldData.levels.Find(level => level.CurrentLevelName == currentLevelName);
@@ -295,6 +310,7 @@ public class SaveGameManager : MonoBehaviour
             // Se o nível atual já existir na lista, atualize suas estatísticas
             currentLevel.currentLevelsolved = currentSaveLevelData.currentLevelsolved;
             currentLevel.currentLevelCoinsCollected = currentSaveLevelData.currentLevelCoinsCollected;
+            currentLevel.currentLevelStarsCollected = currentSaveLevelData.currentLevelStarsCollected;
             currentLevel.currentLevelDeaths = currentSaveLevelData.currentLevelDeaths;
             currentLevel.currentLevelEnemiesKilled = currentSaveLevelData.currentLevelEnemiesKilled;
             currentLevel.currentLevelCompletionTime = currentSaveLevelData.currentLevelCompletionTime;

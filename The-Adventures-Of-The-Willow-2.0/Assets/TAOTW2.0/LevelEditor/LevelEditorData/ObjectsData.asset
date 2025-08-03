@@ -41,6 +41,15 @@ MonoBehaviour:
     - ObjectName: BonusBlock
       objectType: 0
       prefab: {fileID: 4504894494122889463, guid: 10049aaede49d9047b196740826ec726, type: 3}
+    - ObjectName: Mushroom_Fire_Powerup
+      objectType: 0
+      prefab: {fileID: 243087758162157716, guid: 749b82487c7fe4a43ab1abbe380f442d, type: 3}
+    - ObjectName: Mushroom_Air_Powerup
+      objectType: 0
+      prefab: {fileID: 7431717032304321880, guid: 889cae63b50464943b51df0551032f1c, type: 3}
+    - ObjectName: Mushroom_Invincible_Powerup
+      objectType: 0
+      prefab: {fileID: 6967803973719807071, guid: 7300f5f989ed230458950039a6d39209, type: 3}
   - categoryName: Objects
     Objects:
     - ObjectName: SmallBox

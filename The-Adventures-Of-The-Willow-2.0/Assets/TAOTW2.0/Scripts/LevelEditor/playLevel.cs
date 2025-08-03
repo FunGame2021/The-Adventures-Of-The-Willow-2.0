@@ -1,11 +1,12 @@
+using FMOD.Studio;
+using FMODUnity;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using TMPro;
-using FMODUnity;
-using FMOD.Studio;
-using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 using static UnityEngine.Collider2D;
 
 public class playLevel : MonoBehaviour
@@ -246,7 +247,11 @@ public class playLevel : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
+        if (Keyboard.current.anyKey.isPressed || UserInput.instance.playerMoveAndExtraActions.UI.ScrollWheel.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.RightClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.MiddleClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.LeftClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
             UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
             if (!StartedLevel && canStart && !isWorld)
@@ -1432,8 +1437,13 @@ public class playLevel : MonoBehaviour
                 WorldMusicID = tilemapDataWrapper.levelPreferences.MusicID;
 
                 // Restaura o tamanho do grid
-                currentGridWidth = gridSizeData.currentGridWidth;
-                currentGridHeight = gridSizeData.currentGridHeight;
+                GridWidth = gridSizeData.currentGridWidth;
+                GridHeight = gridSizeData.currentGridHeight;
+
+                if (CameraZoom.instance != null)
+                {
+                    CameraZoom.instance.AdjustGridColliderSize();
+                }
                 LevelEditorCamera levelEditorCamera = FindAnyObjectByType<LevelEditorCamera>();
                 if (levelEditorCamera != null)
                 {
@@ -1511,6 +1521,7 @@ public class playLevel : MonoBehaviour
                     {
                         newLevelDot.SetLevelPath(dotData.worldName, dotData.levelName);
                         newLevelDot.isFirstLevel = dotData.isFirstLevel;
+                        newLevelDot.starsNeedToUnlock = dotData.starsToUnlock;
                         // Você pode configurar outros dados do LevelDot aqui, se necessário
                     }
                 }

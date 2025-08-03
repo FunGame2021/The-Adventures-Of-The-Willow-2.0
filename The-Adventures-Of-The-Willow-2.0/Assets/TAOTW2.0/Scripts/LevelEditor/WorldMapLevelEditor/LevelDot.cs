@@ -20,10 +20,11 @@ public class LevelDot : MonoBehaviour
     public string LevelPath;
     public bool isFirstLevel;
     private Vector3 dotPosition;
-    private int starsNeedToUnlock;
+    public int starsNeedToUnlock;
 
     //UI Canvas
     [SerializeField] private Transform spawnLocalUI;
+    private TextMeshProUGUI TXTStarsNeed;
     private TextMeshProUGUI TXTLevelName;
     private Animator CanvasUIAnim;
     [SerializeField] private GameObject CanvasWorldUIPrefab;
@@ -33,6 +34,14 @@ public class LevelDot : MonoBehaviour
     public Image levelImage;
 
     private bool isOnDot;
+
+
+    // Novo Canvas para mensagem de estrelas insuficientes
+    [SerializeField] private GameObject CanvasLockedUIPrefab;
+    private GameObject canvasLockedUIObject;
+    [SerializeField] private Transform spawnLocalUINeedStars;
+    private bool canvasLockedUIInstantiated = false;
+
 
     private void Start()
     {
@@ -68,15 +77,22 @@ public class LevelDot : MonoBehaviour
             {
                 if(isOnDot)
                 {
-                    if(SaveGameManager.instance != null)
+                    if (CanPlayLevel())
                     {
-                        SaveGameManager.instance.SaveGame();
+                        if (SaveGameManager.instance != null)
+                        {
+                            SaveGameManager.instance.SaveGame();
+                        }
+                        PlayWorld.instance.selectedLevelName = levelName;
+                        PlayWorld.instance.selectedWorldName = worldName;
+                        PlayWorld.instance.lastisWorldmap = true;
+                        PlayWorld.instance.isWorldmap = false;
+                        SceneManager.LoadScene("PlayLevel");
                     }
-                    PlayWorld.instance.selectedLevelName = levelName;
-                    PlayWorld.instance.selectedWorldName = worldName;
-                    PlayWorld.instance.lastisWorldmap = true;
-                    PlayWorld.instance.isWorldmap = false;
-                    SceneManager.LoadScene("PlayLevel");
+                    else
+                    {
+                        InstantiateCanvasLockedUI();
+                    }
                 }
             }
             // Antes de carregar o nível, verifique se o nível foi concluído
@@ -90,6 +106,95 @@ public class LevelDot : MonoBehaviour
             }
         }
     }
+    private void InstantiateCanvasLockedUI()
+    {
+        // Destroi o UI normal se estiver ativo
+        /*/
+        if (canvasWorldUIObject != null)
+        {
+            Destroy(canvasWorldUIObject);
+            canvasWorldUIInstantiated = false;
+        }
+        */
+        // Verifica se o painel já foi instanciado
+        if (canvasLockedUIInstantiated) return;
+
+        // Instancia o objeto do prefab
+        canvasLockedUIObject = Instantiate(CanvasLockedUIPrefab, spawnLocalUINeedStars);
+
+        if (canvasLockedUIObject != null)
+        {
+            // Busca TODOS os componentes TextMeshProUGUI nos filhos (incluindo filhos de filhos)
+            TextMeshProUGUI[] allTexts = canvasLockedUIObject.GetComponentsInChildren<TextMeshProUGUI>(true);
+
+            // Procura por textos específicos para atualizar
+            foreach (TextMeshProUGUI text in allTexts)
+            {
+                // Atualiza o texto que mostra as estrelas necessárias
+                if (text.gameObject.name.Contains("STARSNEED"))
+                {
+                    text.text = $"{SaveGameManager.instance.TotalStars}/{starsNeedToUnlock}";
+
+                    // Formatação condicional
+                    if (SaveGameManager.instance.TotalStars >= starsNeedToUnlock)
+                    {
+                        text.color = Color.green;
+                        text.fontStyle = FontStyles.Bold;
+                    }
+                    else
+                    {
+                        text.color = Color.red;
+                    }
+                }
+
+                // Pode adicionar mais condições para outros textos
+                else if (text.gameObject.name.Contains("LevelNameTXT"))
+                {
+                    text.text = levelName;
+                }
+            }
+
+            // Configura o animator
+            Animator lockedAnim = canvasLockedUIObject.GetComponentInChildren<Animator>();
+            if (lockedAnim != null)
+            {
+                lockedAnim.SetTrigger("EnterDot");
+            }
+
+            canvasLockedUIInstantiated = true;
+
+            // Configura para destruir após alguns segundos
+            StartCoroutine(DestroyLockedCanvasWithDelay(3f));
+        }
+    }
+    private IEnumerator DestroyLockedCanvasWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (canvasLockedUIObject != null)
+        {
+            Animator lockedAnim = canvasLockedUIObject.GetComponentInChildren<Animator>();
+            if (lockedAnim != null)
+            {
+                lockedAnim.SetTrigger("ExitDot");
+            }
+
+            yield return new WaitForSeconds(1f); // Tempo para a animação de saída
+            Destroy(canvasLockedUIObject);
+            canvasLockedUIInstantiated = false;
+
+        }
+    }
+    private bool CanPlayLevel()
+    {
+        // Verifica se o jogador tem estrelas suficientes
+        if (SaveGameManager.instance != null)
+        {
+            return SaveGameManager.instance.TotalStars >= starsNeedToUnlock;
+        }
+        return false;
+    }
+
     public string GetLevelPath()
     {
         return LevelPath;
@@ -182,14 +287,29 @@ public class LevelDot : MonoBehaviour
         // Verifique se a instância foi bem-sucedida
         if (canvasWorldUIObject != null)
         {
-            // Obtenha as referências para o TextMeshPro e o Animator no objeto instanciado
-            TXTLevelName = canvasWorldUIObject.GetComponentInChildren<TextMeshProUGUI>();
+            // Busca TODOS os componentes TextMeshProUGUI nos filhos (incluindo filhos de filhos)
+            TextMeshProUGUI[] allUITexts = canvasWorldUIObject.GetComponentsInChildren<TextMeshProUGUI>();
+
+            // Procura por textos específicos para atualizar
+            foreach (TextMeshProUGUI text in allUITexts)
+            {
+                // Atualiza o texto que mostra as estrelas necessárias
+                if (text.gameObject.name.Contains("STARSNEED"))
+                {
+                    TXTStarsNeed = text;
+                }
+                else if (text.gameObject.name.Contains("LevelNameTXT"))
+                {
+                    TXTLevelName = text;
+                }
+            }
             CanvasUIAnim = canvasWorldUIObject.GetComponentInChildren<Animator>();
             levelImage = FindImageInChild(canvasWorldUIObject.transform, "UILevelImage");
 
             // Verifique se as referências são válidas
-            if (TXTLevelName != null && CanvasUIAnim != null)
+            if (TXTLevelName != null && TXTStarsNeed != null && CanvasUIAnim != null)
             {
+                TXTStarsNeed.text = starsNeedToUnlock.ToString();
                 TXTLevelName.text = levelName;
                 // txtAuthorName.text = authorName;
                 // Aplique a textura da imagem ao UI Image

@@ -3906,6 +3906,7 @@ public class LevelEditorManager : MonoBehaviour
                 dotData.levelName = levelDot.levelName;
                 dotData.worldName = levelDot.worldName;
                 dotData.isFirstLevel = levelDot.isFirstLevel;
+                dotData.starsToUnlock = levelDot.starsNeedToUnlock;
                 Vector3 LevelDotPos = levelDot.transform.position;
                 dotData.dotPosition = LevelDotPos;
                 levelDotDataList.Add(dotData);
@@ -4054,6 +4055,7 @@ public class LevelEditorManager : MonoBehaviour
                     if (newLevelDot != null)
                     {
                         newLevelDot.SetLevelPath(dotData.worldName, dotData.levelName);
+                        newLevelDot.starsNeedToUnlock = dotData.starsToUnlock;
                         newLevelDot.isFirstLevel = dotData.isFirstLevel;
                         // Você pode configurar outros dados do LevelDot aqui, se necessário
                     }
@@ -4668,6 +4670,7 @@ public class LevelDotData
     public string levelName;
     public string worldName;
     public bool isFirstLevel;
+    public int starsToUnlock;
     public Vector3 dotPosition;
 }
 

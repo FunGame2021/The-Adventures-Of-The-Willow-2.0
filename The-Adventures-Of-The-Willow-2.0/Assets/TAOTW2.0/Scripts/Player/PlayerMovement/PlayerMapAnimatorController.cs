@@ -20,53 +20,99 @@ public class PlayerMapAnimatorController : MonoBehaviour
         float horizontalInput = _playerMapController.horizontalInput;
         float verticalInput = _playerMapController.verticalInput;
 
-        // Resetando todas as animações
+        // Resetar todas as animações
         animator.SetBool("WalkingTop", false);
         animator.SetBool("WalkingDown", false);
         animator.SetBool("WalkingNormal", false);
-        animator.SetBool("IdleNormal", false);
+        animator.SetBool("WalkingTopLeft", false);
+        animator.SetBool("WalkingFrontLeft", false);
         animator.SetBool("IdleTop", false);
         animator.SetBool("IdleDown", false);
+        animator.SetBool("IdleNormal", false);
+        animator.SetBool("IdleTopLeft", false);
+        animator.SetBool("IdleFrontLeft", false);
 
-        if (verticalInput > 0f)
+        if (!Mathf.Approximately(horizontalInput, 0f) || !Mathf.Approximately(verticalInput, 0f))
         {
-            animator.SetBool("WalkingTop", true);
-            lastVerticalInput = 1f;
-            lastHorizontalInput = 0f;
-        }
-        else if (verticalInput < 0f)
-        {
-            animator.SetBool("WalkingDown", true);
-            lastVerticalInput = -1f;
-            lastHorizontalInput = 0f;
-        }
-        else if (horizontalInput != 0f)
-        {
-            animator.SetBool("WalkingNormal", true);
-            lastHorizontalInput = Mathf.Sign(horizontalInput);
-            lastVerticalInput = 0f;
+            // Movimento com prioridade para diagonais
+            if (verticalInput > 0f && horizontalInput < 0f)
+            {
+                animator.SetBool("WalkingTopLeft", true);
+                lastVerticalInput = 1f;
+                lastHorizontalInput = -1f;
+            }
+            else if (verticalInput > 0f && horizontalInput > 0f)
+            {
+                animator.SetBool("WalkingTopLeft", true); // Espelha
+                lastVerticalInput = 1f;
+                lastHorizontalInput = 1f;
+            }
+            else if (verticalInput < 0f && horizontalInput < 0f)
+            {
+                animator.SetBool("WalkingFrontLeft", true);
+                lastVerticalInput = -1f;
+                lastHorizontalInput = -1f;
+            }
+            else if (verticalInput < 0f && horizontalInput > 0f)
+            {
+                animator.SetBool("WalkingFrontLeft", true); // Espelha
+                lastVerticalInput = -1f;
+                lastHorizontalInput = 1f;
+            }
+            else if (verticalInput > 0f)
+            {
+                animator.SetBool("WalkingTop", true);
+                lastVerticalInput = 1f;
+                lastHorizontalInput = 0f;
+            }
+            else if (verticalInput < 0f)
+            {
+                animator.SetBool("WalkingDown", true);
+                lastVerticalInput = -1f;
+                lastHorizontalInput = 0f;
+            }
+            else if (!Mathf.Approximately(horizontalInput, 0f))
+            {
+                animator.SetBool("WalkingNormal", true);
+                lastHorizontalInput = Mathf.Sign(horizontalInput);
+                lastVerticalInput = 0f;
+            }
         }
         else
         {
-            // Se não houver entrada, configura a animação de idle com base na última direção
-            if (lastVerticalInput > 0f && lastHorizontalInput == 0f)
+            // Zera inputs para evitar valores residuais
+            lastVerticalInput = Mathf.Round(lastVerticalInput);
+            lastHorizontalInput = Mathf.Round(lastHorizontalInput);
+
+            if (lastVerticalInput > 0f && lastHorizontalInput < 0f)
+            {
+                animator.SetBool("IdleTopLeft", true);
+            }
+            else if (lastVerticalInput > 0f && lastHorizontalInput > 0f)
+            {
+                animator.SetBool("IdleTopLeft", true); // Espelha
+            }
+            else if (lastVerticalInput < 0f && lastHorizontalInput < 0f)
+            {
+                animator.SetBool("IdleFrontLeft", true);
+            }
+            else if (lastVerticalInput < 0f && lastHorizontalInput > 0f)
+            {
+                animator.SetBool("IdleFrontLeft", true); // Espelha
+            }
+            else if (lastVerticalInput > 0f && Mathf.Approximately(lastHorizontalInput, 0f))
             {
                 animator.SetBool("IdleTop", true);
-                animator.SetBool("IdleDown", false);
-                animator.SetBool("IdleNormal", false);
             }
-            else if (lastVerticalInput < 0f && lastHorizontalInput == 0f)
+            else if (lastVerticalInput < 0f && Mathf.Approximately(lastHorizontalInput, 0f))
             {
                 animator.SetBool("IdleDown", true);
-                animator.SetBool("IdleTop", false);
-                animator.SetBool("IdleNormal", false);
             }
-            else if (lastHorizontalInput != 0f && lastVerticalInput == 0f)
+            else if (!Mathf.Approximately(lastHorizontalInput, 0f) && Mathf.Approximately(lastVerticalInput, 0f))
             {
                 animator.SetBool("IdleNormal", true);
-                animator.SetBool("IdleTop", false);
-                animator.SetBool("IdleDown", false);
             }
         }
     }
+
 }

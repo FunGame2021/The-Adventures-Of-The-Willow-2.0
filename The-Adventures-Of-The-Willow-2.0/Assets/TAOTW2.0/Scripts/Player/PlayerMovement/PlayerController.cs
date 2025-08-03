@@ -398,31 +398,31 @@ public class PlayerController : MonoBehaviour
         // Verifica se o jogador est� colidindo com uma parede
         IsCollidingWithWall();
 
-        if (!isWallJumping && !stopPlayer)
-        {
-            if (moveInput < 0)
-            {
-                Turn(true); // Vire para a esquerda
-            }
-            else if (moveInput > 0)
-            {
-                Turn(false); // Vire para a direita
-            }
-        }
-
-        #region coyote
-        if (isGrounded)
-        {
-            coyoteTimeCounter = coyoteTime;
-        }
-        else
-        {
-            coyoteTimeCounter -= Time.deltaTime;
-        }
-        #endregion
-
         if (!autoMovementEnabled)
         {
+            if (!isWallJumping && !stopPlayer)
+            {
+                if (moveInput < 0)
+                {
+                    Turn(true); // Vire para a esquerda
+                }
+                else if (moveInput > 0)
+                {
+                    Turn(false); // Vire para a direita
+                }
+            }
+
+            #region coyote
+            if (isGrounded)
+            {
+                coyoteTimeCounter = coyoteTime;
+            }
+            else
+            {
+                coyoteTimeCounter -= Time.deltaTime;
+            }
+            #endregion
+
             #region Jump
             //Button was just pushed
             if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
@@ -946,6 +946,7 @@ public class PlayerController : MonoBehaviour
 
     public void Turn(bool faceRight)
     {
+        if (autoMovementEnabled) return;
         if (facingRight != faceRight)
         {
             // Flips the player along the x-axis
@@ -1147,7 +1148,7 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
     {
         isFinishing = true;
 
-        UserInput.instance.DisableInput();
+        //UserInput.instance.DisableInput();
 
         // Stop any existing movement
         RB.linearVelocity = new Vector2(0, 0);
@@ -1176,7 +1177,7 @@ Quando a anima��o de morte estiver completa e o personagem estiver no centro
         // Resto da lógica de finalização
         RB.linearVelocity = Vector2.zero;
         PlayerAnimatorController.instance.SetFinishState(false);
-        UserInput.instance.EnableInput();
+        //UserInput.instance.EnableInput();
     }
     private void DisableOtherSystems()
     {

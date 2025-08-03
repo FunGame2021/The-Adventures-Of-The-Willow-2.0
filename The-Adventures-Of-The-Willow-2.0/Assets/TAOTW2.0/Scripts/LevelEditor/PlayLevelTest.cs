@@ -1,12 +1,13 @@
+using FMOD.Studio;
+using FMODUnity;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using TMPro;
-using FMODUnity;
-using FMOD.Studio;
-using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 public class playLevelTest : MonoBehaviour
 {
@@ -217,7 +218,12 @@ public class playLevelTest : MonoBehaviour
 
     void Update()
     {
-        if (UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame())
+        if (Keyboard.current.anyKey.isPressed || UserInput.instance.playerMoveAndExtraActions.UI.ScrollWheel.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.RightClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.MiddleClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.UI.LeftClick.WasPerformedThisFrame()
+            || UserInput.instance.playerMoveAndExtraActions.PlayerActions.Jump.WasPressedThisFrame() ||
+            UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0)
         {
             if (!StartedLevel && canStart && !isWorld)
             {
@@ -1262,6 +1268,7 @@ public class playLevelTest : MonoBehaviour
                     {
                         newLevelDot.SetLevelPath(dotData.worldName, dotData.levelName);
                         newLevelDot.isFirstLevel = dotData.isFirstLevel;
+                        newLevelDot.starsNeedToUnlock = dotData.starsToUnlock;
                         // Você pode configurar outros dados do LevelDot aqui, se necessário
                     }
                 }

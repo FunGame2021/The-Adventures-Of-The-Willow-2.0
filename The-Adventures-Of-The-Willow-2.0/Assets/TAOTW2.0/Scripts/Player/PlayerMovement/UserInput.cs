@@ -58,12 +58,17 @@ public class UserInput : MonoBehaviour
                 obj.SetActive(true);
         }
 #else
-        foreach (var obj in TouchControls)
+        if (TouchControls != null)
         {
-            if (obj != null)
-                obj.SetActive(false);
+            foreach (var obj in TouchControls)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
         }
 #endif
+
+        EnableInput();
     }
 
     private void Update()
@@ -98,7 +103,7 @@ public class UserInput : MonoBehaviour
         Vector2 touchInput = new Vector2(joystickUI.Horizontal(), joystickUI.Vertical());
         if (touchInput.magnitude > 0.1f)
         {
-            Debug.Log("Input do Joystick ativo");
+            //Debug.Log("Input do Joystick ativo");
             return touchInput;
         }
 #endif
