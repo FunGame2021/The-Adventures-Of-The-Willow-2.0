@@ -53,16 +53,13 @@ jobs:
           # Clean problematic directories
           rm -rf ${{ matrix.projectPath }}/Library
           rm -rf ${{ matrix.projectPath }}/Temp
-          # Ensure Android SDK is properly set up
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          # Commit font asset changes if needed
+          git add ./Assets/TextMesh\ Pro/Resources/Fonts\ &\ Materials/LiberationSans\ SDF\ -\ Fallback.asset || true
 
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
@@ -73,7 +70,6 @@ jobs:
           androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME || '' }}
           androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS || '' }}
           customParameters: >-
-            -batchmode
             -quit
             -nographics
             -logFile /dev/stdout
