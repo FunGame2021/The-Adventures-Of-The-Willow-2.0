@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!84 &95549995
+--- !u!84 &221348267
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,7 +224,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 95549995}
+  m_TargetTexture: {fileID: 221348267}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -293,7 +293,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1001 &720476922
+--- !u!1001 &453629125
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -301,59 +301,71 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 4048066797351312854, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+      propertyPath: m_Name
+      value: Snowforest_Bushes_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.019
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807066, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
+    - target: {fileID: 6895679636061877080, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6967803973719807071, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
-      propertyPath: m_Name
-      value: Mushroom_Invincible_Powerup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
---- !u!1 &720476923 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+--- !u!1 &453629126 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 6967803973719807071, guid: 6cc3eeff6ba77234faeb4e97aa05dfa7, type: 3}
-  m_PrefabInstance: {fileID: 720476922}
+  m_CorrespondingSourceObject: {fileID: 4048066797351312854, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
+  m_PrefabInstance: {fileID: 453629125}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &860660582
 GameObject:
@@ -384,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f19b4e28419904ab2f1c4d6cc97489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabToGenerateThumbnail: {fileID: 720476923}
+  prefabToGenerateThumbnail: {fileID: 453629126}
   thumbnailCamera: {fileID: 363460065}
   thumbnailSize: 32
 --- !u!4 &860660584
@@ -493,4 +505,4 @@ SceneRoots:
   - {fileID: 363460066}
   - {fileID: 1548894002}
   - {fileID: 860660584}
-  - {fileID: 720476922}
+  - {fileID: 453629125}

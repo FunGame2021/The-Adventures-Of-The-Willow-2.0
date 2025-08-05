@@ -43,5 +43,11 @@ MonoBehaviour:
       prefab: {fileID: 3853362669712358178, guid: a1e37e0ee27f7604bb725c601341e5f1, type: 3}
     - decorName: Forest_Bushes_2
       prefab: {fileID: 2381948392610333226, guid: 4283a399d42f5104f9106647c58dcc18, type: 3}
-  - categoryName: SnowForest
-    decorations: []
+  - categoryName: Snow
+    decorations:
+    - decorName: Snowforest_Bushes_01
+      prefab: {fileID: 834411997442453861, guid: 84184203768c8214ab1e4236d519c549, type: 3}
+    - decorName: Snowforest_Bushes_02
+      prefab: {fileID: 5993936991462015404, guid: 13b6d33382bf26244b2d8ebfc363c94c, type: 3}
+    - decorName: Snowforest_Bushes_03
+      prefab: {fileID: 4048066797351312854, guid: a6d4d2f3794168844b4920156b507df4, type: 3}
