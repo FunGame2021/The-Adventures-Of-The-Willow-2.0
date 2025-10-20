@@ -1,27 +1,73 @@
+using GoogleMobileAds.Api;
 using System.Collections;
 using UnityEngine;
 
 public class AdsController : MonoBehaviour
 {
+    public enum BannerPosition
+    {
+        Top,
+        Bottom,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
+        Center
+    }
+
     [SerializeField] private bool loadBannerOnloadScene;
+    [SerializeField] private bool loadInterstitialOnLoadScene;
+
+    [Header("Banner Position")]
+    [SerializeField] private BannerPosition bannerPosition = BannerPosition.Bottom;
+
     void Start()
     {
         if (loadBannerOnloadScene)
         {
-            if(AdmobAdsScript.instance != null)
+            if (AdmobAdsScript.instance != null)
             {
-                AdmobAdsScript.instance.RequestBanner();
-                StartCoroutine(BannerLoad());
+                // Converte nossa enumeração para AdPosition do Google Ads
+                AdPosition position = ConvertBannerPosition(bannerPosition);
+                AdmobAdsScript.instance.RequestBanner(position);
+                StartCoroutine(BannerLoad(position));
+            }
+        }
+
+        if (loadInterstitialOnLoadScene)
+        {
+            if (AdmobAdsScript.instance != null)
+            {
+                AdmobAdsScript.instance.RequestInterstitial();
+                StartCoroutine(InsterstitialLoad());
             }
         }
     }
-    IEnumerator BannerLoad()
+
+    private AdPosition ConvertBannerPosition(BannerPosition position)
     {
-        yield return new WaitForSeconds(5);
-        AdmobAdsScript.instance.LoadAd();
+        switch (position)
+        {
+            case BannerPosition.Top: return AdPosition.Top;
+            case BannerPosition.Bottom: return AdPosition.Bottom;
+            case BannerPosition.TopLeft: return AdPosition.TopLeft;
+            case BannerPosition.TopRight: return AdPosition.TopRight;
+            case BannerPosition.BottomLeft: return AdPosition.BottomLeft;
+            case BannerPosition.BottomRight: return AdPosition.BottomRight;
+            case BannerPosition.Center: return AdPosition.Center;
+            default: return AdPosition.Bottom;
+        }
     }
-    void Update()
+
+    IEnumerator BannerLoad(AdPosition position)
     {
-        
+        yield return new WaitForSeconds(2);
+        AdmobAdsScript.instance.LoadAd(position);
+    }
+
+    IEnumerator InsterstitialLoad()
+    {
+        yield return new WaitForSeconds(2);
+        AdmobAdsScript.instance.LoadInterstitialAd();
     }
 }

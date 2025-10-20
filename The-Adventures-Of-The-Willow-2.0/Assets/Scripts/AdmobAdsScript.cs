@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class AdmobAdsScript : MonoBehaviour
 {
-
     public static AdmobAdsScript instance;
 
     private BannerView _bannerView;
@@ -66,14 +65,14 @@ public class AdmobAdsScript : MonoBehaviour
         this.RequestRewarded();
 
     }
-    public void RequestBanner()
+    public void RequestBanner(AdPosition position = AdPosition.BottomLeft)
     {
         Debug.Log("Creating banner view");
         if (_bannerView != null)
         {
             DestroyAd();
         }
-        _bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Top);
+        _bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, position);
     }
 
     public void DestroyAd()
@@ -86,7 +85,7 @@ public class AdmobAdsScript : MonoBehaviour
         }
     }
 
-    public void LoadAd()
+    public void LoadAd(AdPosition position = AdPosition.BottomLeft)
     {
         if (_bannerView == null)
         {
@@ -96,7 +95,7 @@ public class AdmobAdsScript : MonoBehaviour
             {
                 DestroyAd();
             }
-            _bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Top);
+            _bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, position);
         }
         var adRequest = new AdRequest();
         Debug.Log("Loading banner ad.");

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8314835378668186660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3368749220636852211}
+  - component: {fileID: 796494561535104476}
+  m_Layer: 0
+  m_Name: ADS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3368749220636852211
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8314835378668186660}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 467.39786, y: 429.96228, z: -8.394401}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &796494561535104476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8314835378668186660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc3ed2f7346aa6418c5762a52ba1f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidBannerAdUnitId: ca-app-pub-3940256099942544/6300978111
+  androidInterstitialAdUnitId: ca-app-pub-3940256099942544/1033173712
+  androidRewardedAdUnitId: ca-app-pub-3940256099942544/5224354917
+  iosBannerAdUnitId: ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx
+  iosInterstitialAdUnitId: ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx
+  iosRewardedAdUnitId: ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx
